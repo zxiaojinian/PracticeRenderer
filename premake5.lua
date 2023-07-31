@@ -31,8 +31,8 @@ project "PracticeRenderer"
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-    pchheader "pch.h"
-    pchsource "%{prj.name}/Source/pch.cpp"
+    pchheader "Core/pch.h"
+    pchsource "%{prj.name}/Source/Core/pch.cpp"
 
     files 
     { 
@@ -52,12 +52,13 @@ project "PracticeRenderer"
 
     includedirs
     {
-        "%{prj.name}/src",
+        "%{prj.name}/Source",
         "%{prj.name}/Dependencies/GLFW/include",
         "%{prj.name}/Dependencies/Glad/include",
         "%{prj.name}/Dependencies/imgui",
         "%{prj.name}/Dependencies/glm",
-        "%{prj.name}/Dependencies/stb_image"
+        "%{prj.name}/Dependencies/stb_image",
+        "%{prj.name}/Dependencies/spdlog/include"
     }
 
     links 
@@ -70,6 +71,7 @@ project "PracticeRenderer"
 
     filter "system:windows"
         systemversion "latest"
+        defines "PR_PLATFORM_WINDOWS"
 
     filter "configurations:Debug"
         defines "PR_DEBUG"

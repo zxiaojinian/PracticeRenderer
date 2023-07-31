@@ -31,8 +31,8 @@ project "PracticeRenderer"
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-    pchheader "Core/pch.h"
-    pchsource "%{prj.name}/Source/Core/pch.cpp"
+    pchheader "pch.h"
+    pchsource "%{prj.name}/Source/pch.cpp"
 
     files 
     { 
@@ -71,7 +71,6 @@ project "PracticeRenderer"
 
     filter "system:windows"
         systemversion "latest"
-        defines "PR_PLATFORM_WINDOWS"
 
     filter "configurations:Debug"
         defines "PR_DEBUG"

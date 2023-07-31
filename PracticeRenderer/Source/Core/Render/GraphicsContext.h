@@ -14,7 +14,8 @@ namespace PR
 	{
 	public:
 		virtual ~GraphicsContext() = default;
+		static BackendsAPI s_BackendAPI;
 
-		static std::unique_ptr<GraphicsContext> Create(BackendsAPI api);
+		static std::unique_ptr<GraphicsContext> Create();
 	};
 }

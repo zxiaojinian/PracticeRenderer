@@ -1,14 +1,16 @@
-#include "Core/pch.h"
+#include "pch.h"
 #include "GraphicsContext.h"
 
 #include "Core/Common.h"
-#include "Core/Platform/OpenGL/OpenGLContext.h"
+#include "Core/Render/OpenGL/OpenGLContext.h"
 
 namespace PR
 {
-	std::unique_ptr<GraphicsContext> GraphicsContext::Create(BackendsAPI api)
+	BackendsAPI GraphicsContext::s_BackendAPI = BackendsAPI::OpenGL;
+
+	std::unique_ptr<GraphicsContext> GraphicsContext::Create()
 	{
-		switch (api)
+		switch (s_BackendAPI)
 		{
 			case BackendsAPI::None:    
 			{

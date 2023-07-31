@@ -1,10 +1,12 @@
-#include "Core/pch.h"
+#include "pch.h"
 #include "Application.h"
 
 #include "Core/Common.h"
+#include "Core/Log/Log.h"
 
 namespace PR
 {
+	Application* Application::s_Instance = nullptr;
 	Application::Application(const std::string& name)
 	{
 		OnInitInternal();
@@ -17,17 +19,26 @@ namespace PR
 
 	void Application::Run()
 	{
-		OnUpdateInternal();
-		OnRenderInternal();
+		while (m_Running)
+		{
+			if (!m_Minimized)
+			{
+				OnUpdateInternal();
+				OnRenderInternal();
+			}
+			m_Window->PollEvents();
+		}
 	}
 
 	void Application::OnInitInternal()
 	{
 		s_Instance = this;
 
-		m_Window = Window::Create();
+		Log::Init();
+		WindowProps windowProps{ "PR", 1950, 1080 };
+		m_Window = std::make_unique<Window>(windowProps);
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEventInternal));
-		m_GraphicsContext = GraphicsContext::Create(BackendsAPI::OpenGL);
+		m_GraphicsContext = GraphicsContext::Create();
 
 		OnInit();
 	}

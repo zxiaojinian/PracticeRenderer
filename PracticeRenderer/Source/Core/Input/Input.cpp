@@ -1,8 +1,7 @@
-#include "Core/pch.h"
+#include "pch.h"
+#include "Input.h"
 
-#include "Core/Input/Input.h"
 #include "Core/Application.h"
-
 #include <GLFW/glfw3.h>
 
 namespace PR

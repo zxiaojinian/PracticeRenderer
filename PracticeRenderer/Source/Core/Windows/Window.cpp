@@ -6,7 +6,7 @@
 #include "Core/Event/KeyEvent.h"
 #include "Core/Event/MouseEvent.h"
 #include "Core/Event/ApplicationEvent.h"
-#include "Core/Render/GraphicsContext.h"
+#include "Core/Render/RendererAPI.h"
 
 namespace PR
 {
@@ -49,7 +49,7 @@ namespace PR
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
 
-		PR_LOG_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
+		PR_LOG_INFO("Creating Window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
 		if (s_GLFWWindowCount == 0)
 		{
@@ -60,7 +60,7 @@ namespace PR
 		}
 
 #if defined(PR_LOG_DEBUG)
-		if (GraphicsContext::s_BackendAPI == BackendsAPI::OpenGL)
+		if (RendererAPI::GetAPI() == RendererAPI::API::OpenGL)
 			glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 #endif
 

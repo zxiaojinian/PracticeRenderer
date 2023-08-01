@@ -1,21 +1,19 @@
 #pragma once
 
+#include "Core/Render/VertexArray.h"
+
+#include <glm/glm.hpp>
+
 #include <memory>
 
 namespace PR
 {
-	enum class BackendsAPI
-	{
-		None = 0,
-		OpenGL = 1
-	};
-
 	class GraphicsContext
 	{
 	public:
 		virtual ~GraphicsContext() = default;
-		static BackendsAPI s_BackendAPI;
 
+	public:
 		static std::unique_ptr<GraphicsContext> Create();
 	};
 }

@@ -3,21 +3,20 @@
 
 #include "Core/Common.h"
 #include "Core/Render/OpenGL/OpenGLContext.h"
+#include "Core/Render/RendererAPI.h"
 
 namespace PR
 {
-	BackendsAPI GraphicsContext::s_BackendAPI = BackendsAPI::OpenGL;
-
 	std::unique_ptr<GraphicsContext> GraphicsContext::Create()
 	{
-		switch (s_BackendAPI)
+		switch (RendererAPI::GetAPI())
 		{
-			case BackendsAPI::None:    
+			case RendererAPI::API::None:    
 			{
 				PR_ASSERT(false, "BackendsAPI::None is currently not supported!");
 				return nullptr;
 			}
-			case BackendsAPI::OpenGL:
+			case RendererAPI::API::OpenGL:
 			{
 				return std::make_unique<OpenGLContext>();
 			}

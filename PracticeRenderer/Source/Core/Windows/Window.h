@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Event/Event.h"
+#include "Core/Event/EventDispatcher.h"
 
 #include <GLFW/glfw3.h>
 
@@ -25,8 +25,6 @@ namespace PR
 	class Window
 	{
 	public:
-		using EventCallbackFn = std::function<void(Event&)>;
-
 		Window(const WindowProps& props = WindowProps());
 		~Window();
 
@@ -37,11 +35,13 @@ namespace PR
 		uint32_t GetHeight() { return m_Data.Height; }
 
 		double GetTime() const { return glfwGetTime(); }
-		void SetEventCallback(const EventCallbackFn& callback) { m_Data.EventCallback = callback; }
 		void SetVSync(bool enabled);
 		bool IsVSync() const { return m_Data.VSync; }
 
 		GLFWwindow* GetNativeWindow() const { return m_Window; }
+
+	public:
+		EventDispatchers WindowEventDispatchers;
 
 	private:
 		void Init(const WindowProps& props);
@@ -55,8 +55,7 @@ namespace PR
 			std::string Title{};
 			uint32_t Width = 1, Height = 1;
 			bool VSync = false;
-
-			EventCallbackFn EventCallback;
+			EventDispatchers* WindowEventDispatchers;
 		};
 
 		WindowData m_Data;

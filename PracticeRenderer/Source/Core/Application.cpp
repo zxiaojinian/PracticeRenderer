@@ -3,6 +3,7 @@
 
 #include "Core/Common.h"
 #include "Core/Log/Log.h"
+#include "Core/Event/EventData/ApplicationEvent.h"
 
 namespace PR
 {
@@ -21,12 +22,12 @@ namespace PR
 	{
 		while (m_Running)
 		{
+			m_Window->PollEvents();
 			if (!m_Minimized)
 			{
 				OnUpdateInternal();
 				OnRenderInternal();
 			}
-			m_Window->PollEvents();
 		}
 	}
 
@@ -37,7 +38,8 @@ namespace PR
 		Log::Init();
 		WindowProps windowProps{ "PR", 1950, 1080 };
 		m_Window = std::make_unique<Window>(windowProps);
-		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEventInternal));
+		m_Window->WindowEventDispatchers.AddListener(EventType::WindowResize, BIND_EVENT_FN(Application::OnWindowResize));
+		m_Window->WindowEventDispatchers.AddListener(EventType::WindowClose, BIND_EVENT_FN(Application::OnWindowClose));
 		m_GraphicsContext = GraphicsContext::Create();
 
 		OnInit();
@@ -59,36 +61,30 @@ namespace PR
 		m_Window->SwapBuffers();
 	}
 
-	void Application::OnEventInternal(Event& e)
-	{
-		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
-		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::OnWindowResize));
-
-		OnEvent(e);
-	}
-
 	void Application::OnExitInternal()
 	{
 		OnExit();
 	}
 
-	bool Application::OnWindowClose(WindowCloseEvent& e)
+	void Application::OnWindowClose(Event& e)
 	{
 		m_Running = false;
-		return true;
+		PR_LOG_INFO("Close Window");
 	}
 
-	bool Application::OnWindowResize(WindowResizeEvent& e)
+	void Application::OnWindowResize(Event& e)
 	{
-		if (e.GetWidth() == 0 || e.GetHeight() == 0)
+		auto& event = *(WindowResizeEvent*)&e;
+		if (event.GetWidth() == 0 || event.GetHeight() == 0)
 		{
 			m_Minimized = true;
-			return false;
+		}
+		else
+		{
+			m_Minimized = false;
 		}
 
-		m_Minimized = false;
-		return false;
+		PR_LOG_INFO("Window Resize, {0} - {1}", event.GetWidth(), event.GetHeight());
 	}
 }
 

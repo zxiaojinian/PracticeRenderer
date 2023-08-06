@@ -2,10 +2,12 @@
 #include "Window.h"
 
 #include "Core/Common.h"
+
 #include "Core/Input/Input.h"
-#include "Core/Event/KeyEvent.h"
-#include "Core/Event/MouseEvent.h"
-#include "Core/Event/ApplicationEvent.h"
+#include "Core/Event/EventData/ApplicationEvent.h"
+#include "Core/Event/EventData/KeyEvent.h"
+#include "Core/Event/EventData/MouseEvent.h"
+
 #include "Core/Render/RendererAPI.h"
 
 namespace PR
@@ -16,7 +18,6 @@ namespace PR
 	{
 		PR_LOG_ERROR("GLFW Error ({0}): {1}", error, description);
 	}
-
 
 	Window::Window(const WindowProps& props)
 	{
@@ -48,6 +49,7 @@ namespace PR
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
+		m_Data.WindowEventDispatchers = &WindowEventDispatchers;
 
 		PR_LOG_INFO("Creating Window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
@@ -79,7 +81,7 @@ namespace PR
 				data.Height = height;
 
 				WindowResizeEvent event(width, height);
-				data.EventCallback(event);
+				data.WindowEventDispatchers->Dispatch(event);
 			}
 		);
 
@@ -87,7 +89,7 @@ namespace PR
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 				WindowCloseEvent event;
-				data.EventCallback(event);
+				data.WindowEventDispatchers->Dispatch(event);
 			}
 		);
 
@@ -100,19 +102,19 @@ namespace PR
 				case GLFW_PRESS:
 				{
 					KeyPressedEvent event(static_cast<KeyCode>(key), 0);
-					data.EventCallback(event);
+					data.WindowEventDispatchers->Dispatch(event);
 					break;
 				}
 				case GLFW_RELEASE:
 				{
 					KeyReleasedEvent event(static_cast<KeyCode>(key));
-					data.EventCallback(event);
+					data.WindowEventDispatchers->Dispatch(event);
 					break;
 				}
 				case GLFW_REPEAT:
 				{
 					KeyPressedEvent event(static_cast<KeyCode>(key), 1);
-					data.EventCallback(event);
+					data.WindowEventDispatchers->Dispatch(event);
 					break;
 				}
 				}
@@ -128,13 +130,13 @@ namespace PR
 				case GLFW_PRESS:
 				{
 					MouseButtonPressedEvent event(static_cast<MouseCode>(button));
-					data.EventCallback(event);
+					data.WindowEventDispatchers->Dispatch(event);
 					break;
 				}
 				case GLFW_RELEASE:
 				{
 					MouseButtonReleasedEvent event(static_cast<MouseCode>(button));
-					data.EventCallback(event);
+					data.WindowEventDispatchers->Dispatch(event);
 					break;
 				}
 				}
@@ -146,7 +148,7 @@ namespace PR
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
 				MouseScrolledEvent event((float)xOffset, (float)yOffset);
-				data.EventCallback(event);
+				data.WindowEventDispatchers->Dispatch(event);
 			}
 		);
 
@@ -155,7 +157,7 @@ namespace PR
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
 				MouseMovedEvent event((float)xPos, (float)yPos);
-				data.EventCallback(event);
+				data.WindowEventDispatchers->Dispatch(event);
 			}
 		);
 
@@ -164,7 +166,7 @@ namespace PR
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
 				KeyTypedEvent event(static_cast<KeyCode>(key));
-				data.EventCallback(event);
+				data.WindowEventDispatchers->Dispatch(event);
 			}
 		);
 	}

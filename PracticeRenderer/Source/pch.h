@@ -1,7 +1,17 @@
 #pragma once
 
+#include <iostream>
+#include <sstream>
 #include <memory>
-#include <vector>
+#include <utility>
+#include <algorithm>
+#include <functional>
+
 #include <string>
+#include <array>
+#include <vector>
+#include <unordered_map>
+#include <unordered_set>
+
 #include <windows.h>
 

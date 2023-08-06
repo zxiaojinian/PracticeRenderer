@@ -2,8 +2,7 @@
 
 #include "Core/Windows/Window.h"
 #include "Core/Render/GraphicsContext.h"
-#include "Core/Event/ApplicationEvent.h"
-#include "Core/Event/Event.h"
+#include "Core/Event/EventData/BaseEvent.h"
 #include "Core/Timestep.h"
 
 #include <string>
@@ -25,16 +24,14 @@ namespace PR
 		void OnInitInternal();
 		void OnUpdateInternal();
 		void OnRenderInternal();
-		void OnEventInternal(Event& e);
 		void OnExitInternal();
 
-		bool OnWindowClose(WindowCloseEvent& e);
-		bool OnWindowResize(WindowResizeEvent& e);
+		void OnWindowClose(Event& e);
+		void OnWindowResize(Event& e);
 	protected:
 		virtual void OnInit() {}
 		virtual void OnUpdate(Timestep time) {}
 		virtual void OnRender() {}
-		virtual void OnEvent(Event& e) {}
 		virtual void OnExit() {}
 
 	private:

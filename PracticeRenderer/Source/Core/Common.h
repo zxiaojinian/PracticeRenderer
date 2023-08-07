@@ -2,7 +2,7 @@
 
 #include "Core/Log/Log.h"
 
-#ifdef PR_LOG_DEBUG
+#ifdef PR_DEBUG
 	#define PR_ASSERT(x, ...) { if(!(x)) { PR_LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 #else
 	#define PR_ASSERT(x, str)

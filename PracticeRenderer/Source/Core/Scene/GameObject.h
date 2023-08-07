@@ -21,9 +21,9 @@ namespace PR
 		bool IsSelfActive() const { return m_ActiveSelf; }
 		bool IsActive() const{ return m_ActiveSelf && (m_Parent ? m_Parent->IsActive() : true); }
 
-		void SetParent(GameObject& parent);
+		void SetParent(GameObject* parent);
 		GameObject* GetParent() const { return m_Parent; }
-		std::vector<GameObject*>& GetChildren();
+		std::vector<GameObject*>& GetChildren() { return m_Children; }
 
 		template<typename T, typename ... Args>
 		T& AddComponent(Args&&... args);
@@ -31,7 +31,7 @@ namespace PR
 		template<typename T>
 		T* GetComponent();
 
-		bool RemoveComponent(Component& component);
+		void RemoveComponent(Component& component);
 	private:
 
 		void UpdateActive();
@@ -53,8 +53,6 @@ namespace PR
 		void OnLateUpdate();
 		void OnDisable();
 		void OnDestroy();
-	public:
-
 
 	private:
 		std::string m_Name;
@@ -62,7 +60,7 @@ namespace PR
 		bool m_ActiveSelf = true;
 
 		GameObject* m_Parent = nullptr;
-		std::vector<GameObject*> m_Childrens;
+		std::vector<GameObject*> m_Children;
 
 		std::vector<std::shared_ptr<Component>> m_Components;
 
@@ -76,3 +74,4 @@ namespace PR
 	};
 }
 
+#include "GameObject.inl"

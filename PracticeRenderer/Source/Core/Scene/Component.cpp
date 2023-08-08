@@ -6,13 +6,13 @@
 namespace PR
 {
 	Component::Component(GameObject& gameobject)
-		: gameobject(gameobject)
+		: m_Gameobject(gameobject)
 	{
 	}
 
 	Component::~Component()
 	{
-		if (gameobject.IsActive())
+		if (m_Gameobject.IsActive())
 		{
 			OnDisable();
 			OnDestroy();

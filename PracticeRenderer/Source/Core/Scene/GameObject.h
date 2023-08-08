@@ -25,8 +25,8 @@ namespace PR
 		GameObject* GetParent() const { return m_Parent; }
 		std::vector<GameObject*>& GetChildren() { return m_Children; }
 
-		template<typename T, typename ... Args>
-		T& AddComponent(Args&&... args);
+		template<typename T>
+		T& AddComponent();
 
 		template<typename T>
 		T* GetComponent();
@@ -43,11 +43,8 @@ namespace PR
 		/// 物体激活下才会执行，只执行一次
 		/// </summary>
 		void OnAwake();
-		/// <summary>
-		/// 物体激活下才会执行，只执行一次
-		/// </summary>
-		void OnStart();
 		void OnEnable();
+		void OnStart();
 		void OnFixedUpdate();
 		void OnUpdate();
 		void OnLateUpdate();

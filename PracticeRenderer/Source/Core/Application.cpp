@@ -4,6 +4,8 @@
 #include "Core/Common.h"
 #include "Core/Log/Log.h"
 #include "Core/Event/EventData/ApplicationEvent.h"
+#include "Core/Scene/GameObject.h"
+#include "Core/Scene/Components/Transform.h"
 
 namespace PR
 {
@@ -11,6 +13,10 @@ namespace PR
 	Application::Application(const std::string& name)
 	{
 		OnInitInternal();
+		GameObject go(1, "Test");
+		auto c1 = go.AddComponent<Transform>();
+		auto c2 = go.AddComponent<Transform>();
+		auto c = go.GetComponent<Transform>();
 	}
 
 	Application::~Application()

@@ -10,17 +10,23 @@ namespace PR
 		Component(GameObject& gameobject);
 		virtual ~Component();
 
+		const GameObject& GetGameObject() const { return m_Gameobject; }
+		bool GetDisallowMultipleComponent() { return m_DisallowMultipleComponent; }
+
+	public:
 		virtual void OnAwake() {}
-		virtual void OnStart() {}
 		virtual void OnEnable() {}
+		virtual void OnStart() {}
 		virtual void OnFixedUpdate() {}
 		virtual void OnUpdate() {}
 		virtual void OnLateUpdate() {}
 		virtual void OnDisable() {}
 		virtual void OnDestroy() {}
 
-	public:
-		GameObject& gameobject;
+
+	protected:
+		bool m_DisallowMultipleComponent = false;
+		GameObject& m_Gameobject;
 	};
 }
 

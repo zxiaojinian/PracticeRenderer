@@ -133,20 +133,20 @@ namespace PR
 		}
 	}
 
+	void GameObject::OnEnable()
+	{
+		for (auto& c : m_Components)
+		{
+			c->OnEnable();
+		}
+	}
+
 	void GameObject::OnStart()
 	{
 		m_Started = true;
 		for (auto& c : m_Components)
 		{
 			c->OnStart();
-		}
-	}
-
-	void GameObject::OnEnable()
-	{
-		for (auto& c : m_Components)
-		{
-			c->OnEnable();
 		}
 	}
 

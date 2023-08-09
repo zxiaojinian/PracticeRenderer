@@ -4,7 +4,7 @@
 namespace PR
 {
 	GameObject::GameObject(int64_t id, const std::string& name)
-		: m_ID(id), m_Name(name)
+		: m_ID(id), m_Name(name), m_Transform(AddComponent<Transform>())
 	{
 	}
 

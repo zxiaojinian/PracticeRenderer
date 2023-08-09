@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Scene/Component.h"
+#include "Core/Scene/Components/Transform.h"
 
 namespace PR
 {
@@ -32,6 +33,8 @@ namespace PR
 		T* GetComponent();
 
 		void RemoveComponent(Component& component);
+
+		const Transform& GetTransform () const { return m_Transform; }
 	private:
 
 		void UpdateActive();
@@ -61,7 +64,8 @@ namespace PR
 
 		std::vector<std::shared_ptr<Component>> m_Components;
 
-	private:
+		Transform& m_Transform;
+
 		//是否已经执行过OnAwake
 		bool m_Awaked = false;
 		bool m_Started = false;

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Core/Scene/GameObject.h"
 #include "Core/Common.h"
 
 #include <type_traits>

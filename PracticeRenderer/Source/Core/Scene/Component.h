@@ -9,6 +9,7 @@ namespace PR
 	public:
 		Component(GameObject& gameobject);
 		virtual ~Component();
+		Component(const Component& c) = delete;
 
 		const GameObject& GetGameObject() const { return m_Gameobject; }
 		bool GetDisallowMultipleComponent() { return m_DisallowMultipleComponent; }

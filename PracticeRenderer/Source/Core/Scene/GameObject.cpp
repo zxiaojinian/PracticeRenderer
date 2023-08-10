@@ -47,6 +47,8 @@ namespace PR
 				m_Parent = parent;
 				m_Parent->m_Children.push_back(this);
 			}
+			OnActiveChange();
+			m_Transform.SetParent(parent ? &(parent->m_Transform) : nullptr);
 		}
 	}
 

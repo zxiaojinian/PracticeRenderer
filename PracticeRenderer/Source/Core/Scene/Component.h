@@ -3,6 +3,7 @@
 namespace PR
 {
 	class GameObject;
+	class Transform;
 
 	class Component
 	{
@@ -11,7 +12,9 @@ namespace PR
 		virtual ~Component();
 		Component(const Component& c) = delete;
 
-		const GameObject& GetGameObject() const { return m_Gameobject; }
+		GameObject& GetGameObject() const { return m_Gameobject; }
+		Transform& GetTransform() const { return m_Transform; }
+
 		bool GetDisallowMultipleComponent() { return m_DisallowMultipleComponent; }
 
 	public:
@@ -28,6 +31,7 @@ namespace PR
 	protected:
 		bool m_DisallowMultipleComponent = false;
 		GameObject& m_Gameobject;
+		Transform& m_Transform;
 	};
 }
 

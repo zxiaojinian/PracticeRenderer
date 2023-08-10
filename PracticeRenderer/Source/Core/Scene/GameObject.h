@@ -34,7 +34,7 @@ namespace PR
 
 		void RemoveComponent(Component& component);
 
-		const Transform& GetTransform () const { return m_Transform; }
+		Transform& GetTransform () const { return m_Transform; }
 	private:
 
 		void UpdateActive();

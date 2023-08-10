@@ -36,7 +36,7 @@ namespace PR
 		s_Instance = this;
 
 		Log::Init();
-		WindowProps windowProps{ "PR", 1950, 1080 };
+		WindowProps windowProps{ "PR", 1920, 1080 };
 		m_Window = std::make_unique<Window>(windowProps);
 		m_Window->WindowEventDispatchers.AddListener(EventType::WindowResize, BIND_EVENT_FN(Application::OnWindowResize));
 		m_Window->WindowEventDispatchers.AddListener(EventType::WindowClose, BIND_EVENT_FN(Application::OnWindowClose));

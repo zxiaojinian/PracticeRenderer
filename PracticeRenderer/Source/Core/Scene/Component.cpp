@@ -6,7 +6,7 @@
 namespace PR
 {
 	Component::Component(GameObject& gameobject)
-		: m_Gameobject(gameobject)
+		: m_Gameobject(gameobject), m_Transform(m_Gameobject.GetTransform())
 	{
 	}
 

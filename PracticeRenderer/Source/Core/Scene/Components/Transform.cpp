@@ -13,8 +13,19 @@ namespace PR
 		m_DisallowMultipleComponent = true;
 	}
 
-	void Transform::SetParent(Transform& parent)
+	void Transform::SetParent(Transform* parent, bool worldPositionStays)
 	{
+		m_Parent = parent;
+		if(parent) m_Parent->m_Children.push_back(this);
+
+		if (worldPositionStays || parent == nullptr)
+		{
+			UpdateLoclaMatrix();
+		}
+		else
+		{
+			UpdateWorldMatrix();
+		}
 	}
 
 	glm::vec3 Transform::GetLocalEulerAngles() const
@@ -30,49 +41,49 @@ namespace PR
 	void Transform::SetLocalEulerAngles(const glm::vec3& angle)
 	{
 		m_LocalRotation = glm::qua<float>(glm::radians(angle));
-		OnLocalChange();
+		ParentSpaceChange();
 	}
 
 	void Transform::SetLocalPosition(const glm::vec3& pos)
 	{
 		m_LocalPosition = pos;
-		OnLocalChange();
+		ParentSpaceChange();
 	}
 
 	void Transform::SetLocalScale(const glm::vec3& scale)
 	{
 		m_LocalScale = scale;
-		OnLocalChange();
+		ParentSpaceChange();
 	}
 
 	void Transform::SetLocalRotation(const glm::qua<float>& rotation)
 	{
 		m_LocalRotation = rotation;
-		OnLocalChange();
+		ParentSpaceChange();
 	}
 
 	void Transform::SetEulerAngles(const glm::vec3& angle)
 	{
 		m_Rotation = glm::qua<float>(glm::radians(angle));
-		OnWorldChange();
+		WorldSpaceChange();
 	}
 
 	void Transform::SetPosition(const glm::vec3& pos)
 	{
 		m_Position = pos;
-		OnWorldChange();
+		WorldSpaceChange();
 	}
 
 	void Transform::SetScale(const glm::vec3& scale)
 	{
 		m_Scale = scale;
-		OnWorldChange();
+		WorldSpaceChange();
 	}
 
 	void Transform::SetRotation(const glm::qua<float>& rotation)
 	{
 		m_Rotation = rotation;
-		OnWorldChange();
+		WorldSpaceChange();
 	}
 
 
@@ -81,44 +92,43 @@ namespace PR
 		return glm::inverse(m_LocalToWorldMatrix);
 	}
 
-	glm::vec3 Transform::GetLocalForward()
-	{
-		return glm::vec3();
-	}
-
 	glm::vec3 Transform::GetLocalRight()
 	{
-		return glm::vec3();
+		return m_LocalToParentMatrix[0];
 	}
 
 	glm::vec3 Transform::GetLocalUp()
 	{
-		return glm::vec3();
+		return m_LocalToParentMatrix[1];
 	}
 
-	glm::vec3 Transform::GetForward()
+	glm::vec3 Transform::GetLocalForward()
 	{
-		return glm::vec3();
+		return m_LocalToParentMatrix[2];
 	}
 
 	glm::vec3 Transform::GetRight()
 	{
-		return glm::vec3();
+		return m_LocalToWorldMatrix[0];
 	}
 
 	glm::vec3 Transform::GetUp()
 	{
-		return glm::vec3();
+		return m_LocalToWorldMatrix[1];
 	}
 
+	glm::vec3 Transform::GetForward()
+	{
+		return m_LocalToWorldMatrix[2];
+	}
 
-	void Transform::OnLocalChange()
+	void Transform::ParentSpaceChange()
 	{
 		m_LocalToParentMatrix = glm::translate(glm::mat4(1.0f), m_LocalPosition) * glm::mat4_cast(m_LocalRotation) * glm::scale(glm::mat4(1.0f), m_LocalScale);
 		UpdateWorldMatrix();
 	}
 
-	void Transform::OnWorldChange()
+	void Transform::WorldSpaceChange()
 	{
 		m_LocalToWorldMatrix = glm::translate(glm::mat4(1.0f), m_Position) * glm::mat4_cast(m_Rotation) * glm::scale(glm::mat4(1.0f), m_Scale);
 		UpdateLoclaMatrix();
@@ -129,6 +139,7 @@ namespace PR
 		if (m_Parent)
 		{
 			m_LocalToParentMatrix = glm::inverse(m_Parent->m_LocalToWorldMatrix) * m_LocalToWorldMatrix;
+			DecomposeMatrix(m_LocalToParentMatrix, m_LocalPosition, m_LocalRotation, m_LocalScale);
 		}
 		else
 		{
@@ -136,6 +147,12 @@ namespace PR
 			m_LocalPosition = m_Position;
 			m_LocalRotation = m_Rotation;
 			m_LocalScale = m_Scale;
+		}
+
+		for (auto c : m_Children)
+		{
+			if (c)
+				c->UpdateWorldMatrix();
 		}
 	}
 
@@ -153,7 +170,12 @@ namespace PR
 			m_Rotation = m_LocalRotation;
 			m_Scale = m_LocalScale;
 		}
-		//TODO更新子物体transform
+
+		for (auto c : m_Children)
+		{
+			if (c)
+				c->UpdateWorldMatrix();
+		}
 	}
 
 	void Transform::DecomposeMatrix(const glm::mat4& m, glm::vec3& pos, glm::quat& rotation, glm::vec3& scale)

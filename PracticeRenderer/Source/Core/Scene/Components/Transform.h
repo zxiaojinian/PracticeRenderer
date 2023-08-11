@@ -10,7 +10,8 @@ namespace PR
 	{
 	public:
 		Transform(GameObject& go);
-		~Transform() = default;
+
+		virtual std::string GetName() override { return "Transform"; }
 
 		void SetParent(Transform* parent, bool worldPositionStays = true);
 

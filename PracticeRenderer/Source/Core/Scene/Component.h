@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace PR
 {
 	class GameObject;
@@ -10,12 +12,13 @@ namespace PR
 	public:
 		Component(GameObject& gameobject);
 		virtual ~Component();
-		Component(const Component& c) = delete;
 
 		GameObject& GetGameObject() const { return m_Gameobject; }
 		Transform& GetTransform() const { return m_Transform; }
 
 		bool GetDisallowMultipleComponent() { return m_DisallowMultipleComponent; }
+
+		virtual std::string GetName() = 0;
 
 	public:
 		virtual void OnAwake() {}

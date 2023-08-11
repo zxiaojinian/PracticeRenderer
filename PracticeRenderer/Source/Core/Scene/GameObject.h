@@ -10,7 +10,7 @@ namespace PR
 
 	public:
 		GameObject(int64_t id, const std::string& name);
-		virtual ~GameObject();
+		~GameObject();
 
 		const std::string& GetName() const { return m_Name; }
 		void SetName(const std::string& name) { m_Name = name; }

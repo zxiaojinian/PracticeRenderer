@@ -5,18 +5,17 @@
 
 namespace PR
 {
+	class Scene;
+
 	class GameObject
 	{
-
 	public:
-		GameObject(int64_t id, const std::string& name);
+		GameObject(const std::string& name);
+		GameObject(const std::string& name, Scene* scene);
 		~GameObject();
 
 		const std::string& GetName() const { return m_Name; }
 		void SetName(const std::string& name) { m_Name = name; }
-
-		void SetID(int64_t id) { m_ID = id; }
-		int64_t GetID() const { return m_ID; }
 
 		void SetActive(bool active);
 		bool IsSelfActive() const { return m_ActiveSelf; }
@@ -42,6 +41,7 @@ namespace PR
 		void DetachParent();
 		void MarkAsDestroy();
 
+	public:
 		/// <summary>
 		/// 物体激活下才会执行，只执行一次
 		/// </summary>
@@ -56,7 +56,6 @@ namespace PR
 
 	private:
 		std::string m_Name;
-		int64_t m_ID;
 		bool m_ActiveSelf = true;
 
 		GameObject* m_Parent = nullptr;
@@ -72,6 +71,8 @@ namespace PR
 		bool m_Destroyed = false;
 
 		bool m_Active = false;
+
+		Scene* m_Scene;
 	};
 }
 

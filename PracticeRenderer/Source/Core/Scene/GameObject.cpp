@@ -3,8 +3,14 @@
 
 namespace PR
 {
-	GameObject::GameObject(int64_t id, const std::string& name)
-		: m_ID(id), m_Name(name), m_Transform(AddComponent<Transform>())
+	GameObject::GameObject(const std::string& name)
+		: m_Name(name), m_Transform(AddComponent<Transform>())
+	{
+		//TODO scene.AddGameObject
+	}
+
+	GameObject::GameObject(const std::string& name, Scene* scene)
+		: m_Name(name), m_Scene(scene), m_Transform(AddComponent<Transform>())
 	{
 	}
 

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Core/Render/Buffer.h"
+#include "Core/Render/VertexBuffer.h"
+#include "Core/Render/IndexBuffer.h"
 
 #include <memory>
 #include <vector>

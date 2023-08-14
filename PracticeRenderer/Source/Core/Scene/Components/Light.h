@@ -31,9 +31,10 @@ namespace PR
 		void UpdateLightData();
 		bool TestVisible();
 		void GetLightAttenuationAndSpotDirection();
+		virtual std::string GetName() override { return "Light"; }
 
 	public:
-		LightType LightType = LightType::Directional;
+		LightType Type = LightType::Directional;
 		glm::vec4 Color = { 1.0f, 1.0f, 1.0f, 1.0f };
 		float Intensity = 1.0f;
 		float LightRange = 10.0f;

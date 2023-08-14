@@ -38,6 +38,7 @@ project "PracticeRenderer"
     { 
         "%{prj.name}/Source/**.h", 
         "%{prj.name}/Source/**.cpp",
+        "%{prj.name}/Source/**.inl",
         "%{prj.name}/Dependencies/stb_image/**.h",
         "%{prj.name}/Dependencies/stb_image/**.cpp",
         "%{prj.name}/Dependencies/glm/glm/**.hpp",

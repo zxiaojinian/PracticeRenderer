@@ -22,7 +22,7 @@ namespace PR
 
 	void Light::UpdateLightData()
 	{
-		if (LightType == LightType::Directional)
+		if (Type == LightType::Directional)
 		{
 			glm::vec3 dir = m_Transform.GetForward();
 			m_LightData.Position = { dir, 0.0f };
@@ -47,7 +47,7 @@ namespace PR
 		m_LightData.Attenuation = s_DefaultLightAttenuation;
 		m_LightData.SpotDirection = s_DefaultLightSpotDirection;
 
-		if (LightType != LightType::Directional)
+		if (Type != LightType::Directional)
 		{
 			//From URP
 			//attenuation = smoothFactor * 1.0 / distanceToLightSqr
@@ -56,7 +56,7 @@ namespace PR
 			m_LightData.Attenuation.x = oneOverLightRangeSqr;
 		}
 
-		if (LightType == LightType::Spot)
+		if (Type == LightType::Spot)
 		{
 			glm::vec3 dir = m_Transform.GetForward();
 			m_LightData.SpotDirection = { dir, 0.0f };

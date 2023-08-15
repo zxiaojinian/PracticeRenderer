@@ -80,4 +80,38 @@ namespace PR
 		return m_Shaders.find(name) != m_Shaders.end();
 	}
 
+	void Shader::SetInt(const std::string& name, int value)
+	{
+	}
+
+	void Shader::SetFloat(const std::string& name, float value)
+	{
+	}
+
+	void Shader::SetFloat3(const std::string& name, const glm::vec3& value)
+	{
+	}
+
+	void Shader::SetFloat4(const std::string& name, const glm::vec4& value)
+	{
+	}
+
+	void Shader::SetMat4(const std::string& name, const glm::mat4& value)
+	{
+	}
+
+	void Shader::SetIntArray(const std::string& name, int* values, uint32_t count)
+	{
+	}
+
+	bool Shader::HaveProperty(const std::string& property)
+	{
+		for (auto& p : m_PropertyData)
+		{
+			if (p.Name == property)
+				return true;
+		}
+		return false;
+	}
+
 }

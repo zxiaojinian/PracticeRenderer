@@ -52,7 +52,7 @@ namespace PR
 			//From URP
 			//attenuation = smoothFactor * 1.0 / distanceToLightSqr
 			//smoothFactor = (1.0 - (distanceToLightSqr * 1.0 / lightRangeSqr) ^ 2) ^ 2
-			float oneOverLightRangeSqr = 1.0f / std::max(0.0001f, LightRange * LightRange);			
+			float oneOverLightRangeSqr = 1.0f / (std::max)(0.0001f, LightRange * LightRange);
 			m_LightData.Attenuation.x = oneOverLightRangeSqr;
 		}
 
@@ -70,7 +70,7 @@ namespace PR
 			// If we precompute the terms in a MAD instruction
 			float cosOuterAngle = std::cos(glm::radians(SpotAngle * 0.5f));
 			float cosInnerAngle = std::cos(glm::radians(InnerSpotAngle * 0.5f));
-			float smoothAngleRange = std::max(0.001f, cosInnerAngle - cosOuterAngle);
+			float smoothAngleRange = (std::max)(0.001f, cosInnerAngle - cosOuterAngle);
 			float invAngleRange = 1.0f / smoothAngleRange;
 			float add = -cosOuterAngle * invAngleRange;
 			m_LightData.Attenuation.z = invAngleRange;

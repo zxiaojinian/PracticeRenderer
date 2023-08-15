@@ -33,6 +33,8 @@ namespace PR
 		auto lastDot = filepath.rfind('.');
 		auto count = lastDot == std::string::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
 		m_Name = filepath.substr(lastSlash, count);
+
+		CollectProperty();
 	}
 
 	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
@@ -43,6 +45,8 @@ namespace PR
 		sources[GL_VERTEX_SHADER] = vertexSrc;
 		sources[GL_FRAGMENT_SHADER] = fragmentSrc;
 		Compile(sources);
+
+		CollectProperty();
 	}
 
 
@@ -51,6 +55,69 @@ namespace PR
 		glDeleteProgram(m_RendererID);
 	}
 
+
+	void OpenGLShader::CollectProperty()
+	{
+		GLint numUniforms;
+		GLint maxUniformLen;
+		glGetProgramiv(m_RendererID, GL_ACTIVE_UNIFORMS, &numUniforms);
+		glGetProgramiv(m_RendererID, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxUniformLen);
+		std::vector<GLchar> name(maxUniformLen);
+		for (int i = 0; i < numUniforms; ++i)
+		{
+			GLint size;
+			GLenum type;
+			GLint location;
+			glGetActiveUniform(m_RendererID, i, maxUniformLen, NULL, &size, &type, &name[0]);
+			std::string name(name.data());
+
+			PropertyType propertytype;
+			switch (type)
+			{
+				case GL_INT:
+				{
+					propertytype = PropertyType::Property_Int;
+					break;
+				}
+				case GL_FLOAT:
+				{
+					propertytype = PropertyType::Property_Float;
+					break;
+				}
+				case GL_FLOAT_VEC2:
+				{
+					propertytype = PropertyType::Property_Float2;
+					break;
+				}
+
+				case GL_FLOAT_VEC3:
+				{
+					propertytype = PropertyType::Property_Float3;
+					break;
+				}
+				case GL_FLOAT_VEC4:
+				{
+					propertytype = PropertyType::Property_Float4;
+					break;
+				}
+
+				case GL_FLOAT_MAT4:
+				{
+					propertytype = PropertyType::Property_Mat4;
+					break;
+				}					
+				default:
+					propertytype = PropertyType::Unknown;
+					break;
+			}
+
+			m_PropertyData.push_back
+			({
+				propertytype,
+				name,
+			});
+		}
+	}
 
 	std::string OpenGLShader::ReadFile(const std::string& filepath)
 	{
@@ -205,43 +272,37 @@ namespace PR
 		glUseProgram(0);
 	}
 
-	bool OpenGLShader::HaveProperty(const std::string& property)
-	{
-		return false; glGetActiveUniform
-	}
-
-
-	void OpenGLShader::SetInt(const std::string& name, int value)
+	void OpenGLShader::UploadInt(const std::string& name, int value)
 	{
 		auto location = GetUniformLocation(name);
 		glUniform1i(location, value);
 	}
 
-	void OpenGLShader::SetFloat(const std::string& name, float value)
+	void OpenGLShader::UploadFloat(const std::string& name, float value)
 	{
 		auto location = GetUniformLocation(name);
 		glUniform1f(location, value);
 	}
 
-	void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& value)
+	void OpenGLShader::UploadFloat3(const std::string& name, const glm::vec3& value)
 	{
 		auto location = GetUniformLocation(name);
 		glUniform3f(location, value.x, value.y, value.z);
 	}
 
-	void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& value)
+	void OpenGLShader::UploadFloat4(const std::string& name, const glm::vec4& value)
 	{
 		auto location = GetUniformLocation(name);
 		glUniform4f(location, value.x, value.y, value.z, value.w);
 	}
 
-	void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value)
+	void OpenGLShader::UploadMat4(const std::string& name, const glm::mat4& value)
 	{
 		auto location = GetUniformLocation(name);
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 	}
 
-	void OpenGLShader::SetIntArray(const std::string& name, int* values, uint32_t count)
+	void OpenGLShader::UploadIntArray(const std::string& name, int* values, uint32_t count)
 	{
 		auto location = GetUniformLocation(name);
 		glUniform1iv(location, count, values);

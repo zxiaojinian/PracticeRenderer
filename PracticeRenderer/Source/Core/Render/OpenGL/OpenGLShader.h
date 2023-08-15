@@ -18,16 +18,17 @@ namespace PR
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
 
-		virtual bool HaveProperty(const std::string& property) override;
-
-		virtual void SetInt(const std::string& name, int value) override;
-		virtual void SetFloat(const std::string& name, float value) override;
-		virtual void SetFloat3(const std::string& name, const glm::vec3& value) override;
-		virtual void SetFloat4(const std::string& name, const glm::vec4& value) override;
-		virtual void SetMat4(const std::string& name, const glm::mat4& value) override;
-		virtual void SetIntArray(const std::string& name, int* values, uint32_t count) override;
+		virtual void UploadInt(const std::string& name, int value) override;
+		virtual void UploadFloat(const std::string& name, float value) override;
+		virtual void UploadFloat3(const std::string& name, const glm::vec3& value) override;
+		virtual void UploadFloat4(const std::string& name, const glm::vec4& value) override;
+		virtual void UploadMat4(const std::string& name, const glm::mat4& value) override;
+		virtual void UploadIntArray(const std::string& name, int* values, uint32_t count) override;
 
 		virtual const std::string& GetName() const override { return m_Name; }
+
+	protected:
+		virtual void CollectProperty() override;
 
 	private:
 		std::string ReadFile(const std::string& filepath);

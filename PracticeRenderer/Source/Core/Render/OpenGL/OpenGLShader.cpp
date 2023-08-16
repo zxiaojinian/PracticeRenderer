@@ -302,9 +302,9 @@ namespace PR
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 	}
 
-	void OpenGLShader::UploadIntArray(const std::string& name, int* values, uint32_t count)
-	{
-		auto location = GetUniformLocation(name);
-		glUniform1iv(location, count, values);
-	}
+	//void OpenGLShader::UploadIntArray(const std::string& name, int* values, uint32_t count)
+	//{
+	//	auto location = GetUniformLocation(name);
+	//	glUniform1iv(location, count, values);
+	//}
 }

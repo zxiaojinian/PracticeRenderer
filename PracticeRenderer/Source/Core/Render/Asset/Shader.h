@@ -49,7 +49,7 @@ namespace PR
 		virtual void UploadFloat3(const std::string& name, const glm::vec3& value) = 0;
 		virtual void UploadFloat4(const std::string& name, const glm::vec4& value) = 0;
 		virtual void UploadMat4(const std::string& name, const glm::mat4& value) = 0;
-		virtual void UploadIntArray(const std::string& name, int* values, uint32_t count) = 0;
+		//virtual void UploadIntArray(const std::string& name, int* values, uint32_t count) = 0;
 
 		virtual const std::string& GetName() const = 0;
 
@@ -58,7 +58,7 @@ namespace PR
 		static void SetFloat3(const std::string& name, const glm::vec3& value);
 		static void SetFloat4(const std::string& name, const glm::vec4& value);
 		static void SetMat4(const std::string& name, const glm::mat4& value);
-		static void SetIntArray(const std::string& name, int* values, uint32_t count);
+		//static void SetIntArray(const std::string& name, int* values, uint32_t count);
 
 		static std::shared_ptr<Shader> Create(const std::string& filepath);
 		static std::shared_ptr<Shader> Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);

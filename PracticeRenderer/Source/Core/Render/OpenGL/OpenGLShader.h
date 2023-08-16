@@ -23,7 +23,7 @@ namespace PR
 		virtual void UploadFloat3(const std::string& name, const glm::vec3& value) override;
 		virtual void UploadFloat4(const std::string& name, const glm::vec4& value) override;
 		virtual void UploadMat4(const std::string& name, const glm::mat4& value) override;
-		virtual void UploadIntArray(const std::string& name, int* values, uint32_t count) override;
+		//virtual void UploadIntArray(const std::string& name, int* values, uint32_t count) override;
 
 		virtual const std::string& GetName() const override { return m_Name; }
 

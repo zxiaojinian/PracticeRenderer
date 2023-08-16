@@ -82,26 +82,27 @@ namespace PR
 
 	void Shader::SetInt(const std::string& name, int value)
 	{
+		s_PropertyValue[name] = { PropertyType::Property_Int, value };
 	}
 
 	void Shader::SetFloat(const std::string& name, float value)
 	{
+		s_PropertyValue[name] = { PropertyType::Property_Float, value };
 	}
 
 	void Shader::SetFloat3(const std::string& name, const glm::vec3& value)
 	{
+		s_PropertyValue[name] = { PropertyType::Property_Float3, value };
 	}
 
 	void Shader::SetFloat4(const std::string& name, const glm::vec4& value)
 	{
+		s_PropertyValue[name] = { PropertyType::Property_Float4, value };
 	}
 
 	void Shader::SetMat4(const std::string& name, const glm::mat4& value)
 	{
-	}
-
-	void Shader::SetIntArray(const std::string& name, int* values, uint32_t count)
-	{
+		s_PropertyValue[name] = { PropertyType::Property_Mat4, value };
 	}
 
 	bool Shader::HaveProperty(const std::string& property)

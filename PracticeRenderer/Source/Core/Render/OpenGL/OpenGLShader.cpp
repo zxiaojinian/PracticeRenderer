@@ -284,6 +284,12 @@ namespace PR
 		glUniform1f(location, value);
 	}
 
+	void OpenGLShader::UploadFloat2(const std::string& name, const glm::vec2& value)
+	{
+		auto location = GetUniformLocation(name);
+		glUniform2f(location, value.x, value.y);
+	}
+
 	void OpenGLShader::UploadFloat3(const std::string& name, const glm::vec3& value)
 	{
 		auto location = GetUniformLocation(name);

@@ -38,23 +38,18 @@ namespace PR
 	public:
 		virtual ~Shader() = default;
 
-		bool HaveProperty(const std::string& property);
-		const std::vector<PropertyData>& GetPropertyData() { return m_PropertyData; }
-
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
-		virtual void UploadInt(const std::string& name, int value) = 0;
-		virtual void UploadFloat(const std::string& name, float value) = 0;
-		virtual void UploadFloat3(const std::string& name, const glm::vec3& value) = 0;
-		virtual void UploadFloat4(const std::string& name, const glm::vec4& value) = 0;
-		virtual void UploadMat4(const std::string& name, const glm::mat4& value) = 0;
-		//virtual void UploadIntArray(const std::string& name, int* values, uint32_t count) = 0;
+		bool HaveProperty(const std::string& property);
 
 		virtual const std::string& GetName() const = 0;
 
+		void UploadProperty(std::unordered_map<std::string, PropertyValue>& materialValue);
+
 		static void SetInt(const std::string& name, int value);
 		static void SetFloat(const std::string& name, float value);
+		static void SetFloat2(const std::string& name, const glm::vec2& value);
 		static void SetFloat3(const std::string& name, const glm::vec3& value);
 		static void SetFloat4(const std::string& name, const glm::vec4& value);
 		static void SetMat4(const std::string& name, const glm::mat4& value);
@@ -65,6 +60,14 @@ namespace PR
 
 	protected:
 		virtual void CollectProperty() = 0;
+
+		virtual void UploadInt(const std::string& name, int value) = 0;
+		virtual void UploadFloat(const std::string& name, float value) = 0;
+		virtual void UploadFloat2(const std::string& name, const glm::vec2& value) = 0;
+		virtual void UploadFloat3(const std::string& name, const glm::vec3& value) = 0;
+		virtual void UploadFloat4(const std::string& name, const glm::vec4& value) = 0;
+		virtual void UploadMat4(const std::string& name, const glm::mat4& value) = 0;
+		//virtual void UploadIntArray(const std::string& name, int* values, uint32_t count) = 0;
 
 	protected:
 		std::vector<PropertyData> m_PropertyData;

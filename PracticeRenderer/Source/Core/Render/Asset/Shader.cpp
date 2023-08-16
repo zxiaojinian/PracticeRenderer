@@ -80,6 +80,64 @@ namespace PR
 		return m_Shaders.find(name) != m_Shaders.end();
 	}
 
+	void Shader::UploadProperty(std::unordered_map<std::string, PropertyValue>& materialValue)
+	{
+		for (auto& p : m_PropertyData)
+		{
+			std::any value;
+			if (materialValue.find(p.Name) != materialValue.end() && materialValue[p.Name].Type == p.Type)
+			{
+				value = materialValue[p.Name].Value;
+			}
+			else if (s_PropertyValue.find(p.Name) != s_PropertyValue.end() && s_PropertyValue[p.Name].Type == p.Type)
+			{
+				value = s_PropertyValue[p.Name].Value;
+			}
+
+			if (value.has_value())
+			{
+				switch (p.Type)
+				{
+					case PropertyType::Property_Int:
+					{
+						UploadInt(p.Name, std::any_cast<int>(value));
+						break;							
+					}
+					case PropertyType::Property_Float:
+					{
+						UploadFloat(p.Name, std::any_cast<float>(value));
+						break;
+					}
+					case PropertyType::Property_Float2:
+					{
+						UploadFloat2(p.Name, std::any_cast<glm::vec2>(value));
+						break;
+					}
+					case PropertyType::Property_Float3:
+					{
+						UploadFloat3(p.Name, std::any_cast<glm::vec3>(value));
+						break;
+					}
+					case PropertyType::Property_Float4:
+					{
+						UploadFloat4(p.Name, std::any_cast<glm::vec4>(value));
+						break;
+					}
+					case PropertyType::Property_Mat4:
+					{
+						UploadMat4(p.Name, std::any_cast<glm::mat4>(value));
+					}
+					default:
+					{
+						PR_LOG_ERROR("Unknown PropertyType");
+						break;
+					}
+				}
+			}
+
+		}
+	}
+
 	void Shader::SetInt(const std::string& name, int value)
 	{
 		s_PropertyValue[name] = { PropertyType::Property_Int, value };
@@ -88,6 +146,11 @@ namespace PR
 	void Shader::SetFloat(const std::string& name, float value)
 	{
 		s_PropertyValue[name] = { PropertyType::Property_Float, value };
+	}
+
+	void Shader::SetFloat2(const std::string& name, const glm::vec2& value)
+	{
+		s_PropertyValue[name] = { PropertyType::Property_Float2 , value };
 	}
 
 	void Shader::SetFloat3(const std::string& name, const glm::vec3& value)

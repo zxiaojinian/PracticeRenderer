@@ -15,29 +15,39 @@ namespace PR
 		return m_Shader->HaveProperty(property);
 	}
 
+	void Material::UploadProperty()
+	{
+		m_Shader->UploadProperty(m_PropertyValue);
+	}
+
 	void Material::SetInt(const std::string& name, int value)
 	{
-		
+		SetProterty(name, PropertyType::Property_Int, std::make_any<int>(value));
 	}
 
 	void Material::SetFloat(const std::string& name, float value)
 	{
-		m_PropertyValue[name] = { PropertyType::Property_Float, value };
+		SetProterty(name, PropertyType::Property_Float, std::make_any<float>(value));
+	}
+
+	void Material::SetFloat2(const std::string& name, const glm::vec2& value)
+	{
+		SetProterty(name, PropertyType::Property_Float2, std::make_any<glm::vec2>(value));
 	}
 
 	void Material::SetFloat3(const std::string& name, const glm::vec3& value)
 	{
-		m_PropertyValue[name] = { PropertyType::Property_Float3, value };
+		SetProterty(name, PropertyType::Property_Float3, std::make_any<glm::vec3>(value));
 	}
 
 	void Material::SetFloat4(const std::string& name, const glm::vec4& value)
 	{
-		m_PropertyValue[name] = { PropertyType::Property_Float4, value };
+		SetProterty(name, PropertyType::Property_Float4, std::make_any<glm::vec4>(value));
 	}
 
 	void Material::SetMat4(const std::string& name, const glm::mat4& value)
 	{
-		m_PropertyValue[name] = { PropertyType::Property_Mat4, value };
+		SetProterty(name, PropertyType::Property_Mat4, std::make_any<glm::mat4>(value));
 	}
 
 	void Material::SetProterty(const std::string& name, PropertyType type, std::any& value)

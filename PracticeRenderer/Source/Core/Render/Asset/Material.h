@@ -15,9 +15,11 @@ namespace PR
 		const std::shared_ptr<Shader>& GetShader() const { return m_Shader; }
 
 		bool HaveProperty(const std::string& property);
+		void UploadProperty();
 
 		void SetInt(const std::string& name, int value);
 		void SetFloat(const std::string& name, float value);
+		void SetFloat2(const std::string& name, const glm::vec2& value);
 		void SetFloat3(const std::string& name, const glm::vec3& value);
 		void SetFloat4(const std::string& name, const glm::vec4& value);
 		void SetMat4(const std::string& name, const glm::mat4& value);

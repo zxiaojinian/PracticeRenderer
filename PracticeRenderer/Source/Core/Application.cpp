@@ -5,6 +5,9 @@
 #include "Core/Log/Log.h"
 #include "Core/Event/EventData/ApplicationEvent.h"
 
+#include "Core/Scene/GameObject.h"
+#include "Core/Scene/Components/MeshRenderer.h"
+
 namespace PR
 {
 	Application* Application::s_Instance = nullptr;
@@ -42,6 +45,27 @@ namespace PR
 		m_Window->WindowEventDispatchers.AddListener(EventType::WindowClose, BIND_EVENT_FN(Application::OnWindowClose));
 		m_GraphicsContext = GraphicsContext::Create();
 
+		m_SceneManager.LoadScene("");
+		GameObject* go = new GameObject("Test GO");
+		auto& meshRender = go->AddComponent<MeshRenderer>();
+		std::vector<Vertex> v;
+		v.push_back({ {-0.5f, 0.0f, 1.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 0.0f} });
+		v.push_back({ {0.0f, 0.5f, 1.0f}, {0.0f, 0.0f, -1.0f}, {0.5f,0.5f} });
+		v.push_back({ {0.5f, 0.0f, 1.0f}, {0.0f, 0.0f, -1.0f}, {1.0f, 0.0f} });
+		uint32_t index[3] = { 0, 1, 2 };
+		std::vector<uint32_t> i(index, index + 5);
+		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("Test Mesh", v, i);
+		meshRender.SetMesh(mesh);
+		std::shared_ptr<Shader> shader= Shader::Create("Assets/FlatColor.glsl");
+		std::shared_ptr<Material> mat = std::make_shared<Material>("Test mat");
+		mat->SetShader(shader);
+		/*mat->SetFloat4("u_Color", { 1.0f, 1.0f, 1.0f, 1.0f });*/
+		Shader::SetFloat4("u_Color", { 1.0f, 1.0f, 1.0f, 1.0f });
+		mat->UploadProperty();
+		meshRender.AddMaterial(mat);
+
+		m_SceneManager.GetCurrentScene()->AddGameObject(*go);
+
 		OnInit();
 	}
 
@@ -52,11 +76,14 @@ namespace PR
 		m_LastFrameTime = time;
 
 		m_Window->OnUpdate();
+		m_SceneManager.GetCurrentScene()->OnUpdate();
+
 		OnUpdate(timestep);
 	}
 
 	void Application::OnRenderInternal()
 	{
+		m_RenderPipeline.Render();
 		OnRender();
 		m_Window->SwapBuffers();
 	}

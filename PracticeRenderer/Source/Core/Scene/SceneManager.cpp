@@ -3,6 +3,13 @@
 
 namespace PR
 {
+	SceneManager* SceneManager::s_Instance = nullptr;
+
+	SceneManager::SceneManager()
+	{
+		s_Instance = this;
+	}
+
 	SceneManager::~SceneManager()
 	{
 		if (m_currentScene)

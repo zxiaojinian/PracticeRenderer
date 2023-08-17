@@ -4,6 +4,8 @@
 #include "Core/Render/GraphicsContext.h"
 #include "Core/Event/EventData/BaseEvent.h"
 #include "Core/Timestep.h"
+#include "Core/Scene/SceneManager.h"
+#include "Core/Render/RenderPipeline.h"
 
 #include <string>
 #include <memory>
@@ -43,6 +45,9 @@ namespace PR
 
 		std::unique_ptr<Window> m_Window;
 		std::unique_ptr<GraphicsContext> m_GraphicsContext;
+
+		SceneManager m_SceneManager;
+		RenderPipeline m_RenderPipeline;
 	};
 }
 

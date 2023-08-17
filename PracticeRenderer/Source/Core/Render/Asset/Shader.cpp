@@ -7,6 +7,8 @@
 
 namespace PR
 {
+	std::unordered_map<std::string, PropertyValue> Shader::s_PropertyValue;
+
 	std::shared_ptr<Shader> Shader::Create(const std::string& filepath)
 	{
 		switch (RendererAPI::GetAPI())
@@ -82,6 +84,7 @@ namespace PR
 
 	void Shader::UploadProperty(std::unordered_map<std::string, PropertyValue>& materialValue)
 	{
+		Bind();
 		for (auto& p : m_PropertyData)
 		{
 			std::any value;

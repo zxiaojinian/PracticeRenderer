@@ -46,6 +46,8 @@ namespace PR
 		m_GraphicsContext = GraphicsContext::Create();
 
 		m_SceneManager.LoadScene("");
+		auto cameraGo = new GameObject("MainCamera");
+		cameraGo->AddComponent<Camera>();
 		GameObject* go = new GameObject("Test GO");
 		auto& meshRender = go->AddComponent<MeshRenderer>();
 		std::vector<Vertex> v;
@@ -63,9 +65,6 @@ namespace PR
 		Shader::SetFloat4("u_Color", { 1.0f, 1.0f, 1.0f, 1.0f });
 		mat->UploadProperty();
 		meshRender.AddMaterial(mat);
-
-		m_SceneManager.GetCurrentScene()->AddGameObject(*go);
-
 		OnInit();
 	}
 

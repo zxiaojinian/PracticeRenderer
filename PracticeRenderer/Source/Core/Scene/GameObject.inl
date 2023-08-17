@@ -18,6 +18,7 @@ namespace PR
 		else
 		{
 			m_Components.insert(m_Components.begin(), std::make_shared<T>(*this));
+			SceneManager::Get().GetCurrentScene()->OnComponentAdd(*(m_Components.front()));
 			auto addComponent = m_Components.front().get();
 			if (IsActive())
 			{

@@ -5,13 +5,10 @@
 
 namespace PR
 {
-	class Scene;
-
 	class GameObject
 	{
 	public:
 		GameObject(const std::string& name);
-		GameObject(const std::string& name, Scene* scene);
 		~GameObject();
 
 		const std::string& GetName() const { return m_Name; }
@@ -71,8 +68,6 @@ namespace PR
 		bool m_Destroyed = false;
 
 		bool m_Active = false;
-
-		Scene* m_Scene;
 	};
 }
 

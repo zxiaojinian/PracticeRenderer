@@ -5,7 +5,7 @@
 #include "Core/Event/EventData/BaseEvent.h"
 #include "Core/Timestep.h"
 #include "Core/Scene/SceneManager.h"
-#include "Core/Render/RenderPipeline.h"
+#include "Core/Render/RenderPipeline/RenderPipeline.h"
 
 #include <string>
 #include <memory>

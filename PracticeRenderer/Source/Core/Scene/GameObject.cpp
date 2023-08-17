@@ -1,17 +1,14 @@
 #include "pch.h"
 #include "GameObject.h"
 
+#include "Core/Scene/SceneManager.h"
+
 namespace PR
 {
 	GameObject::GameObject(const std::string& name)
 		: m_Name(name), m_Transform(AddComponent<Transform>())
 	{
-		//TODO scene.AddGameObject
-	}
-
-	GameObject::GameObject(const std::string& name, Scene* scene)
-		: m_Name(name), m_Scene(scene), m_Transform(AddComponent<Transform>())
-	{
+		SceneManager::Get().GetCurrentScene()->AddGameObject(*this);
 	}
 
 	GameObject::~GameObject()
@@ -26,6 +23,11 @@ namespace PR
 		for (auto child : children)
 			child->DetachParent();
 		DetachParent();
+
+		for (auto& component : m_Components)
+		{
+			SceneManager::Get().GetCurrentScene()->OnComponentRemove(*component);
+		}
 
 		for (auto child : m_Children)
 		{
@@ -64,6 +66,7 @@ namespace PR
 		{
 			if (c->get() == &component)
 			{
+				SceneManager::Get().GetCurrentScene()->OnComponentRemove(component);
 				m_Components.erase(c);
 				return;
 			}

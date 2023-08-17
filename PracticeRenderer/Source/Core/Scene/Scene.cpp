@@ -41,16 +41,36 @@ namespace PR
 		m_GameObjects.push_back(&go);
 	}
 
+	void Scene::OnComponentAdd(Component& component)
+	{
+		if (auto c = dynamic_cast<Camera*>(&component))
+			m_Cameras.push_back(c);
+		else if (auto c = dynamic_cast<Light*>(&component))
+			m_Lights.push_back(c);
+		else if (auto c = dynamic_cast<MeshRenderer*>(&component))
+			m_MeshRenderers.push_back(c);
+	}
+
+	void Scene::OnComponentRemove(Component& component)
+	{
+		if (auto c = dynamic_cast<Camera*>(&component))
+			m_Cameras.erase(std::remove(m_Cameras.begin(), m_Cameras.end(), c));
+		else if (auto c = dynamic_cast<Light*>(&component))
+			m_Lights.erase(std::remove(m_Lights.begin(), m_Lights.end(), c));
+		else if (auto c = dynamic_cast<MeshRenderer*>(&component))
+			m_MeshRenderers.erase(std::remove(m_MeshRenderers.begin(), m_MeshRenderers.end(), c));
+	}
+
 	GameObject& Scene::CreateGameObject()
 	{
-		auto go = new GameObject("New GameObject", this);
+		auto go = new GameObject("New GameObject");
 		AddGameObject(*go);
 		return *go;
 	}
 
 	GameObject& Scene::CreateGameObject(const std::string& name)
 	{
-		auto go = new GameObject(name, this);
+		auto go = new GameObject(name);
 		AddGameObject(*go);
 		return *go;
 	}

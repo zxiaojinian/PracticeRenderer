@@ -10,6 +10,9 @@ namespace PR
 		Camera(GameObject& gameobject);
 
 		virtual std::string GetName() override { return "Camera"; }
+
+	public:
+		uint16_t RendererIndex = 0;
 	};
 }
 

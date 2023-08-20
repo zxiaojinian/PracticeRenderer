@@ -52,7 +52,7 @@ namespace PR
 		auto& meshRender = go->AddComponent<MeshRenderer>();
 		std::vector<Vertex> v;
 		v.push_back({ {-0.5f, 0.0f, 1.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 0.0f} });
-		v.push_back({ {0.0f, 0.5f, 1.0f}, {0.0f, 0.0f, -1.0f}, {0.5f,0.5f} });
+		v.push_back({ {0.0f, 0.75f, 1.0f}, {0.0f, 0.0f, -1.0f}, {0.5f,0.5f} });
 		v.push_back({ {0.5f, 0.0f, 1.0f}, {0.0f, 0.0f, -1.0f}, {1.0f, 0.0f} });
 		uint32_t index[3] = { 0, 1, 2 };
 		std::vector<uint32_t> i(index, index + 5);

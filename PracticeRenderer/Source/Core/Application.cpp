@@ -63,7 +63,6 @@ namespace PR
 		mat->SetShader(shader);
 		/*mat->SetFloat4("u_Color", { 1.0f, 1.0f, 1.0f, 1.0f });*/
 		Shader::SetFloat4("u_Color", { 1.0f, 1.0f, 1.0f, 1.0f });
-		mat->UploadProperty();
 		meshRender.AddMaterial(mat);
 		OnInit();
 	}

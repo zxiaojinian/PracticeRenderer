@@ -16,6 +16,11 @@ namespace PR
 		{
 			auto mesh = render->GetMesh();
 			mesh->Bind();
+			auto& mats = render->GetMaterials();
+			for(auto& mat : mats)
+			{
+				mat->UploadProperty();
+			}
 			RenderCommand::DrawIndexed(nullptr, mesh->GetIndexCount());
 		}
 	}

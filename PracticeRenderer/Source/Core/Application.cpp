@@ -81,7 +81,7 @@ namespace PR
 
 	void Application::OnRenderInternal()
 	{
-		m_RenderPipeline.Render();
+		m_RenderPipeline.Render(*m_GraphicsContext);
 		OnRender();
 		m_Window->SwapBuffers();
 	}

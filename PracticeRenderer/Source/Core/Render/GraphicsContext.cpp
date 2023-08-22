@@ -4,9 +4,34 @@
 #include "Core/Common.h"
 #include "Core/Render/OpenGL/OpenGLContext.h"
 #include "Core/Render/RendererAPI.h"
+#include "Core/Render/RenderCommand.h"
+
+#include "Core/Scene/SceneManager.h"
 
 namespace PR
 {
+	void GraphicsContext::DrawRenderer(const MeshRenderer& renderer)
+	{
+		auto& mesh = renderer.GetMesh();
+		mesh->Bind();
+		auto& mats = renderer.GetMaterials();
+		for (auto& mat : mats)
+		{
+			mat->UploadProperty();
+		}
+		RenderCommand::DrawIndexed(mesh->GetIndexCount());
+	}
+
+	void GraphicsContext::DrawRenderers(const CullingResults& cullingResults, const DrawingSettings& drawingSettings, const FilteringSettings& filteringSettings)
+	{
+		//TEMP
+		auto& renderers = SceneManager::Get().GetCurrentScene()->GetMeshRenderers();
+		for (auto renderer : renderers)
+		{
+			DrawRenderer(*renderer);
+		}
+	}
+
 	std::unique_ptr<GraphicsContext> GraphicsContext::Create()
 	{
 		switch (RendererAPI::GetAPI())

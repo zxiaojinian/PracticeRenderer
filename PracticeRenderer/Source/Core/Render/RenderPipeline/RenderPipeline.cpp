@@ -17,7 +17,7 @@ namespace PR
 		CreateDefaultRenderer();
 	}
 
-	void RenderPipeline::Render()
+	void RenderPipeline::Render(GraphicsContext& graphicsContext)
 	{
 		SetupPerFrameShaderConstants();
 
@@ -27,13 +27,12 @@ namespace PR
 		{
 			if (camera)
 			{
-				RenderSingleCamera(*camera);
-			}
-				
+				RenderSingleCamera(graphicsContext, *camera);
+			}		
 		}
 	}
 
-	void RenderPipeline::RenderSingleCamera(Camera& camera)
+	void RenderPipeline::RenderSingleCamera(GraphicsContext& graphicsContext, Camera& camera)
 	{
 		auto renderer = GetRenderer(camera.RendererIndex);
 		auto cullResults = Cull(camera);
@@ -41,7 +40,7 @@ namespace PR
 		InitializeRenderingData(renderingData);
 
 		renderer->Setup(renderingData);
-		renderer->Execute(renderingData);
+		renderer->Execute(graphicsContext, renderingData);
 	}
 
 	std::shared_ptr<CullingResults> RenderPipeline::Cull(Camera& camera)

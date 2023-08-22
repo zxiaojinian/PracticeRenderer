@@ -27,9 +27,9 @@ namespace PR
 			s_RendererAPI->Clear();
 		}
 
-		static void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t count = 0)
+		static void DrawIndexed(uint32_t count = 0)
 		{
-			s_RendererAPI->DrawIndexed(vertexArray, count);
+			s_RendererAPI->DrawIndexed(count);
 		}
 
 	private:

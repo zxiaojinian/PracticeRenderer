@@ -4,6 +4,8 @@
 #include "Core/Render/RenderData/CullingResults.h"
 #include "Core/Render/RenderPipeline/Renderer.h"
 #include "Core/Render/RenderData/RenderingData.h"
+#include "Core/Render/RenderData/CameraData.h"
+#include "Core/Render/GraphicsContext.h"
 
 namespace PR
 {
@@ -19,10 +21,10 @@ namespace PR
 		RenderPipeline();
 		void SetRenderPath(RenderPath renderPath);
 
-		void Render();
+		void Render(GraphicsContext& graphicsContext);
 
 	private:
-		void RenderSingleCamera(Camera& camera);
+		void RenderSingleCamera(GraphicsContext& graphicsContext, Camera& camera);
 		std::shared_ptr<CullingResults> Cull(Camera& camera);
 		void SetupPerFrameShaderConstants();
 		std::vector<Camera*> SortCameras(const std::vector<Camera*>& cameras);

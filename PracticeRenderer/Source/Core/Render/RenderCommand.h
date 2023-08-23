@@ -2,6 +2,7 @@
 
 #include "Core/Render/RendererAPI.h"
 #include "Core/Render/VertexArray.h"
+#include "Core/Render/RenderData/Color.h"
 
 #include <glm/glm.hpp>
 
@@ -17,14 +18,14 @@ namespace PR
 			s_RendererAPI->SetViewport(x, y, width, height);
 		}
 
-		static void SetClearColor(const glm::vec4& color)
+		static void SetClearColor(const Color& color)
 		{
 			s_RendererAPI->SetClearColor(color);
 		}
 
-		static void Clear()
+		static void Clear(bool clearDepth, bool clearColor)
 		{
-			s_RendererAPI->Clear();
+			s_RendererAPI->Clear(clearDepth, clearColor);
 		}
 
 		static void DrawIndexed(uint32_t count = 0)

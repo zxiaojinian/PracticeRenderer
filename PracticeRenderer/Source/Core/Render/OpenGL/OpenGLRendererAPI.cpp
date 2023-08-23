@@ -10,14 +10,25 @@ namespace PR
 		glViewport(x, y, width, height);
 	}
 
-	void OpenGLRendererAPI::SetClearColor(const glm::vec4& color)
+	void OpenGLRendererAPI::SetClearColor(const Color& color)
 	{
-		glClearColor(color.r, color.g, color.b, color.a);
+		glClearColor(color.R, color.G, color.B, color.A);
 	}
 
-	void OpenGLRendererAPI::Clear()
+	void OpenGLRendererAPI::Clear(bool clearDepth, bool clearColor)
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		if (clearColor && clearDepth)
+		{
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		}
+		else if (clearColor)
+		{
+			glClear(GL_COLOR_BUFFER_BIT);
+		}
+		else if (clearDepth)
+		{
+			glClear(GL_DEPTH_BUFFER_BIT);
+		}
 	}
 
 	void OpenGLRendererAPI::DrawIndexed(uint32_t indexCount)

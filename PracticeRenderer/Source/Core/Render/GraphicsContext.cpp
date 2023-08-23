@@ -10,6 +10,12 @@
 
 namespace PR
 {
+	void GraphicsContext::ClearRenderTarget(bool clearDepth, bool clearColor, Color& backgroundColor = Color::clear)
+	{
+		RenderCommand::SetClearColor(backgroundColor.GetLinear());
+		RenderCommand::Clear(clearDepth, clearColor);
+	}
+
 	void GraphicsContext::DrawRenderer(const MeshRenderer& renderer)
 	{
 		auto& mesh = renderer.GetMesh();

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Render/Texture.h"
+#include "Core/Render/Texture2D.h"
 
 #include <glad/glad.h>
 

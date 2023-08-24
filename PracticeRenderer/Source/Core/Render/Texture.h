@@ -7,25 +7,23 @@ namespace PR
 {
 	enum class TextureFormat
 	{
-		None = 0,
+		R,
 		RGB,
 		RGBA,
-		DEPTH24STENCIL8,
-		Depth = DEPTH24STENCIL8,
+		Depth,
 	};
 
-	enum class TextureWrap
+	enum class TextureWrapMode
 	{
-		None = 0,
 		Clamp,
 		Repeat
 	};
 
-	enum class TextureFilter
+	enum class TextureFilterMode
 	{
-		None = 0,
-		Linear,
-		Nearest
+		Nearest,
+		Bilinear,
+		Trilinear
 	};
 
 	struct TextureSpecification
@@ -33,8 +31,8 @@ namespace PR
 		uint32_t Width = 1;
 		uint32_t Height = 1;
 		TextureFormat Format = TextureFormat::RGBA;
-		TextureWrap SamplerWrap = TextureWrap::Repeat;
-		TextureFilter SamplerFilter = TextureFilter::Linear;
+		TextureWrapMode WrapMode = TextureWrapMode::Repeat;
+		TextureFilterMode FilterMode = TextureFilterMode::Bilinear;
 		bool SRGB = false;
 		bool GenerateMips = true;
 	};
@@ -44,6 +42,10 @@ namespace PR
 	public:
 		virtual ~Texture() = default;
 
+		virtual void SetFilterMode(TextureFilterMode filterMode) = 0;
+		virtual void SetWrapMode(TextureWrapMode wrapMode) = 0;
+		virtual void SetGenerateMips(bool generateMips) = 0;
+		virtual const std::string& GetName() const = 0;
 		virtual uint32_t GetWidth() const = 0;
 		virtual uint32_t GetHeight() const = 0;
 		virtual TextureFormat GetFormat() const = 0;

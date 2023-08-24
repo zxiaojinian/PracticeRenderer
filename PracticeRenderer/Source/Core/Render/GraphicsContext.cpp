@@ -10,7 +10,7 @@
 
 namespace PR
 {
-	void GraphicsContext::ClearRenderTarget(bool clearDepth, bool clearColor, Color& backgroundColor = Color::clear)
+	void GraphicsContext::ClearRenderTarget(bool clearDepth, bool clearColor, Color& backgroundColor)
 	{
 		RenderCommand::SetClearColor(backgroundColor.GetLinear());
 		RenderCommand::Clear(clearDepth, clearColor);

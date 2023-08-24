@@ -25,7 +25,7 @@ namespace PR
 		return nullptr;
 	}
 
-	std::shared_ptr<Texture2D> Texture2D::Create(const TextureSpecification& specification, const std::string& path)
+	std::shared_ptr<Texture2D> Texture2D::Create(const std::string& path)
 	{
 		switch (RendererAPI::GetAPI())
 		{
@@ -36,7 +36,7 @@ namespace PR
 		}
 		case RendererAPI::API::OpenGL:
 		{
-			return std::make_shared<OpenGLTexture2D>(specification, path);
+			return std::make_shared<OpenGLTexture2D>(path);
 		}
 		}
 		PR_ASSERT(false, "Unknown RendererAPI!");

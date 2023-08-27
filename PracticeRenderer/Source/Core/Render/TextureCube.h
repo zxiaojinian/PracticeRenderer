@@ -6,7 +6,7 @@ namespace PR
 {
 	class TextureCube : Texture
 	{
-		static std::shared_ptr<TextureCube> Create(const TextureSpecification& specification);
+		//static std::shared_ptr<TextureCube> Create(const Texture2DSpecification& specification);
 	};
 }
 

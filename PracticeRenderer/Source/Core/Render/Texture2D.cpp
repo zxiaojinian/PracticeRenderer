@@ -7,7 +7,7 @@
 
 namespace PR
 {
-	std::shared_ptr<Texture2D> Texture2D::Create(const TextureSpecification& specification)
+	std::shared_ptr<Texture2D> Texture2D::Create(const Texture2DSpecification& specification)
 	{
 		switch (RendererAPI::GetAPI())
 		{

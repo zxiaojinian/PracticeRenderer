@@ -10,6 +10,23 @@
 
 namespace PR
 {
+	GraphicsContext::GraphicsContext()
+	{
+		m_Framebuffer = Framebuffer::Create();
+	}
+
+	void GraphicsContext::SetRenderTarget(RenderTexture& color, RenderTexture& depth)
+	{
+		m_Framebuffer->AttachColorTexture(color);
+		m_Framebuffer->AttachDepthTexture(depth);
+	}
+
+	void GraphicsContext::SetRenderTarget(std::vector<RenderTexture&>& colors, RenderTexture& depth)
+	{
+		m_Framebuffer->AttachColorTexture(colors);
+		m_Framebuffer->AttachDepthTexture(depth);
+	}
+
 	void GraphicsContext::ClearRenderTarget(bool clearDepth, bool clearColor, Color& backgroundColor)
 	{
 		RenderCommand::SetClearColor(backgroundColor.GetLinear());

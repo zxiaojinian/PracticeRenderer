@@ -7,7 +7,7 @@
 
 namespace PR
 {
-	std::shared_ptr<Framebuffer> Framebuffer::Create(const FramebufferSpecification& spec)
+	std::unique_ptr<Framebuffer> Framebuffer::Create()
 	{
 		switch (RendererAPI::GetAPI())
 		{
@@ -18,7 +18,7 @@ namespace PR
 			}
 			case RendererAPI::API::OpenGL:
 			{
-				return std::make_shared<OpenGLFramebuffer>(spec);
+				return std::unique_ptr<OpenGLFramebuffer>();
 			}
 		}
 

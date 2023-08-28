@@ -4,16 +4,11 @@
 
 namespace PR
 {
-	class DrawObjectsPass : public RenderPass
+	class FinalBlitPass : public RenderPass
 	{
 	public:
-		DrawObjectsPass();
-
 		virtual void Execute(GraphicsContext& graphicsContext, const RenderingData& renderingData) override;
-
-	private:
-		std::shared_ptr<RenderTexture> m_ColorRenderTexture;
-		std::shared_ptr<RenderTexture> m_DepthRenderTexture;
 	};
 }
+
 

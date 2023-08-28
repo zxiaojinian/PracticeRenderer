@@ -12,7 +12,7 @@ namespace PR
 		virtual ~OpenGLFramebuffer();
 
 		virtual void AttachColorTexture(RenderTexture& colorRT) override;
-		virtual void AttachColorTexture(std::vector<RenderTexture&>& colorRTs) override;
+		virtual void AttachColorTexture(std::vector<RenderTexture>& colorRTs) override;
 		virtual void AttachDepthTexture(RenderTexture& depthRT) override;
 		virtual void Bind() override;
 		virtual void Unbind() override;

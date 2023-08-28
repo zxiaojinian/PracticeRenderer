@@ -7,24 +7,54 @@
 #include "Core/Render/RenderCommand.h"
 
 #include "Core/Scene/SceneManager.h"
+#include "Core/Event/EventData/ApplicationEvent.h"
 
 namespace PR
 {
-	GraphicsContext::GraphicsContext()
+	void GraphicsContext::Init()
 	{
 		m_Framebuffer = Framebuffer::Create();
 	}
 
 	void GraphicsContext::SetRenderTarget(RenderTexture& color, RenderTexture& depth)
 	{
+		PR_ASSERT((color.GetWidth() == depth.GetWidth()) && (color.GetHeight() == depth.GetHeight()), "color and depth is not same size");
+
+		m_Framebuffer->Bind();
 		m_Framebuffer->AttachColorTexture(color);
 		m_Framebuffer->AttachDepthTexture(depth);
+		RenderCommand::SetViewport(0, 0, color.GetWidth(), color.GetHeight());
 	}
 
-	void GraphicsContext::SetRenderTarget(std::vector<RenderTexture&>& colors, RenderTexture& depth)
+	void GraphicsContext::SetRenderTarget(std::vector<RenderTexture>& colors, RenderTexture& depth)
 	{
+		PR_ASSERT(colors.size(), " no color RT");
+		bool result = (colors[0].GetWidth() == depth.GetWidth()) && (colors[0].GetHeight() == depth.GetHeight());
+		for (size_t i = 0; i < colors.size() - 1 ; i++)
+		{
+			if (colors[i].GetWidth() != colors[i + 1].GetWidth() || colors[i].GetHeight() != colors[i + 1].GetHeight())
+			{
+				result = false;
+				break;
+			}
+		}
+		PR_ASSERT(result, "colors and depth is not same size");
+
+		m_Framebuffer->Bind();
 		m_Framebuffer->AttachColorTexture(colors);
 		m_Framebuffer->AttachDepthTexture(depth);
+		RenderCommand::SetViewport(0, 0, colors[0].GetWidth(), colors[0].GetHeight());
+	}
+
+	void GraphicsContext::SetBackBuffer()
+	{
+		m_Framebuffer->Unbind();
+	}
+
+	void GraphicsContext::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+	{
+		PR_ASSERT(x < width && y < height && x >= 0 && y >= 0 && width >= 1 && height > 1, "SetViewport() parameter is error");
+		RenderCommand::SetViewport(x, y, width, height);
 	}
 
 	void GraphicsContext::ClearRenderTarget(bool clearDepth, bool clearColor, Color& backgroundColor)
@@ -53,6 +83,13 @@ namespace PR
 		{
 			DrawRenderer(*renderer);
 		}
+	}
+
+	void GraphicsContext::OnWindowResize(Event& e)
+	{
+		auto& event = *(WindowResizeEvent*)&e;
+		m_ViewPort.width = event.GetWidth();
+		m_ViewPort.height = event.GetHeight();
 	}
 
 	std::unique_ptr<GraphicsContext> GraphicsContext::Create()

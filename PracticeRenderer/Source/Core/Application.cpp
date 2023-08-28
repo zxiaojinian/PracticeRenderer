@@ -43,7 +43,12 @@ namespace PR
 		m_Window = std::make_unique<Window>(windowProps);
 		m_Window->WindowEventDispatchers.AddListener(EventType::WindowResize, BIND_EVENT_FN(Application::OnWindowResize));
 		m_Window->WindowEventDispatchers.AddListener(EventType::WindowClose, BIND_EVENT_FN(Application::OnWindowClose));
+
 		m_GraphicsContext = GraphicsContext::Create();
+		m_GraphicsContext->Init();
+		m_Window->WindowEventDispatchers.AddListener(EventType::WindowResize, BIND_EVENT_PTR_FN(m_GraphicsContext, GraphicsContext::OnWindowResize));
+
+		m_RenderPipeline = std::make_unique<RenderPipeline>();
 
 		m_SceneManager.LoadScene("");
 		auto cameraGo = new GameObject("MainCamera");
@@ -81,7 +86,7 @@ namespace PR
 
 	void Application::OnRenderInternal()
 	{
-		m_RenderPipeline.Render(*m_GraphicsContext);
+		m_RenderPipeline->Render(*m_GraphicsContext);
 		OnRender();
 		m_Window->SwapBuffers();
 	}
@@ -108,6 +113,7 @@ namespace PR
 		{
 			m_Minimized = false;
 		}
+		//m_GraphicsContext->OnWindowResize(event.GetWidth(), event.GetHeight());
 
 		PR_LOG_INFO("Window Resize, {0} - {1}", event.GetWidth(), event.GetHeight());
 	}

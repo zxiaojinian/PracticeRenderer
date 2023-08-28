@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "OpenGLRenderTexture.h"
+
 #include "OpenGLTextureUtil.h"
+#include "Core/Common.h"
 
 #include <glad/glad.h>
 
@@ -60,11 +62,12 @@ namespace PR
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
 		glTexImage2D(GL_TEXTURE_2D, 0, RTFormatToOpenGLInternalFormat(m_RenderTextureSpecification.Format), m_RenderTextureSpecification.Width, m_RenderTextureSpecification.Height,
 			0, RTFormatToOpenGLDataFormat(m_RenderTextureSpecification.Format), GL_UNSIGNED_BYTE, nullptr);
-
+		//glTextureStorage2D(m_RendererID, 0, RTFormatToOpenGLInternalFormat(m_RenderTextureSpecification.Format), m_RenderTextureSpecification.Width, m_RenderTextureSpecification.Height);
 		if (m_RenderTextureSpecification.GenerateMips)
 			glGenerateTextureMipmap(m_RendererID);
 		SetWrapMode(m_RenderTextureSpecification.WrapMode);
 		SetFilterMode(m_RenderTextureSpecification.FilterMode);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	OpenGLRenderTexture::~OpenGLRenderTexture()
@@ -83,12 +86,13 @@ namespace PR
 
 		if (m_RenderTextureSpecification.GenerateMips)
 			glGenerateTextureMipmap(m_RendererID);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	void OpenGLRenderTexture::SetFilterMode(TextureFilterMode filterMode)
 	{
 		m_RenderTextureSpecification.FilterMode = filterMode;
-		glBindTexture(GL_TEXTURE_2D, m_RendererID);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, TextureFilterToOpenGLFilterMode(m_RenderTextureSpecification.FilterMode, m_RenderTextureSpecification.GenerateMips));
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, TextureFilterToOpenGLFilterMode(m_RenderTextureSpecification.FilterMode));
 	}
@@ -96,7 +100,6 @@ namespace PR
 	void OpenGLRenderTexture::SetWrapMode(TextureWrapMode wrapMode)
 	{
 		m_RenderTextureSpecification.WrapMode = wrapMode;
-		glBindTexture(GL_TEXTURE_2D, m_RendererID);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, TextureWrapModeToOpenGLWrapMode(m_RenderTextureSpecification.WrapMode));
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, TextureWrapModeToOpenGLWrapMode(m_RenderTextureSpecification.WrapMode));
 	}
@@ -107,10 +110,7 @@ namespace PR
 		{
 			m_RenderTextureSpecification.GenerateMips = generateMips;
 			if (m_RenderTextureSpecification.GenerateMips)
-			{
-				glBindTexture(GL_TEXTURE_2D, m_RendererID);
 				glGenerateTextureMipmap(m_RendererID);
-			}
 		}
 	}
 

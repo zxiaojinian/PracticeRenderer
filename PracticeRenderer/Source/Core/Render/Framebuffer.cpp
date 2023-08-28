@@ -18,7 +18,7 @@ namespace PR
 			}
 			case RendererAPI::API::OpenGL:
 			{
-				return std::unique_ptr<OpenGLFramebuffer>();
+				return std::make_unique<OpenGLFramebuffer>();
 			}
 		}
 

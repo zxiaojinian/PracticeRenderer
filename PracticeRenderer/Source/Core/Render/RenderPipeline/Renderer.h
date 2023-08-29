@@ -16,16 +16,25 @@ namespace PR
 		void Execute(GraphicsContext& graphicsContext, const RenderingData& renderingData);
 		void EnqueuePass(std::shared_ptr<RenderPass> renderPass);
 
+		void ConfigureCameraTarget(std::shared_ptr<RenderTexture>& colorTarget, std::shared_ptr<RenderTexture>& depthTarget);
+
 	private:
 		void ExecuteBlock(GraphicsContext& graphicsContext, RenderPassBlock blockIndex, const RenderBlocks& renderBlocks, const RenderingData& renderingData);
 		void ExecuteRenderPass(GraphicsContext& graphicsContext, std::shared_ptr<RenderPass> renderPass, const RenderingData& renderingData);
-		void SetRenderPassAttachments(std::shared_ptr<RenderPass> renderPass);
+
+		void SetRenderPassAttachments(GraphicsContext& graphicsContext, std::shared_ptr<RenderPass> renderPass);
 
 		void InternalStartRendering(const RenderingData& renderingData);
 		void InternalFinishRendering();
 
 	private:
 		std::vector<std::shared_ptr<RenderPass>> m_ActiveRenderPassQueue;
+
+		std::shared_ptr<RenderTexture> m_CameraColorTarget;
+		std::shared_ptr<RenderTexture> m_CameraDepthTarget;
+
+		std::shared_ptr<RenderTexture> m_ActiveColorAttachment = nullptr;
+		std::shared_ptr<RenderTexture> m_ActiveDepthAttachment = nullptr;
 	};
 }
 

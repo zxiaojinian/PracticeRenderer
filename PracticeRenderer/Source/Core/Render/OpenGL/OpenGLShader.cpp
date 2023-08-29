@@ -67,7 +67,6 @@ namespace PR
 		{
 			GLint size;
 			GLenum type;
-			GLint location;
 			glGetActiveUniform(m_RendererID, i, maxUniformLen, NULL, &size, &type, &name[0]);
 			std::string name(name.data());
 
@@ -108,7 +107,7 @@ namespace PR
 				}					
 				case GL_SAMPLER_2D:
 				{
-					propertytype = PropertyType::Property_Texture2D;
+					propertytype = PropertyType::Property_Texture;
 					break;
 				}
 				default:

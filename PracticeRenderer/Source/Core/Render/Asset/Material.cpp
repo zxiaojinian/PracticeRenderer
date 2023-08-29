@@ -50,9 +50,9 @@ namespace PR
 		SetProterty(name, PropertyType::Property_Mat4, std::make_any<glm::mat4>(value));
 	}
 
-	void Material::SetTexture(const std::string& name, Texture2D* value)
+	void Material::SetTexture(const std::string& name, Texture* value)
 	{
-		SetProterty(name, PropertyType::Property_Texture2D, std::make_any<Texture2D*>(value));
+		SetProterty(name, PropertyType::Property_Texture, std::make_any<Texture*>(value));
 	}
 
 	void Material::SetProterty(const std::string& name, PropertyType type, std::any& value)

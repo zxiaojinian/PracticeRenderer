@@ -12,7 +12,12 @@ namespace PR
 	{
 		//draw fullscreen meshs
 		graphicsContext.SetBackBuffer();
-		//Shader::SetTexture("u_SourceTex", )
+		Shader::SetTexture("u_SourceTex", m_Source.get());
 		graphicsContext.DrawMesh(Mesh::FullScreenMesh, glm::mat4(1.0f), *m_BlitMaterial);
+	}
+
+	void FinalBlitPass::Setup(std::shared_ptr<RenderTexture>& source)
+	{
+		m_Source = source;
 	}
 }

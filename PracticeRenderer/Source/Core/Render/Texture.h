@@ -5,8 +5,6 @@
 
 namespace PR
 {
-
-
 	enum class TextureWrapMode
 	{
 		Clamp,

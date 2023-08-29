@@ -5,7 +5,7 @@ namespace PR
 {
 	void Renderer::Execute(GraphicsContext& graphicsContext, const RenderingData& renderingData)
 	{
-		std::sort(m_ActiveRenderPassQueue.begin(), m_ActiveRenderPassQueue.end(), std::less<std::shared_ptr<RenderPass>>());
+		std::sort(m_ActiveRenderPassQueue.begin(), m_ActiveRenderPassQueue.end(), std::greater<std::shared_ptr<RenderPass>>());
 		InternalStartRendering(renderingData);
 		SetupLights(renderingData);
 
@@ -38,12 +38,36 @@ namespace PR
 	void Renderer::ExecuteRenderPass(GraphicsContext& graphicsContext, std::shared_ptr<RenderPass> renderPass, const RenderingData& renderingData)
 	{
 		renderPass->Configure();
-		SetRenderPassAttachments(renderPass);
+		SetRenderPassAttachments(graphicsContext, renderPass);
 		renderPass->Execute(graphicsContext, renderingData);
 	}
 
-	void Renderer::SetRenderPassAttachments(std::shared_ptr<RenderPass> renderPass)
+	void Renderer::ConfigureCameraTarget(std::shared_ptr<RenderTexture>& colorTarget, std::shared_ptr<RenderTexture>& depthTarget)
 	{
+		m_CameraColorTarget = colorTarget;
+		m_CameraDepthTarget = depthTarget;
+	}
+
+	void Renderer::SetRenderPassAttachments(GraphicsContext& graphicsContext, std::shared_ptr<RenderPass> renderPass)
+	{
+		std::shared_ptr<RenderTexture>& passColorAttachment = renderPass->GetColorAttachment();
+		std::shared_ptr<RenderTexture>& passDepthAttachment = renderPass->GetDepthAttachment();
+
+		if (!renderPass->OverrideCameraTarget)
+		{
+			if (renderPass->renderPassEvent < RenderPassEvent::BeforeRenderingOpaques)
+				return;
+
+			passColorAttachment = m_CameraColorTarget;
+			passDepthAttachment = m_CameraDepthTarget;
+		}
+
+		if (passColorAttachment != m_ActiveColorAttachment || passDepthAttachment != m_ActiveDepthAttachment)
+		{
+			graphicsContext.SetRenderTarget(*passColorAttachment, *passDepthAttachment);
+			m_ActiveColorAttachment = passColorAttachment;
+			m_ActiveDepthAttachment = passDepthAttachment;
+		}
 	}
 
 	void Renderer::InternalStartRendering(const RenderingData& renderingData)

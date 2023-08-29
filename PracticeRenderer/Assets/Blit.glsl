@@ -1,4 +1,6 @@
 #type vertex
+	
+#version 460 core
 
 layout(location = 0) in vec3 a_Position;
 layout(location = 2) in vec2 a_TexCoord;
@@ -17,6 +19,8 @@ void main()
 
 #type fragment
 
+#version 460 core
+
 in vec2 texCoord;
 
 layout(location = 0) out vec4 fragColor;
@@ -25,5 +29,5 @@ uniform sampler2D u_SourceTex;
 
 void main()
 {
-	fragColor = texture(u_SourceTex, fragTexCoord);
+	fragColor = texture(u_SourceTex, texCoord);
 }

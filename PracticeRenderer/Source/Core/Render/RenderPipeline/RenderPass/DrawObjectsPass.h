@@ -12,8 +12,7 @@ namespace PR
 		virtual void Execute(GraphicsContext& graphicsContext, const RenderingData& renderingData) override;
 
 	private:
-		std::shared_ptr<RenderTexture> m_ColorRenderTexture;
-		std::shared_ptr<RenderTexture> m_DepthRenderTexture;
+
 	};
 }
 

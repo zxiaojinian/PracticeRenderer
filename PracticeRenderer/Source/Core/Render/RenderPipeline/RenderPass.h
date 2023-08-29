@@ -3,6 +3,7 @@
 #include "Core/Render/RenderPipeline/RenderPassEvent.h"
 #include "Core/Render/RenderData/RenderingData.h"
 #include "Core/Render/GraphicsContext.h"
+#include "Core/Render/RenderTexture.h"
 
 namespace PR
 {
@@ -10,6 +11,9 @@ namespace PR
 	{
 	public:
 		RenderPass(RenderPassEvent renderPassEvent);
+
+		std::shared_ptr<RenderTexture>& GetColorAttachment() { return m_ColorAttachment; }
+		std::shared_ptr<RenderTexture>& GetDepthAttachment() { return m_DepthAttachment; }
 
 		//This method is called by the renderer before rendering a camera
 		virtual void OnCameraSetup() {};
@@ -19,8 +23,14 @@ namespace PR
 		virtual void OnCameraCleanup() {};
 		virtual void Execute(GraphicsContext& graphicsContext, const RenderingData& renderingData) = 0;
 
+		void ConfigureTarget(std::shared_ptr<RenderTexture>& colorAttachment, std::shared_ptr<RenderTexture>& depthAttachment);
+
 	public:
 		RenderPassEvent renderPassEvent;
+		bool OverrideCameraTarget = false;
+	private:
+		std::shared_ptr<RenderTexture> m_ColorAttachment;
+		std::shared_ptr<RenderTexture> m_DepthAttachment;
 	};
 
 	inline bool operator<(const RenderPass& lhs, const RenderPass& rhs)

@@ -2,10 +2,12 @@
 
 #type vertex
 
+#version 460 core
+
 layout(location = 0) in vec3 a_Position;
 
-uniform mat4 u_Matrix_M;
-uniform mat4 u_Matrix_VP;
+//uniform mat4 u_Matrix_M;
+//uniform mat4 u_Matrix_VP;
 
 void main()
 {
@@ -14,6 +16,8 @@ void main()
 }
 
 #type fragment
+
+#version 460 core
 
 layout(location = 0) out vec4 color;
 

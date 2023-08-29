@@ -4,7 +4,8 @@
 #include "Core/Common.h"
 #include "Core/Render/RendererAPI.h"
 #include "Core/Render/OpenGL/OpenGLShader.h"
-#include "Core/Render/Texture2D.h"
+#include "Core/Render/Texture.h"
+#include "Core/Render/RenderTexture.h"
 
 namespace PR
 {
@@ -96,9 +97,9 @@ namespace PR
 						UploadMat4(p.Name, std::any_cast<glm::mat4>(value));
 						break;
 					}
-					case PropertyType::Property_Texture2D:
+					case PropertyType::Property_Texture:
 					{
-						auto texture = std::any_cast<Texture2D*>(value);
+						auto texture = std::any_cast<Texture*>(value);
 						if (texture)
 						{
 							texture->Bind(textureSlot);
@@ -147,9 +148,9 @@ namespace PR
 		s_PropertyValue[name] = { PropertyType::Property_Mat4, value };
 	}
 
-	void Shader::SetTexture(const std::string& name, const Texture2D* value)
+	void Shader::SetTexture(const std::string& name, Texture* value)
 	{
-		s_PropertyValue[name] = { PropertyType::Property_Texture2D, value };
+		s_PropertyValue[name] = { PropertyType::Property_Texture, value };
 	}
 
 	bool Shader::HaveProperty(const std::string& property)

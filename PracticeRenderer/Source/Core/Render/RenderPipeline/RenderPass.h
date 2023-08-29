@@ -9,6 +9,8 @@ namespace PR
 	class RenderPass
 	{
 	public:
+		RenderPass(RenderPassEvent renderPassEvent);
+
 		//This method is called by the renderer before rendering a camera
 		virtual void OnCameraSetup() {};
 		//This method is called by the renderer before executing the render pass.

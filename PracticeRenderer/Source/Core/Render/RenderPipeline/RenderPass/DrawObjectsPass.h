@@ -7,7 +7,7 @@ namespace PR
 	class DrawObjectsPass : public RenderPass
 	{
 	public:
-		DrawObjectsPass();
+		DrawObjectsPass(RenderPassEvent renderPassEvent);
 
 		virtual void Execute(GraphicsContext& graphicsContext, const RenderingData& renderingData) override;
 

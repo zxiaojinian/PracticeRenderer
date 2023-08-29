@@ -106,6 +106,11 @@ namespace PR
 					propertytype = PropertyType::Property_Mat4;
 					break;
 				}					
+				case GL_SAMPLER_2D:
+				{
+					propertytype = PropertyType::Property_Texture2D;
+					break;
+				}
 				default:
 					propertytype = PropertyType::Unknown;
 					break;

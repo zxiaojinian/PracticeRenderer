@@ -30,8 +30,10 @@ namespace PR
         Mesh(const std::string name, const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
 
         void Bind();
-        void Unbind();
+        void Unbind() const;
         virtual uint32_t GetIndexCount() const { return static_cast<uint32_t>(m_Indices.size()); }
+
+        static Mesh FullScreenMesh;
     private:
         void UploadMeshData();
 

@@ -3,8 +3,16 @@
 
 namespace PR
 {
+	FinalBlitPass::FinalBlitPass(RenderPassEvent renderPassEvent, std::shared_ptr<Material>& blitMaterial) : RenderPass(renderPassEvent)
+	{
+		m_BlitMaterial = blitMaterial;
+	}
+
 	void FinalBlitPass::Execute(GraphicsContext& graphicsContext, const RenderingData& renderingData)
 	{
-		//TODO draw fullscreen meshs
+		//draw fullscreen meshs
+		graphicsContext.SetBackBuffer();
+		//Shader::SetTexture("u_SourceTex", )
+		graphicsContext.DrawMesh(Mesh::FullScreenMesh, glm::mat4(1.0f), *m_BlitMaterial);
 	}
 }

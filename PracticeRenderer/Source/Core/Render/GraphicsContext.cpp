@@ -63,14 +63,22 @@ namespace PR
 		RenderCommand::Clear(clearDepth, clearColor);
 	}
 
+	void GraphicsContext::DrawMesh(Mesh& mesh, const glm::mat4& matrix, Material& material)
+	{
+		mesh.Bind();
+		material.SetMat4("u_Model", matrix);
+		material.UploadProperty();
+		RenderCommand::DrawIndexed(mesh.GetIndexCount());
+	}
+
 	void GraphicsContext::DrawRenderer(const MeshRenderer& renderer)
 	{
 		auto& mesh = renderer.GetMesh();
-		mesh->Bind();
+		auto& matrix = renderer.GetTransform().GetLocalToWorldMatrix();
 		auto& mats = renderer.GetMaterials();
 		for (auto& mat : mats)
 		{
-			mat->UploadProperty();
+			DrawMesh(*mesh, matrix, *mat);
 		}
 		RenderCommand::DrawIndexed(mesh->GetIndexCount());
 	}

@@ -7,6 +7,7 @@
 
 #include "Core/Scene/GameObject.h"
 #include "Core/Scene/Components/MeshRenderer.h"
+#include "Core/Asset/ShaderLibrary.h"
 
 namespace PR
 {
@@ -63,7 +64,7 @@ namespace PR
 		std::vector<uint32_t> i(index, index + 5);
 		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("Test Mesh", v, i);
 		meshRender.SetMesh(mesh);
-		std::shared_ptr<Shader> shader= Shader::Create("Assets/FlatColor.glsl");
+		std::shared_ptr<Shader> shader = Shader::Create("Assets/FlatColor.glsl");
 		std::shared_ptr<Material> mat = std::make_shared<Material>("Test mat");
 		mat->SetShader(shader);
 		/*mat->SetFloat4("u_Color", { 1.0f, 1.0f, 1.0f, 1.0f });*/

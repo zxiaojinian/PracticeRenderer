@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core/Render/Texture2D.h"
+
 #include <glm/glm.hpp>
 
 #include <string>
@@ -45,7 +47,7 @@ namespace PR
 
 		virtual const std::string& GetName() const = 0;
 
-		void UploadProperty(std::unordered_map<std::string, PropertyValue>& materialValue);
+		void UploadProperty(const std::unordered_map<std::string, PropertyValue>& materialValue);
 
 		static void SetInt(const std::string& name, int value);
 		static void SetFloat(const std::string& name, float value);
@@ -53,6 +55,7 @@ namespace PR
 		static void SetFloat3(const std::string& name, const glm::vec3& value);
 		static void SetFloat4(const std::string& name, const glm::vec4& value);
 		static void SetMat4(const std::string& name, const glm::mat4& value);
+		static void SetTexture(const std::string& name, const Texture2D* value);
 		//static void SetIntArray(const std::string& name, int* values, uint32_t count);
 
 		static std::shared_ptr<Shader> Create(const std::string& filepath);

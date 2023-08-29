@@ -28,6 +28,7 @@ namespace PR
 		void SetBackBuffer();
 		void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
 		void ClearRenderTarget(bool clearDepth, bool clearColor, Color& backgroundColor = Color::clear);
+		void DrawMesh(Mesh& mesh, const glm::mat4& matrix, Material& material);
 		void DrawRenderer(const MeshRenderer& renderer);
 		void DrawRenderers(const CullingResults& cullingResults, const DrawingSettings& drawingSettings, const FilteringSettings& filteringSettings);
 

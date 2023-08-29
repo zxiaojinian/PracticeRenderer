@@ -15,7 +15,7 @@ namespace PR
 		return m_Shader->HaveProperty(property);
 	}
 
-	void Material::UploadProperty()
+	void Material::UploadProperty() const
 	{
 		m_Shader->UploadProperty(m_PropertyValue);
 	}
@@ -48,6 +48,11 @@ namespace PR
 	void Material::SetMat4(const std::string& name, const glm::mat4& value)
 	{
 		SetProterty(name, PropertyType::Property_Mat4, std::make_any<glm::mat4>(value));
+	}
+
+	void Material::SetTexture(const std::string& name, Texture2D* value)
+	{
+		SetProterty(name, PropertyType::Property_Texture2D, std::make_any<Texture2D*>(value));
 	}
 
 	void Material::SetProterty(const std::string& name, PropertyType type, std::any& value)

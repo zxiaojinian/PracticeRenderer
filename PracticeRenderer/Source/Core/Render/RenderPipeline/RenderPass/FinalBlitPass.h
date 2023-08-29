@@ -7,7 +7,11 @@ namespace PR
 	class FinalBlitPass : public RenderPass
 	{
 	public:
+		FinalBlitPass(RenderPassEvent renderPassEvent, std::shared_ptr<Material>& blitMaterial);
 		virtual void Execute(GraphicsContext& graphicsContext, const RenderingData& renderingData) override;
+
+	private:
+		std::shared_ptr<Material> m_BlitMaterial;
 	};
 }
 

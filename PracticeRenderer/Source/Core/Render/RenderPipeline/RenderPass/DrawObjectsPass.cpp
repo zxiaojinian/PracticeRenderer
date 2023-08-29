@@ -6,7 +6,7 @@
 
 namespace PR
 {
-	DrawObjectsPass::DrawObjectsPass()
+	DrawObjectsPass::DrawObjectsPass(RenderPassEvent renderPassEvent) : RenderPass(renderPassEvent)
 	{
 		m_ColorRenderTexture = RenderTexture::Create({ 1920, 1080 });
 		m_DepthRenderTexture = RenderTexture::Create({ 1920, 1080, RenderTextureFormat::Depth, TextureWrapMode::Clamp, TextureFilterMode::Nearest, false, false });

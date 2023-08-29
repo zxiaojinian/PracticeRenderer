@@ -3,20 +3,30 @@
 
 namespace PR
 {
+	Mesh Mesh::FullScreenMesh{ "FullScreenMesh",
+		{
+			{{-1.0f, -1.0f, 0.0f}, {0.0f, 0.0f, -1.0}, {0.0f, 0.0f}},
+			{{-1.0f,  1.0f, 0.0f}, {0.0f, 0.0f, -1.0}, {0.0f, 1.0f}},
+			{{1.0f, -1.0f, 0.0f}, {0.0f, 0.0f, -1.0}, {1.0f, 0.0f}},
+			{{1.0f,  1.0f, 0.0f}, {0.0f, 0.0f, -1.0}, {1.0f, 1.0f}},
+		},
+		{0, 1, 2, 2, 1, 3} 
+	};
+
 	Mesh::Mesh(const std::string name, const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices)
 	{
 		m_Vertices = vertices;
 		m_Indices = indices;
-		UploadMeshData();
 	}
 
 	void Mesh::Bind()
 	{
+		UploadMeshData();
 		if (m_Upload)
 			m_VertexArray->Bind();
 	}
 
-	void Mesh::Unbind()
+	void Mesh::Unbind() const
 	{
 		if (m_Upload)
 			m_VertexArray->Unbind();

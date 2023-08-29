@@ -4,6 +4,7 @@
 #include "Core/Common.h"
 #include "Core/Render/RendererAPI.h"
 #include "Core/Render/OpenGL/OpenGLShader.h"
+#include "Core/Render/Texture2D.h"
 
 namespace PR
 {
@@ -45,15 +46,16 @@ namespace PR
 		return nullptr;
 	}
 
-	void Shader::UploadProperty(std::unordered_map<std::string, PropertyValue>& materialValue)
+	void Shader::UploadProperty(const std::unordered_map<std::string, PropertyValue>& materialValue)
 	{
 		Bind();
+		int textureSlot = 0;
 		for (auto& p : m_PropertyData)
 		{
 			std::any value;
-			if (materialValue.find(p.Name) != materialValue.end() && materialValue[p.Name].Type == p.Type)
+			if (materialValue.find(p.Name) != materialValue.end() && materialValue.at(p.Name).Type == p.Type)
 			{
-				value = materialValue[p.Name].Value;
+				value = materialValue.at(p.Name).Value;
 			}
 			else if (s_PropertyValue.find(p.Name) != s_PropertyValue.end() && s_PropertyValue[p.Name].Type == p.Type)
 			{
@@ -92,6 +94,17 @@ namespace PR
 					case PropertyType::Property_Mat4:
 					{
 						UploadMat4(p.Name, std::any_cast<glm::mat4>(value));
+						break;
+					}
+					case PropertyType::Property_Texture2D:
+					{
+						auto texture = std::any_cast<Texture2D*>(value);
+						if (texture)
+						{
+							texture->Bind(textureSlot);
+							UploadInt(p.Name, textureSlot++);
+						}
+						break;
 					}
 					default:
 					{
@@ -132,6 +145,11 @@ namespace PR
 	void Shader::SetMat4(const std::string& name, const glm::mat4& value)
 	{
 		s_PropertyValue[name] = { PropertyType::Property_Mat4, value };
+	}
+
+	void Shader::SetTexture(const std::string& name, const Texture2D* value)
+	{
+		s_PropertyValue[name] = { PropertyType::Property_Texture2D, value };
 	}
 
 	bool Shader::HaveProperty(const std::string& property)

@@ -3,5 +3,8 @@
 
 namespace PR
 {
-
+	RenderPass::RenderPass(RenderPassEvent renderPassEvent)
+	{
+		this->renderPassEvent = renderPassEvent;
+	}
 }

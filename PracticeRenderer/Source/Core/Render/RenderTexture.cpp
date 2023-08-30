@@ -7,7 +7,7 @@
 
 namespace PR
 {
-    std::shared_ptr<RenderTexture> RenderTexture::Create(const RenderTextureSpecification& specification)
+    std::shared_ptr<RenderTexture> RenderTexture::Create(const std::string& name, const RenderTextureSpecification& specification)
     {
 		switch (RendererAPI::GetAPI())
 		{
@@ -17,7 +17,7 @@ namespace PR
 			}
 			case RendererAPI::API::OpenGL:
 			{
-				return std::make_shared<OpenGLRenderTexture>(specification);
+				return std::make_shared<OpenGLRenderTexture>(name, specification);
 			}
 		}
 

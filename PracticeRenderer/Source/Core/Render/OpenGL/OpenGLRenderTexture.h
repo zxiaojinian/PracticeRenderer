@@ -7,7 +7,7 @@ namespace PR
 	class OpenGLRenderTexture : public RenderTexture
 	{
 	public:
-		OpenGLRenderTexture(const RenderTextureSpecification& specification);
+		OpenGLRenderTexture(const std::string& name, const RenderTextureSpecification& specification);
 		virtual ~OpenGLRenderTexture();
 
 		virtual void Resize(uint32_t width, uint32_t height) override;

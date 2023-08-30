@@ -5,8 +5,6 @@
 
 namespace PR
 {
-	static const uint32_t s_MaxFramebufferSize = 8192;
-
 	OpenGLFramebuffer::OpenGLFramebuffer()
 	{
 		glCreateFramebuffers(1, &m_RendererID);
@@ -20,6 +18,7 @@ namespace PR
 	void OpenGLFramebuffer::AttachColorTexture(RenderTexture& colorRT)
 	{
 		glNamedFramebufferTexture(m_RendererID, GL_COLOR_ATTACHMENT0, colorRT.GetRendererID(), 0);
+		m_RTNum = 1;
 	}
 
 	void OpenGLFramebuffer::AttachColorTexture(std::vector<RenderTexture>& colorRTs)
@@ -31,15 +30,7 @@ namespace PR
 			glNamedFramebufferTexture(m_RendererID, GL_COLOR_ATTACHMENT0 + index, rt.GetRendererID(), 0);
 			index++;
 		}
-		GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
-		if (!colorRTs.empty())
-		{
-			glNamedFramebufferDrawBuffers(m_RendererID, colorRTs.size(), drawBuffers);
-		}
-		else
-		{
-			glNamedFramebufferDrawBuffer(m_RendererID, GL_NONE);
-		}
+		m_RTNum = static_cast<uint32_t>(colorRTs.size());
 	}
 
 	void OpenGLFramebuffer::AttachDepthTexture(RenderTexture& depthRT)
@@ -49,8 +40,17 @@ namespace PR
 
 	void OpenGLFramebuffer::Bind()
 	{
+		static GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
-		//PR_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
+		if (m_RTNum)
+		{
+			glNamedFramebufferDrawBuffers(m_RendererID, m_RTNum, drawBuffers);
+		}
+		else
+		{
+			glNamedFramebufferDrawBuffer(m_RendererID, GL_NONE);
+		}
+		PR_ASSERT(glCheckNamedFramebufferStatus(m_RendererID, GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
 	}
 
 	void OpenGLFramebuffer::Unbind()

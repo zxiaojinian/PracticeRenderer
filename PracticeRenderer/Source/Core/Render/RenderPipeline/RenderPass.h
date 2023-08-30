@@ -29,8 +29,8 @@ namespace PR
 		RenderPassEvent renderPassEvent;
 		bool OverrideCameraTarget = false;
 	private:
-		std::shared_ptr<RenderTexture> m_ColorAttachment;
-		std::shared_ptr<RenderTexture> m_DepthAttachment;
+		std::shared_ptr<RenderTexture> m_ColorAttachment = nullptr;
+		std::shared_ptr<RenderTexture> m_DepthAttachment = nullptr;
 	};
 
 	inline bool operator<(const RenderPass& lhs, const RenderPass& rhs)

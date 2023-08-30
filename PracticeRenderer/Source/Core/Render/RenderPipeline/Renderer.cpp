@@ -5,7 +5,9 @@ namespace PR
 {
 	void Renderer::Execute(GraphicsContext& graphicsContext, const RenderingData& renderingData)
 	{
-		std::sort(m_ActiveRenderPassQueue.begin(), m_ActiveRenderPassQueue.end(), std::greater<std::shared_ptr<RenderPass>>());
+		std::sort(m_ActiveRenderPassQueue.begin(), m_ActiveRenderPassQueue.end(), [](const std::shared_ptr<RenderPass>& l, const std::shared_ptr<RenderPass>& r){
+				return *l < *r;
+			});
 		InternalStartRendering(renderingData);
 		SetupLights(renderingData);
 

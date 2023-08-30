@@ -1,6 +1,6 @@
 #pragma once
 
-enum class RenderPassEvent
+enum class RenderPassEvent : uint32_t
 {
 
     //before rendering any other passes in the pipeline

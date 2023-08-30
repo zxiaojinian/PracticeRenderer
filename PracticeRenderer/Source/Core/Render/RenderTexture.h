@@ -29,7 +29,7 @@ namespace PR
 		virtual void Resize(uint32_t width, uint32_t height) = 0;
 		virtual RenderTextureFormat GetFormat() const = 0;
 
-		static std::shared_ptr<RenderTexture> Create(const RenderTextureSpecification& specification);
+		static std::shared_ptr<RenderTexture> Create(const std::string& name, const RenderTextureSpecification& specification);
 	};
 }
 

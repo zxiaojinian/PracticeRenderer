@@ -20,9 +20,9 @@ namespace PR
 	{
 		PR_ASSERT((color.GetWidth() == depth.GetWidth()) && (color.GetHeight() == depth.GetHeight()), "color and depth is not same size");
 
-		m_Framebuffer->Bind();
 		m_Framebuffer->AttachColorTexture(color);
 		m_Framebuffer->AttachDepthTexture(depth);
+		m_Framebuffer->Bind();
 		RenderCommand::SetViewport(0, 0, color.GetWidth(), color.GetHeight());
 	}
 
@@ -49,6 +49,7 @@ namespace PR
 	void GraphicsContext::SetBackBuffer()
 	{
 		m_Framebuffer->Unbind();
+		//RenderCommand::SetViewport(0, 0, m_ViewPort.width, m_ViewPort.height);
 	}
 
 	void GraphicsContext::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
@@ -80,7 +81,6 @@ namespace PR
 		{
 			DrawMesh(*mesh, matrix, *mat);
 		}
-		RenderCommand::DrawIndexed(mesh->GetIndexCount());
 	}
 
 	void GraphicsContext::DrawRenderers(const CullingResults& cullingResults, const DrawingSettings& drawingSettings, const FilteringSettings& filteringSettings)

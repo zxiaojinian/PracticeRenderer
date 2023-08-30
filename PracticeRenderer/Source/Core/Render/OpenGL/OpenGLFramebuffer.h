@@ -18,6 +18,7 @@ namespace PR
 		virtual void Unbind() override;
 	private:
 		uint32_t m_RendererID = 0;
+		uint32_t m_RTNum = 0;
 	};
 }
 

@@ -55,8 +55,8 @@ namespace PR
 		}
 	}
 
-	OpenGLRenderTexture::OpenGLRenderTexture(const RenderTextureSpecification& specification)
-		: m_RenderTextureSpecification(specification)
+	OpenGLRenderTexture::OpenGLRenderTexture(const std::string& name, const RenderTextureSpecification& specification)
+		: m_Name(name), m_RenderTextureSpecification(specification)
 	{
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);

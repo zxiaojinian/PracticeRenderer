@@ -35,6 +35,8 @@ namespace PR
 	void RenderPipeline::RenderSingleCamera(GraphicsContext& graphicsContext, Camera& camera)
 	{
 		auto renderer = GetRenderer(camera.RendererIndex);
+		renderer->Clear();
+
 		auto cullResults = Cull(camera);
 		RenderingData renderingData;
 		InitializeRenderingData(renderingData);

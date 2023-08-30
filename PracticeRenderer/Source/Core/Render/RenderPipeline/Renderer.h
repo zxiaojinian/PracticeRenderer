@@ -18,6 +18,7 @@ namespace PR
 
 		void ConfigureCameraTarget(std::shared_ptr<RenderTexture>& colorTarget, std::shared_ptr<RenderTexture>& depthTarget);
 
+		void Clear();
 	private:
 		void ExecuteBlock(GraphicsContext& graphicsContext, RenderPassBlock blockIndex, const RenderBlocks& renderBlocks, const RenderingData& renderingData);
 		void ExecuteRenderPass(GraphicsContext& graphicsContext, std::shared_ptr<RenderPass> renderPass, const RenderingData& renderingData);
@@ -30,8 +31,8 @@ namespace PR
 	private:
 		std::vector<std::shared_ptr<RenderPass>> m_ActiveRenderPassQueue;
 
-		std::shared_ptr<RenderTexture> m_CameraColorTarget;
-		std::shared_ptr<RenderTexture> m_CameraDepthTarget;
+		std::shared_ptr<RenderTexture> m_CameraColorTarget = nullptr;
+		std::shared_ptr<RenderTexture> m_CameraDepthTarget = nullptr;
 
 		std::shared_ptr<RenderTexture> m_ActiveColorAttachment = nullptr;
 		std::shared_ptr<RenderTexture> m_ActiveDepthAttachment = nullptr;

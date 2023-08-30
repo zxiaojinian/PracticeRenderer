@@ -8,7 +8,6 @@
 
 namespace PR
 {
-
 	uint32_t RTFormatToBPP(RenderTextureFormat format)
 	{
 		switch (format)
@@ -59,15 +58,12 @@ namespace PR
 		: m_Name(name), m_RenderTextureSpecification(specification)
 	{
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
-		glBindTexture(GL_TEXTURE_2D, m_RendererID);
-		glTexImage2D(GL_TEXTURE_2D, 0, RTFormatToOpenGLInternalFormat(m_RenderTextureSpecification.Format), m_RenderTextureSpecification.Width, m_RenderTextureSpecification.Height,
-			0, RTFormatToOpenGLDataFormat(m_RenderTextureSpecification.Format), GL_UNSIGNED_BYTE, nullptr);
-		//glTextureStorage2D(m_RendererID, 0, RTFormatToOpenGLInternalFormat(m_RenderTextureSpecification.Format), m_RenderTextureSpecification.Width, m_RenderTextureSpecification.Height);
-		if (m_RenderTextureSpecification.GenerateMips)
-			glGenerateTextureMipmap(m_RendererID);
+		//glBindTexture(GL_TEXTURE_2D, m_RendererID);
+		//glTexImage2D(GL_TEXTURE_2D, 0, RTFormatToOpenGLInternalFormat(m_RenderTextureSpecification.Format), m_RenderTextureSpecification.Width, m_RenderTextureSpecification.Height,
+		//	0, RTFormatToOpenGLDataFormat(m_RenderTextureSpecification.Format), GL_UNSIGNED_BYTE, nullptr);
+		glTextureStorage2D(m_RendererID, specification.GenerateMips ? 0 : 1, RTFormatToOpenGLInternalFormat(m_RenderTextureSpecification.Format), m_RenderTextureSpecification.Width, m_RenderTextureSpecification.Height);
 		SetWrapMode(m_RenderTextureSpecification.WrapMode);
 		SetFilterMode(m_RenderTextureSpecification.FilterMode);
-		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	OpenGLRenderTexture::~OpenGLRenderTexture()
@@ -77,17 +73,17 @@ namespace PR
 
 	void OpenGLRenderTexture::Resize(uint32_t width, uint32_t height)
 	{
-		m_RenderTextureSpecification.Width = width;
-		m_RenderTextureSpecification.Height = height;
+		//m_RenderTextureSpecification.Width = width;
+		//m_RenderTextureSpecification.Height = height;
 
-		glBindTexture(GL_TEXTURE_2D, m_RendererID);
-		glTexImage2D(GL_TEXTURE_2D, 0, RTFormatToOpenGLInternalFormat(m_RenderTextureSpecification.Format), m_RenderTextureSpecification.Width, m_RenderTextureSpecification.Height,
-			0, RTFormatToOpenGLDataFormat(m_RenderTextureSpecification.Format), GL_UNSIGNED_BYTE, nullptr);
+		//glBindTexture(GL_TEXTURE_2D, m_RendererID);
+		//glTexImage2D(GL_TEXTURE_2D, 0, RTFormatToOpenGLInternalFormat(m_RenderTextureSpecification.Format), m_RenderTextureSpecification.Width, m_RenderTextureSpecification.Height,
+		//	0, RTFormatToOpenGLDataFormat(m_RenderTextureSpecification.Format), GL_UNSIGNED_BYTE, nullptr);
 
-		if (m_RenderTextureSpecification.GenerateMips)
-			glGenerateTextureMipmap(m_RendererID);
+		//if (m_RenderTextureSpecification.GenerateMips)
+		//	glGenerateTextureMipmap(m_RendererID);
 
-		glBindTexture(GL_TEXTURE_2D, 0);
+		//glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	void OpenGLRenderTexture::SetFilterMode(TextureFilterMode filterMode)
@@ -106,12 +102,12 @@ namespace PR
 
 	void OpenGLRenderTexture::SetGenerateMips(bool generateMips)
 	{
-		if (m_RenderTextureSpecification.GenerateMips != generateMips)
-		{
-			m_RenderTextureSpecification.GenerateMips = generateMips;
-			if (m_RenderTextureSpecification.GenerateMips)
-				glGenerateTextureMipmap(m_RendererID);
-		}
+		//if (m_RenderTextureSpecification.GenerateMips != generateMips)
+		//{
+		//	m_RenderTextureSpecification.GenerateMips = generateMips;
+		//	if (m_RenderTextureSpecification.GenerateMips)
+		//		glGenerateTextureMipmap(m_RendererID);
+		//}
 	}
 
 	void OpenGLRenderTexture::Bind(uint32_t slot) const

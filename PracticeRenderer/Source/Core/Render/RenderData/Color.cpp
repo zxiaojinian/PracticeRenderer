@@ -10,7 +10,7 @@ namespace PR
 	Color Color::blue{ 0.0f, 0.0f, 1.0f, 1.0f };
 	Color Color::white{ 1.0f, 1.0f, 1.0f, 1.0f };
 	Color Color::black{ 0.0f, 0.0f, 0.0f, 1.0f };
-	Color Color::clear{ 0.0f, 1.0f, 0.0f, 0.0f };
+	Color Color::clear{ 0.0f, 0.0f, 0.0f, 0.0f };
 
 	Color::Color(float r, float g, float b, float a)
 	{

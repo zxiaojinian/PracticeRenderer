@@ -49,7 +49,7 @@ namespace PR
 	void GraphicsContext::SetBackBuffer()
 	{
 		m_Framebuffer->Unbind();
-		//RenderCommand::SetViewport(0, 0, m_ViewPort.width, m_ViewPort.height);
+		RenderCommand::SetViewport(0, 0, m_ViewPort.width, m_ViewPort.height);
 	}
 
 	void GraphicsContext::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)

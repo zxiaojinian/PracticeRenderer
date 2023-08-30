@@ -50,6 +50,15 @@ namespace PR
 		m_CameraDepthTarget = depthTarget;
 	}
 
+	void Renderer::Clear()
+	{
+		m_CameraColorTarget = nullptr;
+		m_CameraDepthTarget = nullptr;
+
+		m_ActiveColorAttachment = nullptr;
+		m_ActiveDepthAttachment = nullptr;
+	}
+
 	void Renderer::SetRenderPassAttachments(GraphicsContext& graphicsContext, std::shared_ptr<RenderPass> renderPass)
 	{
 		std::shared_ptr<RenderTexture>& passColorAttachment = renderPass->GetColorAttachment();
@@ -66,6 +75,7 @@ namespace PR
 
 		if (passColorAttachment != m_ActiveColorAttachment || passDepthAttachment != m_ActiveDepthAttachment)
 		{
+			graphicsContext.ClearRenderTarget(true, true, Color::clear);
 			graphicsContext.SetRenderTarget(*passColorAttachment, *passDepthAttachment);
 			m_ActiveColorAttachment = passColorAttachment;
 			m_ActiveDepthAttachment = passDepthAttachment;

@@ -14,7 +14,7 @@ namespace PR
 		ForwardRenderer();
 
 		virtual void Setup(RenderingData& renderingData) override;
-
+		//virtual void FinishRendering() override;
 	private:
 		std::shared_ptr<DrawObjectsPass> m_DrawObjectsPass;
 		std::shared_ptr<FinalBlitPass> m_FinalBlitPass;

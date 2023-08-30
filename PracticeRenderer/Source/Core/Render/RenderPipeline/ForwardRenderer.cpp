@@ -5,7 +5,7 @@ namespace PR
 {
 	ForwardRenderer::ForwardRenderer()
 	{
-		RenderTextureSpecification colorSpecification = { 1920, 1080, RenderTextureFormat::RGB, TextureWrapMode::Clamp, TextureFilterMode::Bilinear,  true, false };
+		RenderTextureSpecification colorSpecification = { 1920, 1080, RenderTextureFormat::RGBA, TextureWrapMode::Clamp, TextureFilterMode::Bilinear,  true, false };
 		m_ColorRenderTexture = RenderTexture::Create("ColorRenderTexture", colorSpecification);
 		RenderTextureSpecification depthSpecification = { 1920, 1080, RenderTextureFormat::Depth, TextureWrapMode::Clamp, TextureFilterMode::Nearest, false, false };
 		m_DepthRenderTexture = RenderTexture::Create("DepthRenderTexture", depthSpecification);

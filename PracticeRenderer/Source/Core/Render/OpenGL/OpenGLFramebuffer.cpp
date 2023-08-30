@@ -40,8 +40,7 @@ namespace PR
 
 	void OpenGLFramebuffer::Bind()
 	{
-		static GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
-		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+		static const GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
 		if (m_RTNum)
 		{
 			glNamedFramebufferDrawBuffers(m_RendererID, m_RTNum, drawBuffers);
@@ -50,6 +49,7 @@ namespace PR
 		{
 			glNamedFramebufferDrawBuffer(m_RendererID, GL_NONE);
 		}
+		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 		PR_ASSERT(glCheckNamedFramebufferStatus(m_RendererID, GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
 	}
 

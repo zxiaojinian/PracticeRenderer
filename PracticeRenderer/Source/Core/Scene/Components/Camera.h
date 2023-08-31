@@ -2,12 +2,15 @@
 
 #include "Core/Scene/Component.h"
 
+#include<glm/glm.hpp>
+
 namespace PR
 {
 	class Camera : public Component
 	{
 	public:
 		Camera(GameObject& gameobject);
+		glm::vec4 GetPixelRect() const;
 
 		virtual std::string GetName() override { return "Camera"; }
 

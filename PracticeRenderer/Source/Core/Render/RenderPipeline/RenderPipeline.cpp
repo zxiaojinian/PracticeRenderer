@@ -22,27 +22,35 @@ namespace PR
 		SetupPerFrameShaderConstants();
 
 		Scene* scene = SceneManager::Get().GetCurrentScene();
-		auto& cameras = SortCameras(scene->GetCameras());
-		for (auto camera : cameras)
+		if (scene)
 		{
-			if (camera)
+			auto& cameras = SortCameras(scene->GetCameras());
+			for (auto camera : cameras)
 			{
-				RenderSingleCamera(graphicsContext, *camera);
-			}		
+				if (camera)
+				{
+					CameraData cameraData;
+					InitializeCameraData(camera, cameraData);
+					RenderSingleCamera(graphicsContext, cameraData);
+				}
+			}
 		}
 	}
 
-	void RenderPipeline::RenderSingleCamera(GraphicsContext& graphicsContext, Camera& camera)
+	void RenderPipeline::RenderSingleCamera(GraphicsContext& graphicsContext, CameraData& cameraData)
 	{
-		auto renderer = GetRenderer(camera.RendererIndex);
-		renderer->Clear();
+		auto renderer = cameraData.render;
+		if (renderer)
+		{
+			renderer->Clear();
 
-		auto cullResults = Cull(camera);
-		RenderingData renderingData;
-		InitializeRenderingData(renderingData);
+			auto cullResults = Cull(*cameraData.camera);
+			RenderingData renderingData;
+			InitializeRenderingData(renderingData, cameraData);
 
-		renderer->Setup(renderingData);
-		renderer->Execute(graphicsContext, renderingData);
+			renderer->Setup(renderingData);
+			renderer->Execute(graphicsContext, renderingData);
+		}
 	}
 
 	std::shared_ptr<CullingResults> RenderPipeline::Cull(Camera& camera)
@@ -84,16 +92,28 @@ namespace PR
 		m_Renderers.insert(m_Renderers.begin(), renderer);
 
 	}
-	std::shared_ptr<Renderer> RenderPipeline::GetRenderer(uint16_t index)
+
+	Renderer* RenderPipeline::GetRenderer(uint16_t index)
 	{
 		if (index < 0 || index >= m_Renderers.size())
 		{
 			index = 0;
 		}
-		return m_Renderers[index];
+		return m_Renderers[index].get();
 	}
 
-	void RenderPipeline::InitializeRenderingData(RenderingData& renderingData)
+	void RenderPipeline::InitializeCameraData(Camera* camera, CameraData& cameraData)
 	{
+		if (camera)
+		{
+			cameraData.camera = camera;
+			cameraData.pixelRect = camera->GetPixelRect();
+			cameraData.render = GetRenderer(camera->RendererIndex);
+		}
+	}
+
+	void RenderPipeline::InitializeRenderingData(RenderingData& renderingData, CameraData& cameraData)
+	{
+		renderingData.cameraData = cameraData;
 	}
 }

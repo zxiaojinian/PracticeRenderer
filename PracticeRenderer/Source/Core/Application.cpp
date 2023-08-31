@@ -47,8 +47,6 @@ namespace PR
 
 		m_GraphicsContext = GraphicsContext::Create();
 		m_GraphicsContext->Init();
-		m_Window->WindowEventDispatchers.AddListener(EventType::WindowResize, BIND_EVENT_PTR_FN(m_GraphicsContext, GraphicsContext::OnWindowResize));
-
 		m_RenderPipeline = std::make_unique<RenderPipeline>();
 
 		m_SceneManager.LoadScene("");

@@ -12,6 +12,7 @@ namespace PR
 	{
 		//draw fullscreen meshs
 		graphicsContext.SetBackBuffer();
+		graphicsContext.SetViewport(renderingData.cameraData.pixelRect);
 		Shader::SetTexture("u_SourceTex", m_Source.get());
 		graphicsContext.DrawMesh(Mesh::FullScreenMesh, glm::mat4(1.0f), *m_BlitMaterial);
 	}

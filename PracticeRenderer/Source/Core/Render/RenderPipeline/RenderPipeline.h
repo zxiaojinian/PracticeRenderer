@@ -24,14 +24,15 @@ namespace PR
 		void Render(GraphicsContext& graphicsContext);
 
 	private:
-		void RenderSingleCamera(GraphicsContext& graphicsContext, Camera& camera);
+		void RenderSingleCamera(GraphicsContext& graphicsContext, CameraData& cameraData);
 		std::shared_ptr<CullingResults> Cull(Camera& camera);
 		void SetupPerFrameShaderConstants();
 		std::vector<Camera*> SortCameras(const std::vector<Camera*>& cameras);
 
 		void CreateDefaultRenderer();
-		std::shared_ptr<Renderer> GetRenderer(uint16_t index);
-		void InitializeRenderingData(RenderingData& renderingData);
+		Renderer* GetRenderer(uint16_t index);
+		void InitializeCameraData(Camera* camera, CameraData& cameraData);
+		void InitializeRenderingData(RenderingData& renderingData, CameraData& cameraData);
 
 	private:
 		std::vector<std::shared_ptr<Renderer>> m_Renderers;

@@ -27,7 +27,7 @@ namespace PR
 		void SetRenderTarget(std::vector<RenderTexture>& colors, RenderTexture& depth);
 		void SetBackBuffer();
 		void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
-		void SetViewport(glm::vec4 viewPort);
+		void SetViewport(glm::u32vec4 viewPort);
 		void ClearRenderTarget(bool clearDepth, bool clearColor, Color& backgroundColor = Color::clear);
 		void DrawMesh(Mesh& mesh, const glm::mat4& matrix, Material& material);
 		void DrawRenderer(const MeshRenderer& renderer);

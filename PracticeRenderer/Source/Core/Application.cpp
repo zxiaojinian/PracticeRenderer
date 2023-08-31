@@ -5,9 +5,10 @@
 #include "Core/Log/Log.h"
 #include "Core/Event/EventData/ApplicationEvent.h"
 
-#include "Core/Scene/GameObject.h"
-#include "Core/Scene/Components/MeshRenderer.h"
-#include "Core/Asset/ShaderLibrary.h"
+//#include "Core/Scene/GameObject.h"
+//#include "Core/Scene/Components/MeshRenderer.h"
+//#include "Core/Asset/ShaderLibrary.h"
+#include "Core/Asset/ModelLoder.h"
 
 namespace PR
 {
@@ -52,22 +53,25 @@ namespace PR
 		m_SceneManager.LoadScene("");
 		auto cameraGo = new GameObject("MainCamera");
 		cameraGo->AddComponent<Camera>();
-		GameObject* go = new GameObject("Test GO");
-		auto& meshRender = go->AddComponent<MeshRenderer>();
-		std::vector<Vertex> v;
-		v.push_back({ {-0.5f, 0.0f, 1.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 0.0f} });
-		v.push_back({ {0.0f, 0.75f, 1.0f}, {0.0f, 0.0f, -1.0f}, {0.5f,0.5f} });
-		v.push_back({ {0.5f, 0.0f, 1.0f}, {0.0f, 0.0f, -1.0f}, {1.0f, 0.0f} });
-		uint32_t index[3] = { 0, 1, 2 };
-		std::vector<uint32_t> i(index, index + 5);
-		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("Test Mesh", v, i);
-		meshRender.SetMesh(mesh);
-		std::shared_ptr<Shader> shader = Shader::Create("Assets/FlatColor.glsl");
-		std::shared_ptr<Material> mat = std::make_shared<Material>("Test mat");
-		mat->SetShader(shader);
-		/*mat->SetFloat4("u_Color", { 1.0f, 1.0f, 1.0f, 1.0f });*/
-		Shader::SetFloat4("u_Color", { 1.0f, 1.0f, 1.0f, 1.0f });
-		meshRender.AddMaterial(mat);
+		//GameObject* go = new GameObject("Test GO");
+		//auto& meshRender = go->AddComponent<MeshRenderer>();
+		//std::vector<Vertex> v;
+		//v.push_back({ {-0.5f, 0.0f, 1.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 0.0f} });
+		//v.push_back({ {0.0f, 0.75f, 1.0f}, {0.0f, 0.0f, -1.0f}, {0.5f,0.5f} });
+		//v.push_back({ {0.5f, 0.0f, 1.0f}, {0.0f, 0.0f, -1.0f}, {1.0f, 0.0f} });
+		//uint32_t index[3] = { 0, 1, 2 };
+		//std::vector<uint32_t> i(index, index + 5);
+		//std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("Test Mesh", v, i);
+		//meshRender.SetMesh(mesh);
+		//std::shared_ptr<Shader> shader = Shader::Create("Assets/FlatColor.glsl");
+		//std::shared_ptr<Material> mat = std::make_shared<Material>("Test mat");
+		//mat->SetShader(shader);
+		///*mat->SetFloat4("u_Color", { 1.0f, 1.0f, 1.0f, 1.0f });*/
+		//Shader::SetFloat4("u_Color", { 1.0f, 1.0f, 1.0f, 1.0f });
+		//meshRender.AddMaterial(mat);
+		ModelLoder modelLoder;
+		modelLoder.LoadModel("Assets/Model/nanosuit/nanosuit.obj");
+
 		OnInit();
 	}
 

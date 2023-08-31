@@ -45,6 +45,6 @@ namespace PR
 			m_BlockRanges[currRangeIndex++] = currRenderPass;
 		}
 
-		m_BlockRanges[currRangeIndex] = activeRenderPassQueue.size();
+		m_BlockRanges[currRangeIndex] = static_cast<uint32_t>(activeRenderPassQueue.size());
 	}
 }

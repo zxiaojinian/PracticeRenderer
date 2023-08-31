@@ -31,7 +31,8 @@ namespace PR
 
         void Bind();
         void Unbind() const;
-        virtual uint32_t GetIndexCount() const { return static_cast<uint32_t>(m_Indices.size()); }
+        uint32_t GetIndexCount() const { return static_cast<uint32_t>(m_Indices.size()); }
+        const std::string& GetName() const { return m_Name; }
 
         static Mesh FullScreenMesh;
     private:

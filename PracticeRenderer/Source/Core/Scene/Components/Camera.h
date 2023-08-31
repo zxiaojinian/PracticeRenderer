@@ -10,7 +10,7 @@ namespace PR
 	{
 	public:
 		Camera(GameObject& gameobject);
-		glm::vec4 GetPixelRect() const;
+		glm::u32vec4 GetPixelRect() const;
 
 		virtual std::string GetName() override { return "Camera"; }
 

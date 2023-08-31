@@ -8,8 +8,8 @@ namespace PR
 		: Component(gameobject)
 	{
 	}
-	glm::vec4 Camera::GetPixelRect() const
+	glm::u32vec4 Camera::GetPixelRect() const
 	{
-		return glm::vec4(0.0f, 0.0f, Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
+		return glm::u32vec4(0, 0, Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
 	}
 }

@@ -39,7 +39,7 @@ namespace PR
 			m_Upload = true;
 
 			m_VertexArray = VertexArray::Create();
-			m_VertexBuffer = VertexBuffer::Create(m_Vertices.data(), m_Vertices.size() * sizeof(Vertex));
+			m_VertexBuffer = VertexBuffer::Create(m_Vertices.data(), static_cast<uint32_t>(m_Vertices.size()) * sizeof(Vertex));
 			m_VertexBuffer->SetLayout(
 				{
 					{ ShaderDataType::Float3, "Position" },
@@ -51,7 +51,7 @@ namespace PR
 					{ ShaderDataType::Float4, "Weights" }
 
 				});
-			m_IndexBuffer = IndexBuffer::Create(m_Indices.data(), m_Indices.size());
+			m_IndexBuffer = IndexBuffer::Create(m_Indices.data(), static_cast<uint32_t>(m_Indices.size()));
 			m_VertexArray->AddVertexBuffer(m_VertexBuffer);
 			m_VertexArray->SetIndexBuffer(m_IndexBuffer);
 		}

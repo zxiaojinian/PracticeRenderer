@@ -11,7 +11,7 @@ namespace PR
 	struct CameraData
 	{
 		Camera* camera = nullptr;
-		glm::vec4 pixelRect{ 0.0f, 0.0f, 1.0f, 1.0f };
+		glm::u32vec4 pixelRect{ 0, 0, 1, 1 };
 		Renderer* render = nullptr;
 	};
 }

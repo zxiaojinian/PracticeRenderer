@@ -125,8 +125,8 @@ public:
         unsigned int severity);
 
     // ----------------------------------------------------------------------
-    /** @copydoc Logger::detachStream */
-    bool detachStream(LogStream *pStream,
+    /** @copydoc Logger::detatchStream */
+    bool detatchStream(LogStream *pStream,
         unsigned int severity);
 
 

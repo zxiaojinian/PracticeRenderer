@@ -57,7 +57,7 @@ namespace PR
 		RenderCommand::SetViewport(x, y, width, height);
 	}
 
-	void GraphicsContext::SetViewport(glm::vec4 viewPort)
+	void GraphicsContext::SetViewport(glm::u32vec4 viewPort)
 	{
 		SetViewport(viewPort.x, viewPort.y, viewPort.z, viewPort.w);
 	}

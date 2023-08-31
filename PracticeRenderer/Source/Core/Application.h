@@ -6,6 +6,7 @@
 #include "Core/Timestep.h"
 #include "Core/Scene/SceneManager.h"
 #include "Core/Render/RenderPipeline/RenderPipeline.h"
+//#include "Core/Asset/ModelLoder.h"
 
 #include <string>
 #include <memory>
@@ -48,7 +49,7 @@ namespace PR
 		std::unique_ptr<RenderPipeline> m_RenderPipeline;
 
 		SceneManager m_SceneManager;
-
+		//ModelLoder m_ModelLoder;
 	};
 }
 

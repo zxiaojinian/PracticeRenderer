@@ -63,18 +63,12 @@ project "PracticeRenderer"
         "%{prj.name}/Dependencies/assimp/include"
     }
 
-    libdirs 
-    { 
-        "%{prj.name}/Dependencies/assimp/lib"
-    }
-
     links 
     { 
         "GLFW",
         "Glad",
         "ImGui",
         "opengl32.lib",
-        "assimp.lib"
     }
 
     filter "system:windows"
@@ -85,7 +79,31 @@ project "PracticeRenderer"
         runtime "Debug"
         symbols "on"
 
+        links 
+        { 
+            --"%{wks.location}/%{prj.name}/Dependencies/assimp/bin/Debug/assimp-vc143-mtd.lib"
+            "%{wks.location}/%{prj.name}/Dependencies/assimp/bin/Debug/assimp.lib"
+        }
+
+        postbuildcommands 
+        {
+            --'{COPY} "%{wks.location}/%{prj.name}/Dependencies/assimp/bin/Debug/assimp-vc143-mtd.dll" "%{cfg.targetdir}"'
+            '{COPY} "%{wks.location}/%{prj.name}/Dependencies/assimp/bin/Debug/assimp-vc140-mt.dll" "%{cfg.targetdir}"'
+        }
+
     filter "configurations:Release"
         defines "PR_RELEASE"
         runtime "Release"
         optimize "on"
+
+        links 
+        { 
+            --"%{wks.location}/%{prj.name}/Dependencies/assimp/bin/Release/assimp-vc143-mt.lib"
+            "%{wks.location}/%{prj.name}/Dependencies/assimp/bin/Debug/assimp.lib"
+        }
+
+        postbuildcommands 
+        {
+            --'{COPY} "%{wks.location}/%{prj.name}/Dependencies/assimp/bin/Release/assimp-vc143-mt.dll" "%{cfg.targetdir}"'
+            '{COPY} "%{wks.location}/%{prj.name}/Dependencies/assimp/bin/Debug/assimp-vc140-mt.dll" "%{cfg.targetdir}"'
+        }

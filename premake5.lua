@@ -59,7 +59,13 @@ project "PracticeRenderer"
         "%{prj.name}/Dependencies/imgui",
         "%{prj.name}/Dependencies/glm",
         "%{prj.name}/Dependencies/stb_image",
-        "%{prj.name}/Dependencies/spdlog/include"
+        "%{prj.name}/Dependencies/spdlog/include",
+        "%{prj.name}/Dependencies/assimp/include"
+    }
+
+    libdirs 
+    { 
+        "%{prj.name}/Dependencies/assimp/lib"
     }
 
     links 
@@ -67,7 +73,8 @@ project "PracticeRenderer"
         "GLFW",
         "Glad",
         "ImGui",
-        "opengl32.lib"
+        "opengl32.lib",
+        "assimp.lib"
     }
 
     filter "system:windows"

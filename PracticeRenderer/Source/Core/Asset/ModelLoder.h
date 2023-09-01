@@ -15,7 +15,7 @@ namespace PR
 		ModelLoder();
 		static ModelLoder& Get() { return *s_Instance; }
 
-		std::shared_ptr<GameObject> LoadModel(const std::string& path);
+		GameObject* LoadModel(const std::string& path);
 
 	private:
 		void processNode(GameObject* parent, aiNode* node, const aiScene* scene);

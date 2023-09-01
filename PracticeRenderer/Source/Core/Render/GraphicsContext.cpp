@@ -71,7 +71,8 @@ namespace PR
 	void GraphicsContext::DrawMesh(Mesh& mesh, const glm::mat4& matrix, Material& material)
 	{
 		mesh.Bind();
-		Shader::SetMat4("u_Model", matrix);
+		Shader::SetMat4("u_Matrix_M", matrix);
+		Shader::SetFloat4("u_Color", { 1.0f, 1.0f, 1.0f, 1.0f });
 		material.UploadProperty();
 		RenderCommand::DrawIndexed(mesh.GetIndexCount());
 	}

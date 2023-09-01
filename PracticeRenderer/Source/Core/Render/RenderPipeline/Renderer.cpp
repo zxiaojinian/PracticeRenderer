@@ -14,12 +14,17 @@ namespace PR
 		RenderBlocks renderBlocks(m_ActiveRenderPassQueue);
 		if(renderBlocks.GetLength(RenderPassBlock::BeforeRendering))
 			ExecuteBlock(graphicsContext, RenderPassBlock::BeforeRendering, renderBlocks, renderingData);
+
+		SetCameraMatrices(renderingData.cameraData);
 		if (renderBlocks.GetLength(RenderPassBlock::MainRenderingOpaque))
 			ExecuteBlock(graphicsContext, RenderPassBlock::MainRenderingOpaque, renderBlocks, renderingData);
+
 		if (renderBlocks.GetLength(RenderPassBlock::MainRenderingTransparent))
 			ExecuteBlock(graphicsContext, RenderPassBlock::MainRenderingTransparent, renderBlocks, renderingData);
+
 		if (renderBlocks.GetLength(RenderPassBlock::AfterRendering))
 			ExecuteBlock(graphicsContext, RenderPassBlock::AfterRendering, renderBlocks, renderingData);
+
 		InternalFinishRendering();
 	}
 
@@ -42,6 +47,11 @@ namespace PR
 		renderPass->Configure();
 		SetRenderPassAttachments(graphicsContext, renderPass);
 		renderPass->Execute(graphicsContext, renderingData);
+	}
+
+	void Renderer::SetCameraMatrices(const CameraData& cameraData)
+	{
+		Shader::SetMat4("u_Matrix_VP", cameraData.camera->GetViewProjectionMatrix());
 	}
 
 	void Renderer::ConfigureCameraTarget(std::shared_ptr<RenderTexture>& colorTarget, std::shared_ptr<RenderTexture>& depthTarget)

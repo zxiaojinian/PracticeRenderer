@@ -9,6 +9,7 @@
 //#include "Core/Scene/Components/MeshRenderer.h"
 //#include "Core/Asset/ShaderLibrary.h"
 #include "Core/Asset/ModelLoder.h"
+#include "Core/Scene/Components/Transform.h"
 
 namespace PR
 {
@@ -53,7 +54,10 @@ namespace PR
 		m_SceneManager.LoadScene("");
 		auto cameraGo = new GameObject("MainCamera");
 		cameraGo->AddComponent<Camera>();
+		cameraGo->GetComponent<Transform>()->SetPosition(glm::vec3(0.0f, 5.0f, 10.0f));
+
 		//GameObject* go = new GameObject("Test GO");
+		//go->GetComponent<Transform>()->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 		//auto& meshRender = go->AddComponent<MeshRenderer>();
 		//std::vector<Vertex> v;
 		//v.push_back({ {-0.5f, 0.0f, 1.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 0.0f} });
@@ -69,6 +73,7 @@ namespace PR
 		///*mat->SetFloat4("u_Color", { 1.0f, 1.0f, 1.0f, 1.0f });*/
 		//Shader::SetFloat4("u_Color", { 1.0f, 1.0f, 1.0f, 1.0f });
 		//meshRender.AddMaterial(mat);
+
 		ModelLoder modelLoder;
 		modelLoder.LoadModel("Assets/Model/nanosuit/nanosuit.obj");
 

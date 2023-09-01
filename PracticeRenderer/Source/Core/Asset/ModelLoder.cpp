@@ -20,7 +20,7 @@ namespace PR
         s_Instance = this;
     }
 
-    std::shared_ptr<GameObject> ModelLoder::LoadModel(const std::string& path)
+    GameObject* ModelLoder::LoadModel(const std::string& path)
     {
         Assimp::Importer import;
         const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -34,7 +34,7 @@ namespace PR
 
         GameObject* root = new GameObject(m_Directory);
         processNode(root, scene->mRootNode, scene);
-        return std::shared_ptr<GameObject>(root);
+        return root;
     }
 
     void ModelLoder::processNode(GameObject* parent, aiNode* node, const aiScene* scene)
@@ -50,7 +50,6 @@ namespace PR
             std::shared_ptr<Shader> shader = Shader::Create("Assets/FlatColor.glsl");
             std::shared_ptr<Material> mat = std::make_shared<Material>("Test mat");
             mat->SetShader(shader);
-            mat->SetFloat4("u_Color", { 1.0f, 1.0f, 1.0f, 1.0f });
             meshRender.AddMaterial(mat);
         }
 

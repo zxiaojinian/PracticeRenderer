@@ -32,7 +32,13 @@ namespace PR
         }
         m_Directory = path.substr(0, path.find_last_of('/'));
 
-        GameObject* root = new GameObject(m_Directory);
+        auto lastSlash = path.find_last_of("/\\");
+        lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+        auto lastDot = path.rfind('.');
+        auto count = lastDot == std::string::npos ? path.size() - lastSlash : lastDot - lastSlash;
+        std::string name = path.substr(lastSlash, count);
+
+        GameObject* root = new GameObject(name);
         processNode(root, scene->mRootNode, scene);
         return root;
     }

@@ -3,10 +3,9 @@
 #include "Core/Windows/Window.h"
 #include "Core/Render/GraphicsContext.h"
 #include "Core/Event/EventData/BaseEvent.h"
-#include "Core/Timestep.h"
+#include "Core/Time/Time.h"
 #include "Core/Scene/SceneManager.h"
 #include "Core/Render/RenderPipeline/RenderPipeline.h"
-//#include "Core/Asset/ModelLoder.h"
 
 #include <string>
 #include <memory>
@@ -24,23 +23,17 @@ namespace PR
 		Window& GetWindow() { return *m_Window; }
 		static Application& Get() { return *s_Instance; }
 	private:
-		void OnInitInternal();
-		void OnUpdateInternal();
-		void OnRenderInternal();
-		void OnExitInternal();
+		void OnInit();
+		void OnUpdate();
+		void OnRender();
+		void OnExit();
 
 		void OnWindowClose(Event& e);
 		void OnWindowResize(Event& e);
-	protected:
-		virtual void OnInit() {}
-		virtual void OnUpdate(Timestep time) {}
-		virtual void OnRender() {}
-		virtual void OnExit() {}
 
 	private:
 		bool m_Running = true;
 		bool m_Minimized = false;
-		double m_LastFrameTime = 0;
 	private:
 		static Application* s_Instance;
 
@@ -49,7 +42,7 @@ namespace PR
 		std::unique_ptr<RenderPipeline> m_RenderPipeline;
 
 		SceneManager m_SceneManager;
-		//ModelLoder m_ModelLoder;
+		Time m_Time;
 	};
 }
 

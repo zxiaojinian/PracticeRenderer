@@ -56,7 +56,7 @@ namespace PR
 		ParentSpaceChange();
 	}
 
-	void Transform::SetLocalRotation(const glm::qua<float>& rotation)
+	void Transform::SetLocalRotation(const glm::quat& rotation)
 	{
 		m_LocalRotation = rotation;
 		ParentSpaceChange();
@@ -80,7 +80,7 @@ namespace PR
 		WorldSpaceChange();
 	}
 
-	void Transform::SetRotation(const glm::qua<float>& rotation)
+	void Transform::SetRotation(const glm::quat& rotation)
 	{
 		m_Rotation = rotation;
 		WorldSpaceChange();
@@ -122,6 +122,39 @@ namespace PR
 		return m_LocalToWorldMatrix[2];
 	}
 
+	void Transform::Translate(const glm::vec3& translation, Space relativeTo)
+	{
+		if (relativeTo == Space::Self)
+		{
+			SetPosition(m_Position + GetRight() * translation.x + GetUp() * translation.y + GetForward() * translation.z);
+		}
+		else
+		{
+			SetPosition(m_Position + translation);
+		}
+	}
+
+	void Transform::LookAt(const glm::vec3& target, const glm::vec3& worldUp)
+	{
+		glm::mat4 result;
+		glm::vec3 direction = glm::normalize(target - m_Position);
+		result[2] = glm::vec4(direction, 0.0f);
+		glm::vec3 right = glm::cross(worldUp, direction);
+		right = glm::normalize(right);
+		result[0] = glm::vec4(right, 0.0f);
+		glm::vec3 up= glm::cross(direction, right);
+		result[1] = glm::vec4(up, 0.0f);
+
+		glm::quat r;
+		DecomposeMatrix(result, nullptr, &r, nullptr);
+		SetRotation(r);
+	}
+
+	void Transform::LookAt(const Transform& target, const glm::vec3& worldUp)
+	{
+		LookAt(target.GetPosition(), worldUp);
+	}
+
 	void Transform::ParentSpaceChange()
 	{
 		m_LocalToParentMatrix = glm::translate(glm::mat4(1.0f), m_LocalPosition) * glm::mat4_cast(m_LocalRotation) * glm::scale(glm::mat4(1.0f), m_LocalScale);
@@ -139,7 +172,7 @@ namespace PR
 		if (m_Parent)
 		{
 			m_LocalToParentMatrix = glm::inverse(m_Parent->m_LocalToWorldMatrix) * m_LocalToWorldMatrix;
-			DecomposeMatrix(m_LocalToParentMatrix, m_LocalPosition, m_LocalRotation, m_LocalScale);
+			DecomposeMatrix(m_LocalToParentMatrix, &m_LocalPosition, &m_LocalRotation, &m_LocalScale);
 		}
 		else
 		{
@@ -161,7 +194,7 @@ namespace PR
 		if (m_Parent)
 		{
 			m_LocalToWorldMatrix = m_Parent->m_LocalToWorldMatrix * m_LocalToParentMatrix;
-			DecomposeMatrix(m_LocalToWorldMatrix, m_Position, m_Rotation, m_Scale);
+			DecomposeMatrix(m_LocalToWorldMatrix, &m_Position, &m_Rotation, &m_Scale);
 		}
 		else
 		{
@@ -178,18 +211,26 @@ namespace PR
 		}
 	}
 
-	void Transform::DecomposeMatrix(const glm::mat4& m, glm::vec3& pos, glm::quat& rotation, glm::vec3& scale)
+	void Transform::DecomposeMatrix(const glm::mat4& m, glm::vec3* pos, glm::quat* rotation, glm::vec3* scale)
 	{
-		pos = m[3];
+		if(pos)
+			*pos = m[3];
 
-		for (int i = 0; i < 3; i++)
-			scale[i] = glm::length(glm::vec3(m[i]));
-
-		const glm::mat3 rotationMatrix(
-			scale[0] ? glm::vec3(m[0]) : glm::vec3(m[0]) / scale[0],
-			scale[1] ? glm::vec3(m[1]) : glm::vec3(m[1]) / scale[1],
-			scale[2] ? glm::vec3(m[2]) : glm::vec3(m[2]) / scale[2]);
-		rotation = glm::quat_cast(rotationMatrix);
+		if (scale)
+		{
+			for (int i = 0; i < 3; i++)
+				(*scale)[i] = glm::length(glm::vec3(m[i]));
+		}
+		
+		if (rotation)
+		{
+			glm::vec3 s = scale ? *scale : glm::vec3(1.0f);
+			const glm::mat3 rotationMatrix(
+				s[0] ? glm::vec3(m[0]) : glm::vec3(m[0]) / s[0],
+				s[1] ? glm::vec3(m[1]) : glm::vec3(m[1]) / s[1],
+				s[2] ? glm::vec3(m[2]) : glm::vec3(m[2]) / s[2]);
+			*rotation = glm::quat_cast(rotationMatrix);
+		}
 	}
 
 }

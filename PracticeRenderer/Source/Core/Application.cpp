@@ -5,23 +5,22 @@
 #include "Core/Log/Log.h"
 #include "Core/Event/EventData/ApplicationEvent.h"
 
-//#include "Core/Scene/GameObject.h"
-//#include "Core/Scene/Components/MeshRenderer.h"
-//#include "Core/Asset/ShaderLibrary.h"
 #include "Core/Asset/ModelLoder.h"
 #include "Core/Scene/Components/Transform.h"
+#include "Core/Scene/Components/Camera.h"
+#include "Core/Scene/Components/CameraController.h"
 
 namespace PR
 {
 	Application* Application::s_Instance = nullptr;
 	Application::Application(const std::string& name)
 	{
-		OnInitInternal();
+		OnInit();
 	}
 
 	Application::~Application()
 	{
-		OnExitInternal();
+		OnExit();
 	}
 
 	void Application::Run()
@@ -31,77 +30,56 @@ namespace PR
 			m_Window->PollEvents();
 			if (!m_Minimized)
 			{
-				OnUpdateInternal();
-				OnRenderInternal();
+				OnUpdate();
+				OnRender();
 			}
 		}
 	}
 
-	void Application::OnInitInternal()
+	void Application::OnInit()
 	{
 		s_Instance = this;
 
 		Log::Init();
+
 		WindowProps windowProps{ "PR", 1920, 1080 };
 		m_Window = std::make_unique<Window>(windowProps);
 		m_Window->WindowEventDispatchers.AddListener(EventType::WindowResize, BIND_EVENT_FN(Application::OnWindowResize));
 		m_Window->WindowEventDispatchers.AddListener(EventType::WindowClose, BIND_EVENT_FN(Application::OnWindowClose));
 
+		m_Time.Init(m_Window->GetTime());
 		m_GraphicsContext = GraphicsContext::Create();
 		m_GraphicsContext->Init();
 		m_RenderPipeline = std::make_unique<RenderPipeline>();
-
 		m_SceneManager.LoadScene("");
+
+		//Test
 		auto cameraGo = new GameObject("MainCamera");
 		cameraGo->AddComponent<Camera>();
-		cameraGo->GetComponent<Transform>()->SetPosition(glm::vec3(0.0f, 5.0f, 10.0f));
-
-		//GameObject* go = new GameObject("Test GO");
-		//go->GetComponent<Transform>()->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-		//auto& meshRender = go->AddComponent<MeshRenderer>();
-		//std::vector<Vertex> v;
-		//v.push_back({ {-0.5f, 0.0f, 1.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 0.0f} });
-		//v.push_back({ {0.0f, 0.75f, 1.0f}, {0.0f, 0.0f, -1.0f}, {0.5f,0.5f} });
-		//v.push_back({ {0.5f, 0.0f, 1.0f}, {0.0f, 0.0f, -1.0f}, {1.0f, 0.0f} });
-		//uint32_t index[3] = { 0, 1, 2 };
-		//std::vector<uint32_t> i(index, index + 5);
-		//std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("Test Mesh", v, i);
-		//meshRender.SetMesh(mesh);
-		//std::shared_ptr<Shader> shader = Shader::Create("Assets/FlatColor.glsl");
-		//std::shared_ptr<Material> mat = std::make_shared<Material>("Test mat");
-		//mat->SetShader(shader);
-		///*mat->SetFloat4("u_Color", { 1.0f, 1.0f, 1.0f, 1.0f });*/
-		//Shader::SetFloat4("u_Color", { 1.0f, 1.0f, 1.0f, 1.0f });
-		//meshRender.AddMaterial(mat);
-
+		cameraGo->GetComponent<Transform>()->SetPosition(glm::vec3(0.0f, 0.0f, 10.0f));
+		cameraGo->AddComponent<CameraController>();
 		ModelLoder modelLoder;
 		modelLoder.LoadModel("Assets/Model/nanosuit/nanosuit.obj");
-
-		OnInit();
+		//modelLoder.LoadModel("Assets/Model/Sponza/Sponza_Modular.FBX");
 	}
 
-	void Application::OnUpdateInternal()
+	void Application::OnUpdate()
 	{
-		double time = m_Window->GetTime();
-		Timestep timestep = time - m_LastFrameTime;
-		m_LastFrameTime = time;
-
+		m_Time.Upadte(m_Window->GetTime());
 		m_Window->OnUpdate();
 		m_SceneManager.GetCurrentScene()->OnUpdate();
 
-		OnUpdate(timestep);
 	}
 
-	void Application::OnRenderInternal()
+	void Application::OnRender()
 	{
 		m_RenderPipeline->Render(*m_GraphicsContext);
-		OnRender();
 		m_Window->SwapBuffers();
 	}
 
-	void Application::OnExitInternal()
+	void Application::OnExit()
 	{
-		OnExit();
+
 	}
 
 	void Application::OnWindowClose(Event& e)

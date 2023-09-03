@@ -1,8 +1,23 @@
 #include "pch.h"
 #include "Scene.h"
 
+//#include "Core/Asset/ModelLoder.h"
+//#include "Core/Scene/Components/Transform.h"
+//#include "Core/Scene/Components/Camera.h"
+//#include "Core/Scene/Components/CameraController.h"
+
 namespace PR
 {
+	Scene::Scene()
+	{
+		//auto cameraGo = new GameObject("MainCamera");
+		//cameraGo->AddComponent<Camera>();
+		//cameraGo->GetComponent<Transform>()->SetPosition(glm::vec3(0.0f, 0.0f, 10.0f));
+		//cameraGo->AddComponent<CameraController>();
+		//ModelLoder modelLoder;
+		//modelLoder.LoadModel("Assets/Model/nanosuit/nanosuit.obj");
+	}
+
 	Scene::~Scene()
 	{
 		for (auto go : m_GameObjects)

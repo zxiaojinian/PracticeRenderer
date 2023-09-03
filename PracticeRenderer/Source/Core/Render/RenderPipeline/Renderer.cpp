@@ -51,7 +51,8 @@ namespace PR
 
 	void Renderer::SetCameraMatrices(const CameraData& cameraData)
 	{
-		Shader::SetMat4("u_Matrix_VP", cameraData.camera->GetViewProjectionMatrix());
+		auto& vpMatrix = cameraData.camera->GetViewProjectionMatrix();
+		Shader::SetMat4("u_Matrix_VP", vpMatrix);
 	}
 
 	void Renderer::ConfigureCameraTarget(std::shared_ptr<RenderTexture>& colorTarget, std::shared_ptr<RenderTexture>& depthTarget)

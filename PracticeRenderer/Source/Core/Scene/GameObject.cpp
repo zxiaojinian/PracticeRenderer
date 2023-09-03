@@ -9,6 +9,8 @@ namespace PR
 		: m_Name(name), m_Transform(AddComponent<Transform>())
 	{
 		SceneManager::Get().GetCurrentScene()->AddGameObject(*this);
+		OnAwake();
+		
 	}
 
 	GameObject::~GameObject()
@@ -118,12 +120,13 @@ namespace PR
 				if (*c == this)
 				{
 					m_Parent->m_Children.erase(c);
-					return;
+					break;
 				}
 			}
 		}
 
 		m_Parent = nullptr;
+		m_Transform.SetParent(nullptr);
 	}
 
 	void GameObject::MarkAsDestroy()

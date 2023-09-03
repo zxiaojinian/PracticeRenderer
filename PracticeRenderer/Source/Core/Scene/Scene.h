@@ -13,7 +13,7 @@ namespace PR
 	{
 		friend class GameObject;
 	public:
-		Scene() = default;
+		Scene();
 		~Scene();
 
 		void OnFixedUpdate();

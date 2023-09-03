@@ -26,7 +26,7 @@ namespace PR
 	private:
 		void RenderSingleCamera(GraphicsContext& graphicsContext, CameraData& cameraData);
 		std::shared_ptr<CullingResults> Cull(Camera& camera);
-		void SetupPerFrameShaderConstants();
+		void SetupPerFrameShaderConstants(GraphicsContext& graphicsContext);
 		std::vector<Camera*> SortCameras(const std::vector<Camera*>& cameras);
 
 		void CreateDefaultRenderer();

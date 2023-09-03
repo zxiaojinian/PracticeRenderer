@@ -7,6 +7,7 @@
 #include "Core/Render/RenderCommand.h"
 
 #include "Core/Scene/SceneManager.h"
+#include "Core/Scene/Components/Transform.h"
 #include "Core/Event/EventData/ApplicationEvent.h"
 
 namespace PR

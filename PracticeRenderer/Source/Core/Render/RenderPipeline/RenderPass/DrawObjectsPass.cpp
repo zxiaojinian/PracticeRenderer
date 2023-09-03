@@ -4,6 +4,8 @@
 #include "Core/Render/RenderData/DrawingSettings.h"
 #include "Core/Render/RenderData/FilteringSettings.h"
 
+#include <glad/glad.h>
+
 namespace PR
 {
 	DrawObjectsPass::DrawObjectsPass(RenderPassEvent renderPassEvent) : RenderPass(renderPassEvent)
@@ -15,6 +17,8 @@ namespace PR
 	{
 		DrawingSettings drawingSettings;
 		FilteringSettings filteringSettings;
+
+		glEnable(GL_DEPTH_TEST);
 		graphicsContext.DrawRenderers(renderingData.cullResults, drawingSettings, filteringSettings);
 	}
 }

@@ -4,10 +4,7 @@
 #include "Core/Log/Log.h"
 #include "Core/Scene/Components/MeshRenderer.h"
 #include "Core/Asset/ShaderLibrary.h"
-
-#include "Core/Scene/SceneManager.h"
-#include "Core/Scene/GameObject.h"
-#include "Core/Render/Asset/Mesh.h"
+#include "Core/Scene/Scene.h"
 
 #include <vector>
 
@@ -20,12 +17,12 @@ namespace PR
         s_Instance = this;
     }
 
-    GameObject* ModelLoder::LoadModel(const std::string& path)
+    GameObject* ModelLoder::LoadModel(const std::string& path, Scene* scene)
     {
         Assimp::Importer import;
-        const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+        const aiScene* aiscene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
-        if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+        if (!aiscene || aiscene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !aiscene->mRootNode)
         {
             PR_LOG_ERROR("ERROR::ASSIMP::import.GetErrorString()");
             return nullptr;
@@ -38,22 +35,22 @@ namespace PR
         auto count = lastDot == std::string::npos ? path.size() - lastSlash : lastDot - lastSlash;
         std::string name = path.substr(lastSlash, count);
 
-        GameObject* root = new GameObject(name);
-        processNode(root, scene->mRootNode, scene);
+        GameObject* root = new GameObject(name, scene);
+        processNode(root, aiscene->mRootNode, aiscene, scene);
         return root;
     }
 
-    void ModelLoder::processNode(GameObject* parent, aiNode* node, const aiScene* scene)
+    void ModelLoder::processNode(GameObject* parent, aiNode* node, const aiScene* aiscene, Scene* scene)
     {
         for (unsigned int i = 0; i < node->mNumMeshes; i++)
         {
-            auto mesh = processMesh(scene->mMeshes[node->mMeshes[i]], scene);
-            GameObject* go = new GameObject(mesh->GetName());
+            auto mesh = processMesh(aiscene->mMeshes[node->mMeshes[i]], aiscene);
+            GameObject* go = new GameObject(mesh->GetName(), scene);
             go->SetParent(parent);
 
             MeshRenderer& meshRender = go->AddComponent<MeshRenderer>();
             meshRender.SetMesh(std::shared_ptr<Mesh>(mesh));
-            std::shared_ptr<Shader> shader = Shader::Create("Assets/FlatColor.glsl");
+            std::shared_ptr<Shader> shader = Shader::Create("Assets/SimpleLit.glsl");
             std::shared_ptr<Material> mat = std::make_shared<Material>("Test mat");
             mat->SetShader(shader);
             meshRender.AddMaterial(mat);
@@ -61,7 +58,7 @@ namespace PR
 
         for (unsigned int i = 0; i < node->mNumChildren; i++)
         {
-            processNode(parent, node->mChildren[i], scene);
+            processNode(parent, node->mChildren[i], aiscene, scene);
         }
     }
 

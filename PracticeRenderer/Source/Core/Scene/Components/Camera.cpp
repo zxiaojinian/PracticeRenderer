@@ -1,5 +1,8 @@
 #include "pch.h"
 #include "Camera.h"
+
+#include "Core/Application.h"
+#include "Core/Scene/Components/Transform.h"
 #include "Core/Application.h"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -7,8 +10,10 @@
 namespace PR
 {
 	Camera::Camera(GameObject& gameobject)
-		: Component(gameobject), m_ProjectionMatrix(glm::perspective(glm::radians(45.0f), 1920.0f/1080.0f, 0.3f, 1000.0f))
+		: Component(gameobject), 
+		m_ProjectionMatrix(glm::perspective(glm::radians(m_Fov), (float)Application::Get().GetWindow().GetWidth() / Application::Get().GetWindow().GetHeight(), m_NearPlane, m_FarPlane))
 	{
+		m_Transform.SetPosition(glm::vec3(0.0f, 0.0f, 10.0f));
 	}
 
 	glm::u32vec4 Camera::GetPixelRect() const

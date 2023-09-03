@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Core/Scene/GameObject.h"
 #include "Core/Scene/Components/Camera.h"
 #include "Core/Scene/Components/Light.h"
 #include "Core/Scene/Components/MeshRenderer.h"
@@ -11,6 +10,7 @@ namespace PR
 {
 	class Scene
 	{
+		//class GameObject;
 		friend class GameObject;
 	public:
 		Scene();
@@ -20,8 +20,6 @@ namespace PR
 		void OnUpdate();
 		void OnLateUpdate();
 
-		GameObject& CreateGameObject();
-		GameObject& CreateGameObject(const std::string& name);
 		bool DestroyGameObject(GameObject& go);
 
 		std::vector<GameObject*>& GetGameObjecs();

@@ -12,6 +12,7 @@ namespace PR
 		: Component(gameobject)
 	{
 		m_DisallowMultipleComponent = true;
+		m_Transform.SetEulerAngles(30.0f, -130.f, 0.0f);
 	}
 
 	const LightData& Light::GetLightData()
@@ -24,7 +25,7 @@ namespace PR
 	{
 		if (Type == LightType::Directional)
 		{
-			glm::vec3 dir = m_Transform.GetForward();
+			glm::vec3 dir = -m_Transform.GetForward();
 			m_LightData.Position = { dir, 0.0f };
 		}
 		else

@@ -5,11 +5,6 @@
 #include "Core/Log/Log.h"
 #include "Core/Event/EventData/ApplicationEvent.h"
 
-#include "Core/Asset/ModelLoder.h"
-#include "Core/Scene/Components/Transform.h"
-#include "Core/Scene/Components/Camera.h"
-#include "Core/Scene/Components/CameraController.h"
-
 namespace PR
 {
 	Application* Application::s_Instance = nullptr;
@@ -50,24 +45,16 @@ namespace PR
 		m_Time.Init(m_Window->GetTime());
 		m_GraphicsContext = GraphicsContext::Create();
 		m_GraphicsContext->Init();
-		m_RenderPipeline = std::make_unique<RenderPipeline>();
-		m_SceneManager.LoadScene("");
 
-		//Test
-		auto cameraGo = new GameObject("MainCamera");
-		cameraGo->AddComponent<Camera>();
-		cameraGo->GetComponent<Transform>()->SetPosition(glm::vec3(0.0f, 0.0f, 10.0f));
-		cameraGo->AddComponent<CameraController>();
-		ModelLoder modelLoder;
-		modelLoder.LoadModel("Assets/Model/nanosuit/nanosuit.obj");
-		//modelLoder.LoadModel("Assets/Model/Sponza/Sponza_Modular.FBX");
+		m_SceneManager = std::make_unique<SceneManager>();
+		m_RenderPipeline = std::make_unique<RenderPipeline>();
 	}
 
 	void Application::OnUpdate()
 	{
 		m_Time.Upadte(m_Window->GetTime());
 		m_Window->OnUpdate();
-		m_SceneManager.GetCurrentScene()->OnUpdate();
+		m_SceneManager->GetCurrentScene()->OnUpdate();
 
 	}
 

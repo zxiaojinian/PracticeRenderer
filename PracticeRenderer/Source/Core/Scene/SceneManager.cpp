@@ -8,6 +8,7 @@ namespace PR
 	SceneManager::SceneManager()
 	{
 		s_Instance = this;
+		LoadScene("");
 	}
 
 	SceneManager::~SceneManager()
@@ -26,11 +27,6 @@ namespace PR
 
 	Scene* SceneManager::GetCurrentScene()
 	{
-		if (!m_currentScene)
-		{
-			LoadScene("");
-
-		}
 		return m_currentScene;
 	}
 }

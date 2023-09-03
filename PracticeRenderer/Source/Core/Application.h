@@ -40,8 +40,7 @@ namespace PR
 		std::unique_ptr<Window> m_Window;
 		std::unique_ptr<GraphicsContext> m_GraphicsContext;
 		std::unique_ptr<RenderPipeline> m_RenderPipeline;
-
-		SceneManager m_SceneManager;
+		std::unique_ptr<SceneManager> m_SceneManager;
 		Time m_Time;
 	};
 }

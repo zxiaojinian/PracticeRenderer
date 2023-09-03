@@ -2,6 +2,7 @@
 #include "Material.h"
 
 #include "Core/Common.h"
+#include "Core/Render/RenderCommand.h"
 
 namespace PR
 {

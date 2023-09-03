@@ -19,7 +19,7 @@ namespace PR
 
 	void RenderPipeline::Render(GraphicsContext& graphicsContext)
 	{
-		SetupPerFrameShaderConstants();
+		SetupPerFrameShaderConstants(graphicsContext);
 
 		Scene* scene = SceneManager::Get().GetCurrentScene();
 		if (scene)
@@ -59,8 +59,11 @@ namespace PR
 		return cullResults;
 	}
 
-	void RenderPipeline::SetupPerFrameShaderConstants()
+	void RenderPipeline::SetupPerFrameShaderConstants(GraphicsContext& graphicsContext)
 	{
+		auto lights = SceneManager::Get().GetCurrentScene()->GetLights();
+		if(lights.size())
+			Shader::SetFloat4("u_LightPosition", lights[0]->GetLightData().Position);
 	}
 
 	std::vector<Camera*> RenderPipeline::SortCameras(const std::vector<Camera*>& cameras)

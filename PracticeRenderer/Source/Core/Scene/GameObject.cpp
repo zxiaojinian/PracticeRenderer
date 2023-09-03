@@ -5,12 +5,25 @@
 
 namespace PR
 {
-	GameObject::GameObject(const std::string& name)
+	GameObject::GameObject(const std::string& name, Scene* scene)
 		: m_Name(name), m_Transform(AddComponent<Transform>())
 	{
-		SceneManager::Get().GetCurrentScene()->AddGameObject(*this);
-		OnAwake();
-		
+		if (scene)
+		{
+			m_BelongToScene = scene;
+		}
+		else
+		{
+			m_BelongToScene = SceneManager::Get().GetCurrentScene();
+		}
+
+		PR_ASSERT(m_BelongToScene, "The gameobject {0} does not belong to any scene", name);
+		if (m_BelongToScene)
+		{
+			m_BelongToScene->AddGameObject(*this);
+		}
+
+		OnAwake();		
 	}
 
 	GameObject::~GameObject()
@@ -26,9 +39,12 @@ namespace PR
 			child->DetachParent();
 		DetachParent();
 
-		for (auto& component : m_Components)
+		if (m_BelongToScene)
 		{
-			SceneManager::Get().GetCurrentScene()->OnComponentRemove(*component);
+			for (auto& component : m_Components)
+			{
+				m_BelongToScene->OnComponentRemove(*component);
+			}
 		}
 
 		for (auto child : m_Children)
@@ -68,7 +84,8 @@ namespace PR
 		{
 			if (c->get() == &component)
 			{
-				SceneManager::Get().GetCurrentScene()->OnComponentRemove(component);
+				if(m_BelongToScene)
+					m_BelongToScene->OnComponentRemove(component);
 				m_Components.erase(c);
 				return;
 			}

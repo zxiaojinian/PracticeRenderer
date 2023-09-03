@@ -2,13 +2,14 @@
 
 #include "Core/Scene/Component.h"
 #include "Core/Scene/Components/Transform.h"
+#include "Core/Scene/Scene.h"
 
 namespace PR
 {
 	class GameObject
 	{
 	public:
-		GameObject(const std::string& name);
+		GameObject(const std::string& name, Scene* scene);
 		~GameObject();
 
 		const std::string& GetName() const { return m_Name; }
@@ -52,6 +53,8 @@ namespace PR
 		void OnDestroy();
 
 	private:
+		Scene* m_BelongToScene = nullptr;
+
 		std::string m_Name;
 		bool m_ActiveSelf = true;
 

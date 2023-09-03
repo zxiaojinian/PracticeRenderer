@@ -84,9 +84,13 @@ namespace PR
 			dir.y = -1.0f;
 		}
 
+		float speedFactor = 1.0f;
+		if (Input::IsKeyPressed(KeyCode::LeftShift))
+			speedFactor = 5.0f;
+
 		if (dir.x || dir.y || dir.z)
 		{
-			m_Transform.Translate(glm::normalize(dir) * Time::DletaTime() * m_MoveSpeed, Space::Self);
+			m_Transform.Translate(glm::normalize(dir) * Time::DletaTime() * m_MoveSpeed * speedFactor, Space::Self);
 		}
 	}
 }

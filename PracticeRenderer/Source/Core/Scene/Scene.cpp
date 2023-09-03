@@ -1,21 +1,30 @@
 #include "pch.h"
 #include "Scene.h"
 
-//#include "Core/Asset/ModelLoder.h"
-//#include "Core/Scene/Components/Transform.h"
-//#include "Core/Scene/Components/Camera.h"
-//#include "Core/Scene/Components/CameraController.h"
+#include "Core/Scene/GameObject.h"
+
+#include "Core/Scene/Components/Transform.h"
+#include "Core/Scene/Components/Camera.h"
+#include "Core/Scene/Components/CameraController.h"
+#include "Core/Asset/ModelLoder.h"
 
 namespace PR
 {
 	Scene::Scene()
 	{
-		//auto cameraGo = new GameObject("MainCamera");
-		//cameraGo->AddComponent<Camera>();
-		//cameraGo->GetComponent<Transform>()->SetPosition(glm::vec3(0.0f, 0.0f, 10.0f));
-		//cameraGo->AddComponent<CameraController>();
-		//ModelLoder modelLoder;
-		//modelLoder.LoadModel("Assets/Model/nanosuit/nanosuit.obj");
+		auto mainCamera = new GameObject("MainCamera", this);
+		mainCamera->AddComponent<Camera>();
+		mainCamera->AddComponent<CameraController>();
+
+		auto directionalLight = new GameObject("Directional Light", this);
+		directionalLight->AddComponent<Light>();
+
+		ModelLoder modelLoder;
+		//std::string path = "Assets/Model/nanosuit/nanosuit.obj";
+		//std::string path = "Assets/Model/Sponza/Sponza_Modular.FBX";
+		//std::string path = "Assets/Model/sphere.fbx";
+		std::string path = "Assets/Model/Sponza/sponza.fbx";
+		modelLoder.LoadModel(path, this);
 	}
 
 	Scene::~Scene()
@@ -74,20 +83,6 @@ namespace PR
 			m_Lights.erase(std::remove(m_Lights.begin(), m_Lights.end(), c));
 		else if (auto c = dynamic_cast<MeshRenderer*>(&component))
 			m_MeshRenderers.erase(std::remove(m_MeshRenderers.begin(), m_MeshRenderers.end(), c));
-	}
-
-	GameObject& Scene::CreateGameObject()
-	{
-		auto go = new GameObject("New GameObject");
-		AddGameObject(*go);
-		return *go;
-	}
-
-	GameObject& Scene::CreateGameObject(const std::string& name)
-	{
-		auto go = new GameObject(name);
-		AddGameObject(*go);
-		return *go;
 	}
 
 	bool Scene::DestroyGameObject(GameObject& go)

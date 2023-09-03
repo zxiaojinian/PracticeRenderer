@@ -44,6 +44,11 @@ namespace PR
 		ParentSpaceChange();
 	}
 
+	void Transform::SetLocalEulerAngles(float x, float y, float z)
+	{
+		SetLocalEulerAngles(glm::vec3(x, y, z));
+	}
+
 	void Transform::SetLocalPosition(const glm::vec3& pos)
 	{
 		m_LocalPosition = pos;
@@ -64,8 +69,13 @@ namespace PR
 
 	void Transform::SetEulerAngles(const glm::vec3& angle)
 	{
-		m_Rotation = glm::qua<float>(glm::radians(angle));
+		m_Rotation = glm::quat(glm::radians(angle));
 		WorldSpaceChange();
+	}
+
+	void Transform::SetEulerAngles(float x, float y, float z)
+	{
+		SetEulerAngles(glm::vec3(x, y, z));
 	}
 
 	void Transform::SetPosition(const glm::vec3& pos)

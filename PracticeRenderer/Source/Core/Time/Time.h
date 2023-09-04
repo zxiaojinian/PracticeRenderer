@@ -7,7 +7,7 @@ namespace PR
 	public:
 		Time();
 		static Time& Get() { return *s_Instance; }
-		static float DletaTime() { return s_Instance ? s_Instance->m_DletaTime : 0.0; }
+		static float DletaTime() { return s_Instance ? s_Instance->m_DletaTime : 0.0f; }
 
 		void Init(double startTime);
 		void Upadte(double curTime);

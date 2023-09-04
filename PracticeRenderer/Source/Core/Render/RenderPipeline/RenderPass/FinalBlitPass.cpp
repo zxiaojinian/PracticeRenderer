@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "FinalBlitPass.h"
 
-#include <glad/glad.h>
-
 namespace PR
 {
 	FinalBlitPass::FinalBlitPass(RenderPassEvent renderPassEvent, std::shared_ptr<Material>& blitMaterial) : RenderPass(renderPassEvent)
@@ -13,9 +11,6 @@ namespace PR
 	void FinalBlitPass::Execute(GraphicsContext& graphicsContext, const RenderingData& renderingData)
 	{
 		//draw fullscreen meshs
-
-		glDisable(GL_DEPTH_TEST);
-
 		graphicsContext.SetBackBuffer();
 		graphicsContext.SetViewport(renderingData.cameraData.pixelRect);
 		Shader::SetTexture("u_SourceTex", m_Source.get());

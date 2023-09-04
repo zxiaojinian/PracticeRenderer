@@ -74,7 +74,7 @@ namespace PR
 		mesh.Bind();
 		Shader::SetMat4("u_Matrix_M", matrix);
 		Shader::SetFloat4("u_Color", { 1.0f, 1.0f, 1.0f, 1.0f });
-		material.UploadProperty();
+		material.Bind();
 		RenderCommand::DrawIndexed(mesh.GetIndexCount());
 	}
 

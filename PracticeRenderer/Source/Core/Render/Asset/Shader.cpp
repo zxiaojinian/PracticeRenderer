@@ -6,6 +6,7 @@
 #include "Core/Render/OpenGL/OpenGLShader.h"
 #include "Core/Render/Texture.h"
 #include "Core/Render/RenderTexture.h"
+#include "Core/Render/RenderCommand.h"
 
 namespace PR
 {
@@ -116,6 +117,13 @@ namespace PR
 			}
 
 		}
+	}
+
+	void Shader::SetRenderState()
+	{
+		RenderCommand::SetDepthCompareFunction(m_RenderStateBlock.depthState.compareFunction);
+		if(m_RenderStateBlock.depthState.compareFunction != CompareFunction::Disabled)
+			RenderCommand::SetDepthWriteEnabled(m_RenderStateBlock.depthState.writeEnabled);
 	}
 
 	void Shader::SetInt(const std::string& name, int value)

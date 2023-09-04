@@ -4,5 +4,5 @@
 
 struct RenderStateBlock
 {
-
+	DepthState depthState;
 };

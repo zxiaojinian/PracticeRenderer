@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Core/Render/Texture.h"
-
+#include "Core/Render/RenderState/RenderStateBlock.h"
 #include <glm/glm.hpp>
 
 #include <string>
@@ -43,11 +43,12 @@ namespace PR
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
-		bool HaveProperty(const std::string& property);
-
 		virtual const std::string& GetName() const = 0;
 
+		bool HaveProperty(const std::string& property);
 		void UploadProperty(const std::unordered_map<std::string, PropertyValue>& materialValue);
+		void SetRenderState();
+		RenderStateBlock& GetRenderStateBlock() { return m_RenderStateBlock; }
 
 		static void SetInt(const std::string& name, int value);
 		static void SetFloat(const std::string& name, float value);
@@ -63,6 +64,7 @@ namespace PR
 
 	protected:
 		virtual void CollectProperty() = 0;
+		virtual void CollectRenderState() = 0;
 
 		virtual void UploadInt(const std::string& name, int value) = 0;
 		virtual void UploadFloat(const std::string& name, float value) = 0;
@@ -73,8 +75,10 @@ namespace PR
 		//virtual void UploadIntArray(const std::string& name, int* values, uint32_t count) = 0;
 
 	protected:
+		RenderStateBlock m_RenderStateBlock;
 		std::vector<PropertyData> m_PropertyData;
 		static std::unordered_map<std::string, PropertyValue> s_PropertyValue;
+
 	};
 }
 

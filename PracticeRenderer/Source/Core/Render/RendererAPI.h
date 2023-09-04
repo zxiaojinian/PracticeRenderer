@@ -2,6 +2,7 @@
 
 #include "Core/Render/VertexArray.h"
 #include "Core/Render/RenderData/Color.h"
+#include "Core/Render/RenderState/CompareFunction.h"
 
 #include <glm/glm.hpp>
 
@@ -20,6 +21,8 @@ namespace PR
 	public:
 		virtual ~RendererAPI() = default;
 
+		virtual void SetDepthCompareFunction(const CompareFunction& compareFunction) = 0;
+		virtual void SetDepthWriteEnabled(bool enbale) = 0;
 		virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) = 0;
 		virtual void SetClearColor(const Color& color) = 0;
 		virtual void Clear(bool clearDepth, bool clearColor) = 0;

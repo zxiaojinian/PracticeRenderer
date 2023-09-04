@@ -3,6 +3,7 @@
 #include "Core/Render/RendererAPI.h"
 #include "Core/Render/VertexArray.h"
 #include "Core/Render/RenderData/Color.h"
+#include "Core/Render/RenderState/CompareFunction.h"
 
 #include <glm/glm.hpp>
 
@@ -13,6 +14,16 @@ namespace PR
 	class RenderCommand
 	{
 	public:
+		static void SetDepthCompareFunction(const CompareFunction& compareFunction)
+		{
+			s_RendererAPI->SetDepthCompareFunction(compareFunction);
+		}
+
+		static void SetDepthWriteEnabled(bool enbale)
+		{
+			s_RendererAPI->SetDepthWriteEnabled(enbale);
+		}
+
 		static void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 		{
 			s_RendererAPI->SetViewport(x, y, width, height);

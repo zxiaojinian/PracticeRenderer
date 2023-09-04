@@ -30,6 +30,7 @@ namespace PR
 
 	protected:
 		virtual void CollectProperty() override;
+		virtual void CollectRenderState() override;
 
 	private:
 		std::string ReadFile(const std::string& filepath);

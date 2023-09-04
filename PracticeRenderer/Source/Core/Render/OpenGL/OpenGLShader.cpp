@@ -35,18 +35,19 @@ namespace PR
 		m_Name = filepath.substr(lastSlash, count);
 
 		CollectProperty();
+		CollectRenderState();
 	}
 
 	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
 		: m_Name(name)
 	{
-
 		std::unordered_map<GLenum, std::string> sources;
 		sources[GL_VERTEX_SHADER] = vertexSrc;
 		sources[GL_FRAGMENT_SHADER] = fragmentSrc;
 		Compile(sources);
 
 		CollectProperty();
+		CollectRenderState();
 	}
 
 
@@ -121,6 +122,10 @@ namespace PR
 				name,
 			});
 		}
+	}
+
+	void OpenGLShader::CollectRenderState()
+	{
 	}
 
 	std::string OpenGLShader::ReadFile(const std::string& filepath)

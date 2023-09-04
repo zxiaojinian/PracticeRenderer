@@ -11,6 +11,9 @@ namespace PR
 		m_DepthRenderTexture = RenderTexture::Create("DepthRenderTexture", depthSpecification);
 
 		std::shared_ptr<Shader> shader = Shader::Create("Assets/Blit.glsl");
+		//Temp
+		shader->GetRenderStateBlock().depthState.compareFunction = CompareFunction::Disabled;
+		shader->GetRenderStateBlock().depthState.writeEnabled = false;
 		m_BlitMaterial = std::make_shared<Material>("BlitMaterial");
 		m_BlitMaterial->SetShader(shader);
 

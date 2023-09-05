@@ -50,8 +50,8 @@ namespace PR
 		}
 	}
 
-	OpenGLTexture2D::OpenGLTexture2D(const Texture2DSpecification& specification)
-		: m_Texture2DSpecification(specification)
+	OpenGLTexture2D::OpenGLTexture2D(const std::string& name, const Texture2DSpecification& specification)
+		: m_Name(name),  m_Texture2DSpecification(specification)
 	{
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 		glTextureStorage2D(m_RendererID, 0, TextureFormatToOpenGLInternalFormat(m_Texture2DSpecification.Format), m_Texture2DSpecification.Width, m_Texture2DSpecification.Height);
@@ -66,6 +66,13 @@ namespace PR
 	OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
 		: m_Path(path)
 	{
+		auto lastSlash = path.find_last_of("/\\");
+		lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+		auto lastDot = path.rfind('.');
+		auto count = lastDot == std::string::npos ? path.size() - lastSlash : lastDot - lastSlash;
+		std::string name = path.substr(lastSlash, count);
+		m_Name = name;
+
 		stbi_set_flip_vertically_on_load(1);
 		int width, height, channels;
 		stbi_uc* data = nullptr;

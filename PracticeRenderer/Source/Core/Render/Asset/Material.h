@@ -9,7 +9,7 @@ namespace PR
 	class Material
 	{
 	public:
-		Material(const std::string& name);
+		Material(const std::string& name = "");
 
 		void SetShader(const std::shared_ptr<Shader>& shader) { m_Shader = shader; }
 		const std::shared_ptr<Shader>& GetShader() const { return m_Shader; }

@@ -7,7 +7,7 @@
 
 namespace PR
 {
-	std::shared_ptr<Texture2D> Texture2D::Create(const Texture2DSpecification& specification)
+	std::shared_ptr<Texture2D> Texture2D::Create(const std::string& name, const Texture2DSpecification& specification)
 	{
 		switch (RendererAPI::GetAPI())
 		{
@@ -17,7 +17,7 @@ namespace PR
 		}
 		case RendererAPI::API::OpenGL:
 		{
-			return std::make_shared<OpenGLTexture2D>(specification);
+			return std::make_shared<OpenGLTexture2D>(name, specification);
 		}
 		}
 

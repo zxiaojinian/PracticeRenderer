@@ -12,7 +12,7 @@ namespace PR
 	{
 	public:
 		OpenGLTexture2D(const std::string& path);
-		OpenGLTexture2D(const Texture2DSpecification& specification);
+		OpenGLTexture2D(const std::string& name, const Texture2DSpecification& specification);
 		virtual ~OpenGLTexture2D();
 
 		virtual void SetFilterMode(TextureFilterMode filterMode) override;

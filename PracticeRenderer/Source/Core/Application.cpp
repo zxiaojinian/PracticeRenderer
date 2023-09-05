@@ -46,6 +46,9 @@ namespace PR
 		m_GraphicsContext = GraphicsContext::Create();
 		m_GraphicsContext->Init();
 
+		m_Resources = std::make_unique<Resources>();
+		m_Resources->Init();
+
 		m_SceneManager = std::make_unique<SceneManager>();
 		m_RenderPipeline = std::make_unique<RenderPipeline>();
 	}

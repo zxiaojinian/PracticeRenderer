@@ -6,6 +6,7 @@
 #include "Core/Time/Time.h"
 #include "Core/Scene/SceneManager.h"
 #include "Core/Render/RenderPipeline/RenderPipeline.h"
+#include "Core/Asset/Resources.h"
 
 #include <string>
 #include <memory>
@@ -41,6 +42,7 @@ namespace PR
 		std::unique_ptr<GraphicsContext> m_GraphicsContext;
 		std::unique_ptr<RenderPipeline> m_RenderPipeline;
 		std::unique_ptr<SceneManager> m_SceneManager;
+		std::unique_ptr<Resources> m_Resources;
 		Time m_Time;
 	};
 }

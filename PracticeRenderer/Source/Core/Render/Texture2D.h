@@ -28,7 +28,7 @@ namespace PR
 		virtual void SetData(void* data, uint32_t size) = 0;
 		virtual TextureFormat GetFormat() const = 0;
 
-		static std::shared_ptr<Texture2D> Create(const Texture2DSpecification& specification);
+		static std::shared_ptr<Texture2D> Create(const std::string& name, const Texture2DSpecification& specification);
 		static std::shared_ptr<Texture2D> Create(const std::string& path);
 	};
 }

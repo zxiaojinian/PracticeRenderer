@@ -44,7 +44,7 @@ namespace PR
     {
         for (unsigned int i = 0; i < node->mNumMeshes; i++)
         {
-            auto mesh = processMesh(aiscene->mMeshes[node->mMeshes[i]], aiscene);
+            auto mesh = processMesh(aiscene->mMeshes[node->mMeshes[i]]);
             GameObject* go = new GameObject(mesh->GetName(), scene);
             go->SetParent(parent);
 
@@ -62,7 +62,7 @@ namespace PR
         }
     }
 
-    Mesh* ModelLoder::processMesh(aiMesh* mesh, const aiScene* scene)
+    std::shared_ptr<Mesh> ModelLoder::processMesh(aiMesh* mesh)
     {
         std::vector<Vertex> vertices;
         std::vector<uint32_t> indices;
@@ -122,6 +122,88 @@ namespace PR
                 indices.push_back(face.mIndices[j]);
         }
 
-        return new Mesh(mesh->mName.C_Str(), vertices, indices);
+        return std::make_shared<Mesh>(mesh->mName.C_Str(), vertices, indices);
+    }
+
+    void ModelLoder::LoadMeshes(std::vector<std::shared_ptr<Mesh>>& meshes, const aiScene* aiscene)
+    {
+        if (aiscene)
+        {
+            for (unsigned int i = 0; i < aiscene->mNumMeshes; i++)
+            {
+                auto mesh = aiscene->mMeshes[i];
+                if (mesh)
+                {
+                    std::vector<Vertex> vertices;
+                    std::vector<uint32_t> indices;
+
+                    for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+                    {
+                        Vertex vertex;
+                        glm::vec3 vector;
+                        vector.x = mesh->mVertices[i].x;
+                        vector.y = mesh->mVertices[i].y;
+                        vector.z = mesh->mVertices[i].z;
+                        vertex.Position = vector;
+                        //normal
+                        if (mesh->HasNormals())
+                        {
+                            vector.x = mesh->mNormals[i].x;
+                            vector.y = mesh->mNormals[i].y;
+                            vector.z = mesh->mNormals[i].z;
+                            vertex.Normal = vector;
+                        }
+
+                        if (mesh->mTextureCoords[0])
+                        {
+                            //uv
+                            glm::vec2 vec;
+                            vec.x = mesh->mTextureCoords[0][i].x;
+                            vec.y = mesh->mTextureCoords[0][i].y;
+                            vertex.TexCoords = vec;
+                        }
+                        else
+                        {
+                            vertex.TexCoords = glm::vec2(0.0f, 0.0f);
+                        }
+
+                        if (mesh->HasTangentsAndBitangents())
+                        {
+                            // tangent
+                            vector.x = mesh->mTangents[i].x;
+                            vector.y = mesh->mTangents[i].y;
+                            vector.z = mesh->mTangents[i].z;
+                            vertex.Tangent = vector;
+
+                            // bitangent
+                            vector.x = mesh->mBitangents[i].x;
+                            vector.y = mesh->mBitangents[i].y;
+                            vector.z = mesh->mBitangents[i].z;
+                            vertex.Bitangent = vector;
+                        }
+                        vertices.push_back(vertex);
+                    }
+
+                    //indices
+                    for (uint32_t i = 0; i < mesh->mNumFaces; i++)
+                    {
+                        aiFace face = mesh->mFaces[i];
+                        for (uint32_t j = 0; j < face.mNumIndices; j++)
+                            indices.push_back(face.mIndices[j]);
+                    }
+                    meshes.push_back(std::make_shared<Mesh>(mesh->mName.C_Str(), vertices, indices));
+                }
+            }
+        }
+    }
+
+    void ModelLoder::CreateMaterials(std::vector<std::shared_ptr<Material>>& materials, const aiScene* aiscene)
+    {
+
+    }
+
+    void ModelLoder::LoadTextures(std::vector<std::shared_ptr<Texture>>& Textures, const aiScene* aiscene)
+    {
+
     }
 }

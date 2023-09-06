@@ -17,6 +17,7 @@ namespace PR
 		bool Exists(const std::string& name) const;
 	private:
 		std::unordered_map<std::string, std::shared_ptr<Texture2D>> m_Texture2Ds;
+		std::unordered_map<std::string, std::shared_ptr<Texture2D>> m_LoadCache;
 	};
 }
 

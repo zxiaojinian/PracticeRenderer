@@ -12,6 +12,9 @@ namespace PR
 {
     GameObject* ModelLoder::LoadModel(const std::string& path, Scene* scene)
     {
+        if (m_ModelCache.find(path) != m_ModelCache.end())
+            return m_ModelCache[path];
+
         Assimp::Importer import;
         const aiScene* aiscene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
@@ -33,6 +36,7 @@ namespace PR
         std::string name = path.substr(lastSlash, count);
 
         GameObject* root = new GameObject(name, scene);
+        m_ModelCache[path] = root;
         ProcessNode(root, aiscene->mRootNode, aiscene, scene, meshes, materials);
         return root;
     }
@@ -145,6 +149,10 @@ namespace PR
         case aiTextureType_SHININESS:
             return "u_Roughness";
             break;
+        default:
+            PR_ASSERT(false, "Unknown aiTextureType");
+            return "";
+            break;
         }
     }
 
@@ -174,7 +182,9 @@ namespace PR
                         material->GetTexture(textureType, 0, &texturePath);
                         std::string fullPath = texturePath.C_Str();
                         auto tex = Resources::Get().LoadTexture(fullPath);
-                        mat->SetTexture(TextureTypeToShaderName(textureType), tex.get());
+                        auto propertyName = TextureTypeToShaderName(textureType);
+                        if(propertyName != "")
+                            mat->SetTexture(propertyName, tex.get());
                     }
                 }
                 materials.push_back(mat);

@@ -19,15 +19,21 @@ namespace PR
 
     std::shared_ptr<Texture2D> Texture2DLibrary::Load(const std::string& filepath)
     {
+        if (m_LoadCache.find(filepath) != m_LoadCache.end())
+            return m_LoadCache[filepath];
         auto texture = Texture2D::Create(filepath);
         Add(texture);
+        m_LoadCache[filepath] = texture;
         return texture;
     }
 
     std::shared_ptr<Texture2D> Texture2DLibrary::Load(const std::string& name, const std::string& filepath)
     {
+        if (m_LoadCache.find(filepath) != m_LoadCache.end())
+            return m_LoadCache[filepath];
         auto texture = Texture2D::Create(filepath);
         Add(name, texture);
+        m_LoadCache[filepath] = texture;
         return texture;
     }
 

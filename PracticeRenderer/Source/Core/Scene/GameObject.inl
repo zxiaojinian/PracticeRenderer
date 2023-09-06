@@ -34,10 +34,9 @@ namespace PR
 	template<typename T>
 	inline T* GameObject::GetComponent()
 	{
-		std::shared_ptr<T> c(nullptr);
 		for (auto i = m_Components.begin(); i != m_Components.end(); ++i)
 		{
-			c = std::dynamic_pointer_cast<T>(*i);
+			std::shared_ptr<T> c = std::dynamic_pointer_cast<T>(*i);
 			if (c) return c.get();
 		}
 		return nullptr;

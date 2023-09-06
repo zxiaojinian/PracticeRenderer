@@ -19,15 +19,21 @@ namespace PR
 
 	std::shared_ptr<Shader> ShaderLibrary::Load(const std::string& filepath)
 	{
+		if (m_LoadCache.find(filepath) != m_LoadCache.end())
+			return m_LoadCache[filepath];
 		auto shader = Shader::Create(filepath);
 		Add(shader);
+		m_LoadCache[filepath] = shader;
 		return shader;
 	}
 
 	std::shared_ptr<Shader> ShaderLibrary::Load(const std::string& name, const std::string& filepath)
 	{
+		if (m_LoadCache.find(filepath) != m_LoadCache.end())
+			return m_LoadCache[filepath];
 		auto shader = Shader::Create(filepath);
 		Add(name, shader);
+		m_LoadCache[filepath] = shader;
 		return shader;
 	}
 

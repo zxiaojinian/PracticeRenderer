@@ -30,6 +30,9 @@ namespace PR
 		std::shared_ptr<Texture2D> GetTexture(const std::string& name) { return m_Texture2DLibrary.Get(name); }
 		bool ExistsTexture(const std::string& name) const { m_Texture2DLibrary.Exists(name); }
 
+		//model
+		GameObject* LoadModel(const std::string& path, Scene* scene) { return m_ModelLoder.LoadModel(path, scene); }
+
 	private:
 		static Resources* s_Instance;
 

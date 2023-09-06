@@ -6,7 +6,7 @@
 #include "Core/Scene/Components/Transform.h"
 #include "Core/Scene/Components/Camera.h"
 #include "Core/Scene/Components/CameraController.h"
-#include "Core/Asset/ModelLoder.h"
+#include "Core/Asset/Resources.h"
 
 namespace PR
 {
@@ -19,12 +19,11 @@ namespace PR
 		auto directionalLight = new GameObject("Directional Light", this);
 		directionalLight->AddComponent<Light>();
 
-		ModelLoder modelLoder;
 		//std::string path = "Assets/Model/nanosuit/nanosuit.obj";
 		//std::string path = "Assets/Model/Sponza/Sponza_Modular.FBX";
 		//std::string path = "Assets/Model/sphere.fbx";
 		std::string path = "Assets/Model/Sponza/sponza.fbx";
-		modelLoder.LoadModel(path, this);
+		Resources::Get().LoadModel(path, this);
 	}
 
 	Scene::~Scene()

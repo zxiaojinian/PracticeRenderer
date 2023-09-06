@@ -40,9 +40,6 @@ namespace PR
 		void MarkAsDestroy();
 
 	public:
-		/// <summary>
-		/// 物体激活下才会执行，只执行一次
-		/// </summary>
 		void OnAwake();
 		void OnEnable();
 		void OnStart();

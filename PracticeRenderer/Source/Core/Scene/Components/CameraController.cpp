@@ -39,16 +39,19 @@ namespace PR
 			m_MouseLastPosX = Input::GetMouseX();
 			m_MouseLastPosY = Input::GetMouseY();
 
-			m_Yaw += xOffset * m_RotateSpeed;
-			m_Pitch -= yOffset * m_RotateSpeed;
+			//m_Yaw += xOffset * m_RotateSpeed;
+			//m_Pitch -= yOffset * m_RotateSpeed;
 
-			glm::vec3 front;
-			front.x = cos(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
-			front.y = sin(glm::radians(m_Pitch));
-			front.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
-			front = glm::normalize(front);
+			//glm::vec3 front;
+			//front.x = cos(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
+			//front.y = sin(glm::radians(m_Pitch));
+			//front.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
+			//front = glm::normalize(front);
+			//m_Transform.LookAt(m_Transform.GetPosition() + front);
 
-			m_Transform.LookAt(m_Transform.GetPosition() + front);
+			m_Yaw -= xOffset * m_RotateSpeed;
+			m_Pitch += yOffset * m_RotateSpeed;
+			m_Transform.SetEulerAngles(glm::vec3(m_Pitch, m_Yaw, 0.0f));
 		}
 		else
 		{

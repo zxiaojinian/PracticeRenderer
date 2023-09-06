@@ -23,7 +23,9 @@ namespace PR
 		bool m_StartDrag = true;
 		float m_MouseLastPosX = 0.0f;
 		float m_MouseLastPosY = 0.0f;
-		float m_Yaw = 90.0f;
+		//float m_Yaw = 90.0f;
+		//float m_Pitch = 0.0f;
+		float m_Yaw = 0.0f;
 		float m_Pitch = 0.0f;
 	};
 }

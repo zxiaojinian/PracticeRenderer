@@ -12,6 +12,6 @@ namespace PR
 
 	void Resources::Init()
 	{
-		m_ShaderLibrary.Load("Assets/SimpleLit.glsl");
+		m_ShaderLibrary.Load("Assets/Shader/PBRLit.glsl");
 	}
 }

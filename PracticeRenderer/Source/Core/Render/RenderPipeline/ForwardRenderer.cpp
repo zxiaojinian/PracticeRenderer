@@ -12,7 +12,7 @@ namespace PR
 		RenderTextureSpecification depthSpecification = { 1920, 1080, RenderTextureFormat::Depth, TextureWrapMode::Clamp, TextureFilterMode::Nearest, false, false };
 		m_DepthRenderTexture = RenderTexture::Create("DepthRenderTexture", depthSpecification);
 
-		std::shared_ptr<Shader> shader = Resources::Get().LoadShader("Assets/Blit.glsl");
+		std::shared_ptr<Shader> shader = Resources::Get().LoadShader("Assets/Shader/Blit.glsl");
 		//Temp
 		shader->GetRenderStateBlock().depthState.compareFunction = CompareFunction::Disabled;
 		shader->GetRenderStateBlock().depthState.writeEnabled = false;

@@ -172,7 +172,7 @@ namespace PR
             {
                 aiMaterial* material = aiscene->mMaterials[i];
                 std::shared_ptr<Material> mat = std::make_shared<Material>();
-                mat->SetShader(Resources::Get().GetShader("SimpleLit"));
+                mat->SetShader(Resources::Get().GetShader("PBRLit"));
 
                 for (const aiTextureType& textureType : textureTypes) 
                 {

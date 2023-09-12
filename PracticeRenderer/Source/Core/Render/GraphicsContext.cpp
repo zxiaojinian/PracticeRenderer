@@ -72,8 +72,7 @@ namespace PR
 	void GraphicsContext::DrawMesh(Mesh& mesh, const glm::mat4& matrix, Material& material)
 	{
 		mesh.Bind();
-		Shader::SetMat4("u_Matrix_M", matrix);
-		Shader::SetFloat4("u_Color", { 1.0f, 1.0f, 1.0f, 1.0f });
+		Shader::SetMat4("Matrix_M", matrix);
 		material.Bind();
 		RenderCommand::DrawIndexed(mesh.GetIndexCount());
 	}
@@ -82,9 +81,11 @@ namespace PR
 	{
 		auto& mesh = renderer.GetMesh();
 		auto& matrix = renderer.GetTransform().GetLocalToWorldMatrix();
+		auto& inverseMatrix = renderer.GetTransform().GetWorldToLocalMatrix();
 		auto& mats = renderer.GetMaterials();
 		for (auto& mat : mats)
 		{
+			Shader::SetMat4("Matrix_I_M", inverseMatrix);
 			DrawMesh(*mesh, matrix, *mat);
 		}
 	}

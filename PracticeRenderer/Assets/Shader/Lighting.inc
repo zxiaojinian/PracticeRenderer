@@ -1,28 +1,42 @@
-struct Light
+struct LightData
 {
-    float3   direction;
-    float3   color;
-    float    distanceAttenuation;
-    float    shadowAttenuation;
+    vec4 position;
+    vec4 color;
+    vec4 attenuation;
+    vec4 spotDirection;
 };
 
+layout(std430) buffer LightDataBuffer
+{
+    LightData lightDataBuffer[];
+};
 
-float DistanceAttenuation(float distanceSqr, float2 distanceAttenuation)
+#define FLT_MIN  1.175494351e-38 
+
+struct Light
+{
+    vec3 direction;
+    vec3 color;
+    float distanceAttenuation;
+    float shadowAttenuation;
+};
+
+float DistanceAttenuation(float distanceSqr, vec2 distanceAttenuation)
 {
     //From URP
     //attenuation = smoothFactor * 1.0 / distanceToLightSqr
     //smoothFactor = (1.0 - (distanceToLightSqr * 1.0 / lightRangeSqr) ^ 2) ^ 2
     //distanceAttenuation.x = 1.0 / lightRangeSqr
 
-    float lightAtten = rcp(distanceSqr);
+    float lightAtten = 1.0 / distanceSqr;
     float factor = distanceSqr * distanceAttenuation.x;
-    float smoothFactor = saturate(1.0 - factor * factor);
+    float smoothFactor = clamp(1.0 - factor * factor, 0.0, 1.0);
     smoothFactor = smoothFactor * smoothFactor;
 
     return lightAtten * smoothFactor;
 }
 
-float AngleAttenuation(float3 spotDirection, float3 lightDirection, float2 spotAttenuation)
+float AngleAttenuation(vec3 spotDirection, vec3 lightDirection, vec2 spotAttenuation)
 {
     //From URP
     // Spot Attenuation with a linear falloff can be defined as
@@ -34,27 +48,30 @@ float AngleAttenuation(float3 spotDirection, float3 lightDirection, float2 spotA
 
     // If we precompute the terms in a MAD instruction
     float SdotL = dot(spotDirection, lightDirection);
-    float atten = saturate(SdotL * spotAttenuation.x + spotAttenuation.y);
+    float atten = clamp(SdotL * spotAttenuation.x + spotAttenuation.y, 0.0, 1.0);
     return atten * atten;
 }
 
-Light GetLight(int lightIndex, float3 positionWS)
+Light GetLight(int lightIndex, vec3 positionWS)
 {
-    float4 lightPositionWS = _AdditionalLightsBuffer[perObjectLightIndex].position;
-    float3 color = _AdditionalLightsBuffer[perObjectLightIndex].color.rgb;
-    float4 distanceAndSpotAttenuation = _AdditionalLightsBuffer[perObjectLightIndex].attenuation;
-    float4 spotDirection = _AdditionalLightsBuffer[perObjectLightIndex].spotDirection;
+    vec4 lightPositionWS = lightDataBuffer[lightIndex].position;
+    vec3 color = lightDataBuffer[lightIndex].color.rgb;
+    vec4 distanceAndSpotAttenuation = lightDataBuffer[lightIndex].attenuation;
+    vec4 spotDirection = lightDataBuffer[lightIndex].spotDirection;
 
     // Directional lights store direction in lightPosition.xyz and have .w set to 0.0.
     // This way the following code will work for both directional and punctual lights.
-    float3 lightVector = lightPositionWS.xyz - positionWS * lightPositionWS.w;
-    float distanceSqr = max(dot(lightVector, lightVector), HALF_MIN);
+    vec3 lightVector = lightPositionWS.xyz - positionWS * lightPositionWS.w;
+    float distanceSqr = max(dot(lightVector, lightVector), FLT_MIN);
 
-    float3 lightDirection = float3(lightVector * rsqrt(distanceSqr));
+    vec3 lightDirection = vec3(lightVector * inversesqrt(distanceSqr));
     float attenuation = DistanceAttenuation(distanceSqr, distanceAndSpotAttenuation.xy) * AngleAttenuation(spotDirection.xyz, lightDirection, distanceAndSpotAttenuation.zw);
 
     Light light;
     light.direction = lightDirection;
     light.distanceAttenuation = attenuation;
+    light.shadowAttenuation = 1.0;
     light.color = color;
+
+    return light;
 }

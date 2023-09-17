@@ -2,6 +2,8 @@
 
 #include "Core/Render/Texture.h"
 #include "Core/Render/RenderState/RenderStateBlock.h"
+#include "Core/Render/Buffer.h"
+
 #include <glm/glm.hpp>
 
 #include <string>
@@ -14,13 +16,15 @@ namespace PR
 	enum class PropertyType
 	{
 		Unknown,
-		Property_Int,
-		Property_Float,
-		Property_Float2,
-		Property_Float3,
-		Property_Float4,
-		Property_Mat4,
-		Property_Texture,
+		Int,
+		Float,
+		Float2,
+		Float3,
+		Float4,
+		Mat4,
+		Texture,
+		UBO,
+		SSBO
 	};
 
 	struct PropertyData
@@ -57,6 +61,7 @@ namespace PR
 		static void SetFloat4(const std::string& name, const glm::vec4& value);
 		static void SetMat4(const std::string& name, const glm::mat4& value);
 		static void SetTexture(const std::string& name, Texture* value);
+		static void SetBuffer(const std::string& name, Buffer* value);
 		//static void SetIntArray(const std::string& name, int* values, uint32_t count);
 
 		static std::shared_ptr<Shader> Create(const std::string& filepath);
@@ -73,6 +78,7 @@ namespace PR
 		virtual void UploadFloat4(const std::string& name, const glm::vec4& value) = 0;
 		virtual void UploadMat4(const std::string& name, const glm::mat4& value) = 0;
 		//virtual void UploadIntArray(const std::string& name, int* values, uint32_t count) = 0;
+		virtual void UploadBuffer(const std::string& name, Buffer* value) = 0;
 
 	protected:
 		RenderStateBlock m_RenderStateBlock;

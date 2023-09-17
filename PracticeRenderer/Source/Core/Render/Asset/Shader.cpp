@@ -52,6 +52,7 @@ namespace PR
 	{
 		Bind();
 		int textureSlot = 0;
+		int bufferBindingPoint = 0;
 		for (auto& p : m_PropertyData)
 		{
 			std::any value;
@@ -68,43 +69,54 @@ namespace PR
 			{
 				switch (p.Type)
 				{
-					case PropertyType::Property_Int:
+					case PropertyType::Int:
 					{
 						UploadInt(p.Name, std::any_cast<int>(value));
 						break;							
 					}
-					case PropertyType::Property_Float:
+					case PropertyType::Float:
 					{
 						UploadFloat(p.Name, std::any_cast<float>(value));
 						break;
 					}
-					case PropertyType::Property_Float2:
+					case PropertyType::Float2:
 					{
 						UploadFloat2(p.Name, std::any_cast<glm::vec2>(value));
 						break;
 					}
-					case PropertyType::Property_Float3:
+					case PropertyType::Float3:
 					{
 						UploadFloat3(p.Name, std::any_cast<glm::vec3>(value));
 						break;
 					}
-					case PropertyType::Property_Float4:
+					case PropertyType::Float4:
 					{
 						UploadFloat4(p.Name, std::any_cast<glm::vec4>(value));
 						break;
 					}
-					case PropertyType::Property_Mat4:
+					case PropertyType::Mat4:
 					{
 						UploadMat4(p.Name, std::any_cast<glm::mat4>(value));
 						break;
 					}
-					case PropertyType::Property_Texture:
+					case PropertyType::Texture:
 					{
 						auto texture = std::any_cast<Texture*>(value);
 						if (texture)
 						{
 							texture->Bind(textureSlot);
 							UploadInt(p.Name, textureSlot++);
+						}
+						break;
+					}
+					case PropertyType::UBO:
+					case PropertyType::SSBO:
+					{
+						auto buffer = std::any_cast<Buffer*>(value);
+						if (buffer)
+						{
+							buffer->Bind(bufferBindingPoint);
+							UploadBuffer(p.Name, buffer);
 						}
 						break;
 					}
@@ -128,37 +140,60 @@ namespace PR
 
 	void Shader::SetInt(const std::string& name, int value)
 	{
-		s_PropertyValue[name] = { PropertyType::Property_Int, value };
+		s_PropertyValue[name] = { PropertyType::Int, value };
 	}
 
 	void Shader::SetFloat(const std::string& name, float value)
 	{
-		s_PropertyValue[name] = { PropertyType::Property_Float, value };
+		s_PropertyValue[name] = { PropertyType::Float, value };
 	}
 
 	void Shader::SetFloat2(const std::string& name, const glm::vec2& value)
 	{
-		s_PropertyValue[name] = { PropertyType::Property_Float2 , value };
+		s_PropertyValue[name] = { PropertyType::Float2 , value };
 	}
 
 	void Shader::SetFloat3(const std::string& name, const glm::vec3& value)
 	{
-		s_PropertyValue[name] = { PropertyType::Property_Float3, value };
+		s_PropertyValue[name] = { PropertyType::Float3, value };
 	}
 
 	void Shader::SetFloat4(const std::string& name, const glm::vec4& value)
 	{
-		s_PropertyValue[name] = { PropertyType::Property_Float4, value };
+		s_PropertyValue[name] = { PropertyType::Float4, value };
 	}
 
 	void Shader::SetMat4(const std::string& name, const glm::mat4& value)
 	{
-		s_PropertyValue[name] = { PropertyType::Property_Mat4, value };
+		s_PropertyValue[name] = { PropertyType::Mat4, value };
 	}
 
 	void Shader::SetTexture(const std::string& name, Texture* value)
 	{
-		s_PropertyValue[name] = { PropertyType::Property_Texture, value };
+		if(value)
+			s_PropertyValue[name] = { PropertyType::Texture, value };
+	}
+
+	void Shader::SetBuffer(const std::string& name, Buffer* value)
+	{
+		if (!value)
+			return;
+		PropertyType bufferType;
+		switch (value->GetBufferType())
+		{
+		case BufferType::UniformBuffer:
+			bufferType = PropertyType::UBO;
+			break;
+
+		case BufferType::StorageBuffer:
+			bufferType = PropertyType::SSBO;
+			break;
+		default:
+			bufferType = PropertyType::UBO;
+			break;
+		}
+		
+		s_PropertyValue[name] = { bufferType, value };
 	}
 
 	bool Shader::HaveProperty(const std::string& property)

@@ -14,6 +14,7 @@ namespace PR
 		ForwardRenderer();
 
 		virtual void Setup(RenderingData& renderingData) override;
+		virtual void SetupLights(GraphicsContext& graphicsContext, const RenderingData& renderingData) override;
 		//virtual void FinishRendering() override;
 	private:
 		std::shared_ptr<DrawObjectsPass> m_DrawObjectsPass;
@@ -23,6 +24,8 @@ namespace PR
 		std::shared_ptr<RenderTexture> m_DepthRenderTexture;
 
 		std::shared_ptr<Material> m_BlitMaterial;
+
+		std::shared_ptr<Buffer> m_LightDataBuffer = nullptr;
 	};
 }
 

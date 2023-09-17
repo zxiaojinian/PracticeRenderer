@@ -2,7 +2,6 @@
 
 #include "CullingResults.h"
 #include "CameraData.h"
-#include "LightData.h"
 
 namespace PR
 {
@@ -10,6 +9,5 @@ namespace PR
 	{
 		CullingResults cullResults;
 		CameraData cameraData;
-		LightData lightData;
 	};
 }

@@ -19,11 +19,22 @@ namespace PR
 		auto directionalLight = new GameObject("Directional Light", this);
 		directionalLight->AddComponent<Light>();
 
+		//auto pointLight = new GameObject("Pont Light", this);
+		//pointLight->AddComponent<Light>().Type = LightType::Point;
+
+		//auto spotLight = new GameObject("Spot Light", this);
+		//spotLight->AddComponent<Light>().Type = LightType::Spot;
+
 		//std::string path = "Assets/Model/nanosuit/nanosuit.obj";
 		//std::string path = "Assets/Model/Sponza/Sponza_Modular.FBX";
 		//std::string path = "Assets/Model/sphere.fbx";
 		std::string path = "Assets/Model/Sponza/sponza.fbx";
 		Resources::Get().LoadModel(path, this);
+		auto* sphere = Resources::Get().LoadModel("Assets/Model/sphere.fbx", this);
+		if (sphere)
+		{
+			sphere->GetTransform().Translate(glm::vec3(0.0f, 5.0f, 0.0f), Space::World);
+		}
 	}
 
 	Scene::~Scene()

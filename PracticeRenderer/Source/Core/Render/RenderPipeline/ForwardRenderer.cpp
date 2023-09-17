@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "ForwardRenderer.h"
 
+#include "Core/Render/RenderData/LightData.h"
+
 #include "Core/Asset/Resources.h"
 
 namespace PR
@@ -31,5 +33,23 @@ namespace PR
 
 		m_FinalBlitPass->Setup(m_ColorRenderTexture);
 		EnqueuePass(m_FinalBlitPass);
+	}
+
+	void ForwardRenderer::SetupLights(GraphicsContext& graphicsContext, const RenderingData& renderingData)
+	{
+		auto& visibleLights = renderingData.cullResults.VisibleLights;
+		if (m_LightDataBuffer == nullptr || m_LightDataBuffer->GetCount() != visibleLights.size())
+		{
+			m_LightDataBuffer = Buffer::Create(visibleLights.size(), sizeof(LightData), BufferType::StorageBuffer, BufferUsage::Dynamic);
+			Shader::SetBuffer("LightDataBuffer", m_LightDataBuffer.get());
+		}
+
+		auto stride = sizeof(LightData);
+		int index = 0;
+		for (auto light : visibleLights)
+		{
+			m_LightDataBuffer->SetData(&light->GetLightData(), index * stride, 1, stride);
+			index++;
+		}
 	}
 }

@@ -46,24 +46,38 @@ namespace PR
 
 			auto cullResults = Cull(*cameraData.camera);
 			RenderingData renderingData;
-			InitializeRenderingData(renderingData, cameraData);
+			InitializeRenderingData(renderingData, cameraData, cullResults);
 
 			renderer->Setup(renderingData);
 			renderer->Execute(graphicsContext, renderingData);
 		}
 	}
 
-	std::shared_ptr<CullingResults> RenderPipeline::Cull(Camera& camera)
+	CullingResults RenderPipeline::Cull(Camera& camera)
 	{
-		auto cullResults = std::shared_ptr<CullingResults>();
+		CullingResults cullResults;
+		auto& lights = SceneManager::Get().GetCurrentScene()->GetLights();
+		auto& goes = SceneManager::Get().GetCurrentScene()->GetGameObjecs();
+		for (auto light : lights)
+		{
+			//TODO Cull
+			cullResults.VisibleLights.push_back(light);
+		}
+
+		for (auto go : goes)
+		{
+			//TODO Cull
+			cullResults.VisibleGameobjects.push_back(go);
+		}
+
 		return cullResults;
 	}
 
 	void RenderPipeline::SetupPerFrameShaderConstants(GraphicsContext& graphicsContext)
 	{
-		auto lights = SceneManager::Get().GetCurrentScene()->GetLights();
-		if(lights.size())
-			Shader::SetFloat4("u_LightPosition", lights[0]->GetLightData().Position);
+		//auto lights = SceneManager::Get().GetCurrentScene()->GetLights();
+		//if(lights.size())
+		//	Shader::SetFloat4("u_LightPosition", lights[0]->GetLightData().Position);
 	}
 
 	std::vector<Camera*> RenderPipeline::SortCameras(const std::vector<Camera*>& cameras)
@@ -115,8 +129,9 @@ namespace PR
 		}
 	}
 
-	void RenderPipeline::InitializeRenderingData(RenderingData& renderingData, CameraData& cameraData)
+	void RenderPipeline::InitializeRenderingData(RenderingData& renderingData, CameraData& cameraData, CullingResults& cullResult)
 	{
 		renderingData.cameraData = cameraData;
+		renderingData.cullResults = cullResult;
 	}
 }

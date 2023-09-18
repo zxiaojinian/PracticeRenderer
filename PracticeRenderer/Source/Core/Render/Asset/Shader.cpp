@@ -115,7 +115,7 @@ namespace PR
 						auto buffer = std::any_cast<Buffer*>(value);
 						if (buffer)
 						{
-							buffer->Bind(bufferBindingPoint);
+							buffer->Bind(bufferBindingPoint++);
 							UploadBuffer(p.Name, buffer);
 						}
 						break;

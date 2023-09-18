@@ -158,16 +158,16 @@ void main()
 {
     vec2 uv = fs_in.uv;
     vec3 posWS = vec3(fs_in.normalWS.w, fs_in.tangentWS.w, fs_in.bitangentWS.w);
-    vec3 viewDirWS = vec3(normalize(worldSpaceCameraPos.xyz - posWS));
+    vec3 viewDirWS = normalize(worldSpaceCameraPos.xyz - posWS);
     vec3 normalWS = normalize(fs_in.normalWS.xyz);
     vec3 tangentWS = normalize(fs_in.tangentWS.xyz);
     vec3 bitangentWS = normalize(fs_in.bitangentWS.xyz);
     mat3 TBN = mat3(tangentWS, bitangentWS, normalWS);
 
     vec3 directLighting = vec3(0.0);
-    vec3 diffuseColor = vec3(1.0);
+    vec3 diffuseColor = vec3(0.5);
     vec3 specularColor = vec3(0.1);
-    float roughness = 0.5;
+    float roughness = 0.45;
 
     Standard_DirectLighting(diffuseColor, specularColor, roughness, posWS, normalWS, viewDirWS, directLighting);
     vec3 indirectLighting = vec3(0.0);

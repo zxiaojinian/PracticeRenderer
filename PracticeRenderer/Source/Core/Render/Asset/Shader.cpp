@@ -5,7 +5,7 @@
 #include "Core/Render/RendererAPI.h"
 #include "Core/Render/OpenGL/OpenGLShader.h"
 #include "Core/Render/Texture.h"
-#include "Core/Render/RenderTexture.h"
+#include "Core/Render/Texture2D.h"
 #include "Core/Render/RenderCommand.h"
 
 namespace PR
@@ -64,6 +64,14 @@ namespace PR
 			{
 				value = s_PropertyValue[p.Name].Value;
 			}
+			else
+			{
+				if (p.Type == PropertyType::Texture)
+				{
+					Texture* defaultTexture = Texture2D::GetWhiteTexture().get();
+					value = defaultTexture;
+				}
+			}
 
 			if (value.has_value())
 			{
@@ -105,7 +113,8 @@ namespace PR
 						if (texture)
 						{
 							texture->Bind(textureSlot);
-							UploadInt(p.Name, textureSlot++);
+							UploadInt(p.Name, textureSlot);
+							textureSlot++;
 						}
 						break;
 					}

@@ -30,6 +30,16 @@ namespace PR
 
 		static std::shared_ptr<Texture2D> Create(const std::string& name, const Texture2DSpecification& specification);
 		static std::shared_ptr<Texture2D> Create(const std::string& path);
+
+		static void Init();
+		static std::shared_ptr<Texture2D> GetWhiteTexture() { return m_WhiteTexture; }
+		static std::shared_ptr<Texture2D> GetBlackTexture() { return m_BlackTexture; }
+		static std::shared_ptr<Texture2D> GetGreyTexture() { return m_GreyTexture; }
+
+	private:
+		static std::shared_ptr<Texture2D> m_WhiteTexture;
+		static std::shared_ptr<Texture2D> m_BlackTexture;
+		static std::shared_ptr<Texture2D> m_GreyTexture;
 	};
 }
 

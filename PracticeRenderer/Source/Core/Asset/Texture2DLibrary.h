@@ -7,6 +7,8 @@ namespace PR
 	class Texture2DLibrary
 	{
 	public:
+		Texture2DLibrary();
+
 		void Add(const std::string& name, const std::shared_ptr<Texture2D>& texture2D);
 		void Add(const std::shared_ptr<Texture2D>& texture2D);
 		std::shared_ptr<Texture2D> Load(const std::string& filepath);

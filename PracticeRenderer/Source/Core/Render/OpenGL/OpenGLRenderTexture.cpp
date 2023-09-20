@@ -61,7 +61,7 @@ namespace PR
 		//glBindTexture(GL_TEXTURE_2D, m_RendererID);
 		//glTexImage2D(GL_TEXTURE_2D, 0, RTFormatToOpenGLInternalFormat(m_RenderTextureSpecification.Format), m_RenderTextureSpecification.Width, m_RenderTextureSpecification.Height,
 		//	0, RTFormatToOpenGLDataFormat(m_RenderTextureSpecification.Format), GL_UNSIGNED_BYTE, nullptr);
-		glTextureStorage2D(m_RendererID, specification.GenerateMips ? 0 : 1, RTFormatToOpenGLInternalFormat(m_RenderTextureSpecification.Format), m_RenderTextureSpecification.Width, m_RenderTextureSpecification.Height);
+		glTextureStorage2D(m_RendererID, 1, RTFormatToOpenGLInternalFormat(m_RenderTextureSpecification.Format), m_RenderTextureSpecification.Width, m_RenderTextureSpecification.Height);
 		SetWrapMode(m_RenderTextureSpecification.WrapMode);
 		SetFilterMode(m_RenderTextureSpecification.FilterMode);
 	}

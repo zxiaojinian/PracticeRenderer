@@ -14,13 +14,13 @@ namespace PR
 		switch (format)
 		{
 		case PR::TextureFormat::R:
-			return 1;
+			return 4;
 		case PR::TextureFormat::RGB:
-			return 3;
+			return 12;
 		case PR::TextureFormat::RGBA:
-			return 4;
+			return 16;
 		default:
-			return 4;
+			return 16;
 		}
 	}
 
@@ -54,7 +54,7 @@ namespace PR
 		: m_Name(name),  m_Texture2DSpecification(specification)
 	{
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
-		glTextureStorage2D(m_RendererID, 0, TextureFormatToOpenGLInternalFormat(m_Texture2DSpecification.Format), m_Texture2DSpecification.Width, m_Texture2DSpecification.Height);
+		glTextureStorage2D(m_RendererID, 1, TextureFormatToOpenGLInternalFormat(m_Texture2DSpecification.Format), m_Texture2DSpecification.Width, m_Texture2DSpecification.Height);
 
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, TextureWrapModeToOpenGLWrapMode(m_Texture2DSpecification.WrapMode));
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, TextureWrapModeToOpenGLWrapMode(m_Texture2DSpecification.WrapMode));
@@ -84,6 +84,8 @@ namespace PR
 			m_Texture2DSpecification.Width = width;
 			m_Texture2DSpecification.Height = height;
 
+			PR_ASSERT((m_Texture2DSpecification.Width > 1 && m_Texture2DSpecification.Height), "texture width and height must be 1 or greater");
+
 			if (channels == 1)
 				m_Texture2DSpecification.Format = TextureFormat::R;
 			else if (channels == 3)
@@ -94,7 +96,7 @@ namespace PR
 				PR_ASSERT(false, "Format not supported!");
 
 			glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
-			glTextureStorage2D(m_RendererID, 0, TextureFormatToOpenGLInternalFormat(m_Texture2DSpecification.Format), m_Texture2DSpecification.Width, m_Texture2DSpecification.Height);
+			glTextureStorage2D(m_RendererID, 1, TextureFormatToOpenGLInternalFormat(m_Texture2DSpecification.Format), m_Texture2DSpecification.Width, m_Texture2DSpecification.Height);
 
 			glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, TextureWrapModeToOpenGLWrapMode(m_Texture2DSpecification.WrapMode));
 			glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, TextureWrapModeToOpenGLWrapMode(m_Texture2DSpecification.WrapMode));
@@ -120,7 +122,8 @@ namespace PR
 	{
 		uint32_t bpp = TextureFormatToBPP(m_Texture2DSpecification.Format);
 		PR_ASSERT(size == m_Texture2DSpecification.Width * m_Texture2DSpecification.Height * bpp, "Data must be entire texture!");
-		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Texture2DSpecification.Width, m_Texture2DSpecification.Height, TextureFormatToOpenGLDataFormat(m_Texture2DSpecification.Format), GL_UNSIGNED_BYTE, data);
+		//TODO GL_FLOAT?
+		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Texture2DSpecification.Width, m_Texture2DSpecification.Height, TextureFormatToOpenGLDataFormat(m_Texture2DSpecification.Format), GL_FLOAT, data);
 
 		if (m_Texture2DSpecification.GenerateMips)
 			glGenerateTextureMipmap(m_RendererID);

@@ -30,11 +30,11 @@ namespace PR
 		//std::string path = "Assets/Model/sphere.fbx";
 		std::string path = "Assets/Model/Sponza/sponza.fbx";
 		Resources::Get().LoadModel(path, this);
-		auto* sphere = Resources::Get().LoadModel("Assets/Model/sphere.fbx", this);
-		if (sphere)
-		{
-			sphere->GetTransform().Translate(glm::vec3(0.0f, 5.0f, 0.0f), Space::World);
-		}
+		// auto* sphere = Resources::Get().LoadModel("Assets/Model/MatTest/Sphere.obj", this);
+		// if (sphere)
+		// {
+		// 	sphere->GetTransform().Translate(glm::vec3(0.0f, 5.0f, 0.0f), Space::World);
+		// }
 	}
 
 	Scene::~Scene()

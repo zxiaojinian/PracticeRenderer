@@ -38,7 +38,7 @@ namespace PR
 
 		ShaderLibrary m_ShaderLibrary;
 		Texture2DLibrary m_Texture2DLibrary;
-		ModelLoder m_ModelLoder;
+		ModelLoder m_ModelLoder;		
 	};
 }
 

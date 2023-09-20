@@ -27,7 +27,7 @@ namespace PR
         std::vector<std::shared_ptr<Mesh>> meshes;
         std::vector<std::shared_ptr<Material>> materials;
         LoadMeshes(meshes, aiscene);
-        CreateMaterials(materials, aiscene);
+        CreateMaterials(path, materials, aiscene);
 
         auto lastSlash = path.find_last_of("/\\");
         lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
@@ -156,7 +156,7 @@ namespace PR
         }
     }
 
-    void ModelLoder::CreateMaterials(std::vector<std::shared_ptr<Material>>& materials, const aiScene* aiscene)
+    void ModelLoder::CreateMaterials(const std::string& path, std::vector<std::shared_ptr<Material>>& materials, const aiScene* aiscene)
     {
         if (aiscene)
         {
@@ -168,6 +168,7 @@ namespace PR
                 //aiTextureType_AMBIENT_OCCLUSION
             };
 
+            auto directory = path.substr(0, path.find_last_of('/') + 1);
             for (unsigned int i = 0; i < aiscene->mNumMaterials; i++) 
             {
                 aiMaterial* material = aiscene->mMaterials[i];
@@ -180,7 +181,7 @@ namespace PR
                     {
                         aiString texturePath;
                         material->GetTexture(textureType, 0, &texturePath);
-                        std::string fullPath = texturePath.C_Str();
+                        std::string fullPath = directory + texturePath.C_Str();
                         auto tex = Resources::Get().LoadTexture(fullPath);
                         auto propertyName = TextureTypeToShaderName(textureType);
                         if(propertyName != "")

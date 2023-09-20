@@ -20,6 +20,7 @@ namespace PR
 		static Color blue;
 		static Color white;
 		static Color black;
+		static Color grey;
 		static Color clear;
 	};
 }

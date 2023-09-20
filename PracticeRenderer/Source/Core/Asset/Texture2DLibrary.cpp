@@ -5,6 +5,11 @@
 
 namespace PR
 {
+    Texture2DLibrary::Texture2DLibrary()
+    {
+        Texture2D::Init();
+    }
+
     void Texture2DLibrary::Add(const std::string& name, const std::shared_ptr<Texture2D>& texture2D)
     {
         PR_ASSERT(!Exists(name), "Texture already exists!");

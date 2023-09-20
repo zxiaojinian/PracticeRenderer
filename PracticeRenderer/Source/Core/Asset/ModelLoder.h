@@ -22,7 +22,7 @@ namespace PR
 	private:
 		void ProcessNode(GameObject* parent, aiNode* node, const aiScene* aiscene, Scene* scene, std::vector<std::shared_ptr<Mesh>>& meshes, std::vector<std::shared_ptr<Material>>& materials);
 		void LoadMeshes(std::vector<std::shared_ptr<Mesh>>& meshes, const aiScene* aiscene);
-		void CreateMaterials(std::vector<std::shared_ptr<Material>>& materials, const aiScene* aiscene);
+		void CreateMaterials(const std::string& path, std::vector<std::shared_ptr<Material>>& materials, const aiScene* aiscene);
 
 	private:
 		std::unordered_map<std::string, GameObject*> m_ModelCache;

@@ -81,14 +81,12 @@ project "PracticeRenderer"
 
         links 
         { 
-            --"%{wks.location}/%{prj.name}/Dependencies/assimp/bin/Debug/assimp-vc143-mtd.lib"
-            "%{wks.location}/%{prj.name}/Dependencies/assimp/bin/Debug/assimp.lib"
+            "%{wks.location}/%{prj.name}/Dependencies/assimp/binary/Debug/assimp-vc143-mtd.lib"
         }
 
         postbuildcommands 
         {
-            --'{COPY} "%{wks.location}/%{prj.name}/Dependencies/assimp/bin/Debug/assimp-vc143-mtd.dll" "%{cfg.targetdir}"'
-            '{COPY} "%{wks.location}/%{prj.name}/Dependencies/assimp/bin/Debug/assimp-vc140-mt.dll" "%{cfg.targetdir}"'
+            '{COPY} "%{wks.location}/%{prj.name}/Dependencies/assimp/binary/Debug/assimp-vc143-mtd.dll" "%{cfg.targetdir}"'
         }
 
     filter "configurations:Release"
@@ -98,12 +96,10 @@ project "PracticeRenderer"
 
         links 
         { 
-            --"%{wks.location}/%{prj.name}/Dependencies/assimp/bin/Release/assimp-vc143-mt.lib"
-            "%{wks.location}/%{prj.name}/Dependencies/assimp/bin/Debug/assimp.lib"
+            "%{wks.location}/%{prj.name}/Dependencies/assimp/binary/Release/assimp-vc143-mt.lib"
         }
 
         postbuildcommands 
         {
-            --'{COPY} "%{wks.location}/%{prj.name}/Dependencies/assimp/bin/Release/assimp-vc143-mt.dll" "%{cfg.targetdir}"'
-            '{COPY} "%{wks.location}/%{prj.name}/Dependencies/assimp/bin/Debug/assimp-vc140-mt.dll" "%{cfg.targetdir}"'
+            '{COPY} "%{wks.location}/%{prj.name}/Dependencies/assimp/binary/Release/assimp-vc143-mt.dll" "%{cfg.targetdir}"'
         }

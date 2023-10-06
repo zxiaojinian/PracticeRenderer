@@ -1,5 +1,5 @@
 #type vertex
-	
+
 #version 460 core
 
 layout(location = 0) in vec3 a_Position;
@@ -12,9 +12,9 @@ out vec2 texCoord;
 
 void main()
 {
-	//gl_Position = Matrix_VP * Matrix_M * vec4(a_Position, 1.0);
-	gl_Position = vec4(a_Position, 1.0);
-	texCoord = a_TexCoord;
+    //gl_Position = Matrix_VP * Matrix_M * vec4(a_Position, 1.0);
+    gl_Position = vec4(a_Position, 1.0);
+    texCoord = a_TexCoord;
 }
 
 #type fragment
@@ -29,5 +29,7 @@ uniform sampler2D u_SourceTex;
 
 void main()
 {
-	fragColor = texture(u_SourceTex, texCoord);
+    fragColor = texture(u_SourceTex, texCoord);
+    //fragColor.rgb = fragColor.rgb / (fragColor.rgb + vec3(1.0));
+    fragColor.rgb = pow(fragColor.rgb, vec3(0.45));
 }

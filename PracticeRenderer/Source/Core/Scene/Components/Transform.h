@@ -36,12 +36,14 @@ namespace PR
 		void SetLocalPosition(const glm::vec3& pos);
 		void SetLocalScale(const glm::vec3& scale);
 		void SetLocalRotation(const glm::quat& rotation);
+		void SetLoaclTransform(const glm::vec3& pos, const glm::vec3& scale, const glm::quat& rotation);
 
 		void SetEulerAngles(const glm::vec3& angle);
 		void SetEulerAngles(float x, float y, float z);
 		void SetPosition(const glm::vec3& pos);
 		void SetScale(const glm::vec3& scale);
 		void SetRotation(const glm::quat& rotation);
+		void SetTransform(const glm::vec3& pos, const glm::vec3& scale, const glm::quat& rotation);
 
 		const glm::mat4& GetLocalToWorldMatrix() const { return m_LocalToWorldMatrix; }
 		glm::mat4 GetWorldToLocalMatrix() const;

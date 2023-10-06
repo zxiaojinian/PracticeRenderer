@@ -4,10 +4,10 @@
 
 namespace PR
 {
-	class Texture2DLibrary
+	class Texture2DLoder
 	{
 	public:
-		Texture2DLibrary();
+		Texture2DLoder();
 
 		void Add(const std::string& name, const std::shared_ptr<Texture2D>& texture2D);
 		void Add(const std::shared_ptr<Texture2D>& texture2D);
@@ -17,6 +17,10 @@ namespace PR
 		std::shared_ptr<Texture2D> Get(const std::string& name);
 
 		bool Exists(const std::string& name) const;
+
+	private:
+		std::shared_ptr<Texture2D> LoadTexture(const std::string& filepath);
+
 	private:
 		std::unordered_map<std::string, std::shared_ptr<Texture2D>> m_Texture2Ds;
 		std::unordered_map<std::string, std::shared_ptr<Texture2D>> m_LoadCache;

@@ -1,7 +1,8 @@
 #pragma once
 
-#include "ShaderLibrary.h"
-#include "Texture2DLibrary.h"
+#include "ShaderLoder.h"
+#include "Texture2DLoder.h"
+#include "CubeMapLoader.h"
 #include "ModelLoder.h"
 
 namespace PR
@@ -30,14 +31,24 @@ namespace PR
 		std::shared_ptr<Texture2D> GetTexture(const std::string& name) { return m_Texture2DLibrary.Get(name); }
 		bool ExistsTexture(const std::string& name) const { m_Texture2DLibrary.Exists(name); }
 
+		//cube map
+		void AddCubemap(const std::string& name, const std::shared_ptr<Cubemap>& cubemap) { m_CubeMapLoader.Add(name, cubemap); }
+		void AddCubemap(const std::shared_ptr<Cubemap>& cubemap) { m_CubeMapLoader.Add(cubemap); }
+		std::shared_ptr<Cubemap> LoadCubemap(const std::vector<std::string>& filepath) { return m_CubeMapLoader.Load(filepath); }
+		std::shared_ptr<Cubemap> LoadCubemap(const std::string& name, const std::vector<std::string>& filepath) { return m_CubeMapLoader.Load(name, filepath); }
+		std::shared_ptr<Cubemap> GetCubemap(const std::string& name) { return m_CubeMapLoader.Get(name); }
+		bool ExistsCubemap(const std::string& name) const { m_CubeMapLoader.Exists(name); }
+
 		//model
 		GameObject* LoadModel(const std::string& path, Scene* scene) { return m_ModelLoder.LoadModel(path, scene); }
+		std::vector<std::shared_ptr<Mesh>> LoadMeshes(const std::string& path) { return m_ModelLoder.LoadMeshes(path); }
 
 	private:
 		static Resources* s_Instance;
 
-		ShaderLibrary m_ShaderLibrary;
-		Texture2DLibrary m_Texture2DLibrary;
+		ShaderLoder m_ShaderLibrary;
+		Texture2DLoder m_Texture2DLibrary;
+		CubeMapLoader m_CubeMapLoader;
 		ModelLoder m_ModelLoder;		
 	};
 }

@@ -18,6 +18,7 @@ namespace PR
 	{
 	public:
 		GameObject* LoadModel(const std::string& path, Scene* scene);
+		std::vector<std::shared_ptr<Mesh>> LoadMeshes(const std::string& path);
 
 	private:
 		void ProcessNode(GameObject* parent, aiNode* node, const aiScene* aiscene, Scene* scene, std::vector<std::shared_ptr<Mesh>>& meshes, std::vector<std::shared_ptr<Material>>& materials);

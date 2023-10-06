@@ -1,8 +1,13 @@
 #pragma once
 
 #include "DepthState.h"
+#include "CullMode.h"
 
-struct RenderStateBlock
+namespace PR
 {
-	DepthState depthState;
-};
+	struct RenderStateBlock
+	{
+		DepthState depthState{};
+		CullMode cullMode{ CullMode::Back };
+	};
+}

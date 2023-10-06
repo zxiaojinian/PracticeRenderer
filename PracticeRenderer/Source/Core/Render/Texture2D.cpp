@@ -3,7 +3,7 @@
 
 #include "Core/Common.h"
 #include "Core/Render/RendererAPI.h"
-#include "Core/Render/OpenGL/OpenGLTexture.h"
+#include "Core/Render/OpenGL/OpenGLTexture2D.h"
 #include "Core/Render/RenderData/Color.h"
 
 namespace PR
@@ -16,53 +16,36 @@ namespace PR
 	{
 		switch (RendererAPI::GetAPI())
 		{
-		case RendererAPI::API::None:
-		{
-			PR_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		}
-		case RendererAPI::API::OpenGL:
-		{
-			return std::make_shared<OpenGLTexture2D>(name, specification);
-		}
+			case RendererAPI::API::None:
+			{
+				PR_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+			}
+			case RendererAPI::API::OpenGL:
+			{
+				return std::make_shared<OpenGLTexture2D>(name, specification);
+			}
 		}
 
 		PR_ASSERT(false, "Unknown RendererAPI!");
 		return nullptr;
 	}
 
-	std::shared_ptr<Texture2D> Texture2D::Create(const std::string& path)
-	{
-		switch (RendererAPI::GetAPI())
-		{
-		case RendererAPI::API::None:
-		{
-			PR_ASSERT(false, "RendererAPI::None is currently not supported!");
-			return nullptr;
-		}
-		case RendererAPI::API::OpenGL:
-		{
-			return std::make_shared<OpenGLTexture2D>(path);
-		}
-		}
-		PR_ASSERT(false, "Unknown RendererAPI!");
-		return nullptr;
-	}
 
 	void Texture2D::Init()
 	{
 		Texture2DSpecification texture2DSpecification{};
 		texture2DSpecification.Width = 1;
 		texture2DSpecification.Height = 1;
-		texture2DSpecification.Format = TextureFormat::RGBA;
+		texture2DSpecification.Format = TextureFormat::R8G8B8A8_SRGB;
 		texture2DSpecification.GenerateMips = false;
 
 		m_WhiteTexture = Create("Default WhiteTexture", texture2DSpecification);
-		m_WhiteTexture->SetData(&Color::white, sizeof(Color::white));
+		m_WhiteTexture->SetData(&Color::white, 0, 0, 1, 1, TexturePixelType::FLOAT);
 
 		m_BlackTexture = Create("Default BlackTexture", texture2DSpecification);
-		m_BlackTexture->SetData(&Color::black, sizeof(Color::black));
+		m_BlackTexture->SetData(&Color::black, 0, 0, 1, 1, TexturePixelType::FLOAT);
 
 		m_GreyTexture = Create("Default GreyTexture", texture2DSpecification);
-		m_GreyTexture->SetData(&Color::grey, sizeof(Color::grey));
+		m_GreyTexture->SetData(&Color::grey, 0, 0, 1, 1, TexturePixelType::FLOAT);
 	}
 }

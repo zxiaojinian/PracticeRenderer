@@ -145,6 +145,7 @@ namespace PR
 		RenderCommand::SetDepthCompareFunction(m_RenderStateBlock.depthState.compareFunction);
 		if(m_RenderStateBlock.depthState.compareFunction != CompareFunction::Disabled)
 			RenderCommand::SetDepthWriteEnabled(m_RenderStateBlock.depthState.writeEnabled);
+		RenderCommand::SetCullMode(m_RenderStateBlock.cullMode);
 	}
 
 	void Shader::SetInt(const std::string& name, int value)

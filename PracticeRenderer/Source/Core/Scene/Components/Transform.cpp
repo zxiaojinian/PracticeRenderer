@@ -67,6 +67,15 @@ namespace PR
 		ParentSpaceChange();
 	}
 
+	void Transform::SetLoaclTransform(const glm::vec3& pos, const glm::vec3& scale, const glm::quat& rotation)
+	{
+		m_LocalPosition = pos;
+		m_LocalScale = scale;
+		m_LocalRotation = rotation;
+		ParentSpaceChange();
+	}
+
+
 	void Transform::SetEulerAngles(const glm::vec3& angle)
 	{
 		m_Rotation = glm::quat(glm::radians(angle));
@@ -92,6 +101,14 @@ namespace PR
 
 	void Transform::SetRotation(const glm::quat& rotation)
 	{
+		m_Rotation = rotation;
+		WorldSpaceChange();
+	}
+
+	void Transform::SetTransform(const glm::vec3& pos, const glm::vec3& scale, const glm::quat& rotation)
+	{
+		m_Position = pos;
+		m_Scale = scale;
 		m_Rotation = rotation;
 		WorldSpaceChange();
 	}
@@ -236,9 +253,9 @@ namespace PR
 		{
 			glm::vec3 s = scale ? *scale : glm::vec3(1.0f);
 			const glm::mat3 rotationMatrix(
-				s[0] ? glm::vec3(m[0]) : glm::vec3(m[0]) / s[0],
-				s[1] ? glm::vec3(m[1]) : glm::vec3(m[1]) / s[1],
-				s[2] ? glm::vec3(m[2]) : glm::vec3(m[2]) / s[2]);
+				s[0] ? glm::vec3(m[0]) / s[0] : glm::vec3(m[0]),
+				s[1] ? glm::vec3(m[1]) / s[1] : glm::vec3(m[1]),
+				s[2] ? glm::vec3(m[2]) / s[2] : glm::vec3(m[2]));
 			*rotation = glm::quat_cast(rotationMatrix);
 		}
 	}

@@ -89,7 +89,7 @@ namespace PR
 
 		float speedFactor = 1.0f;
 		if (Input::IsKeyPressed(KeyCode::LeftShift))
-			speedFactor = 5.0f;
+			speedFactor = 20.0f;
 
 		if (dir.x || dir.y || dir.z)
 		{

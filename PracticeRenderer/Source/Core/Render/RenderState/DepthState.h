@@ -2,8 +2,11 @@
 
 #include "CompareFunction.h"
 
-struct DepthState
+namespace PR
 {
-	bool writeEnabled = true;
-	CompareFunction compareFunction = CompareFunction::Less;
-};
+	struct DepthState
+	{
+		bool writeEnabled = true;
+		CompareFunction compareFunction = CompareFunction::LessEqual;
+	};
+}

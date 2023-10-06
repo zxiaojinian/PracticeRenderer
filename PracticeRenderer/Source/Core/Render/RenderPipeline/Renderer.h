@@ -30,7 +30,6 @@ namespace PR
 
 		void InternalStartRendering(const RenderingData& renderingData);
 		void InternalFinishRendering();
-
 	private:
 		std::vector<std::shared_ptr<RenderPass>> m_ActiveRenderPassQueue;
 

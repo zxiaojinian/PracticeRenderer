@@ -185,7 +185,7 @@ namespace PR
 				glDeleteShader(shader);
 
 				PR_LOG_ERROR("{0}", infoLog.data());
-				PR_ASSERT(false, "Shader compilation failure!");
+				PR_ASSERT(false, "Shader compilation failure:\n" + source);
 				break;
 			}
 

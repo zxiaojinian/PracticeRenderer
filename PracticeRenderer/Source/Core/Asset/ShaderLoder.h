@@ -4,7 +4,7 @@
 
 namespace PR
 {
-	class ShaderLibrary
+	class ShaderLoder
 	{
 	public:
 		void Add(const std::string& name, const std::shared_ptr<Shader>& shader);

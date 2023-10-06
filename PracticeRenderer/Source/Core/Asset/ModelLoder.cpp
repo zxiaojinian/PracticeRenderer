@@ -6,6 +6,8 @@
 #include "Core/Scene/Scene.h"
 #include "Core/Asset/Resources.h"
 
+#include <glm/glm.hpp>
+
 #include <vector>
 
 namespace PR
@@ -16,7 +18,7 @@ namespace PR
             return m_ModelCache[path];
 
         Assimp::Importer import;
-        const aiScene* aiscene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+        const aiScene* aiscene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
 
         if (!aiscene || aiscene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !aiscene->mRootNode)
         {
@@ -41,23 +43,66 @@ namespace PR
         return root;
     }
 
+    std::vector<std::shared_ptr<Mesh>> ModelLoder::LoadMeshes(const std::string& path)
+    {
+        Assimp::Importer import;
+        const aiScene* aiscene = import.ReadFile(path, aiProcess_Triangulate);
+
+        std::vector<std::shared_ptr<Mesh>> meshes;
+        if (!aiscene || aiscene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !aiscene->mRootNode)
+        {
+            PR_LOG_ERROR("ERROR::ASSIMP::import.GetErrorString()");
+        }
+        else
+        {
+            LoadMeshes(meshes, aiscene);
+        }
+        return meshes;
+    }
+
     void ModelLoder::ProcessNode(GameObject* parent, aiNode* node, const aiScene* aiscene, Scene* scene, std::vector<std::shared_ptr<Mesh>>& meshes, std::vector<std::shared_ptr<Material>>& materials)
     {
-        for (unsigned int i = 0; i < node->mNumMeshes; i++)
-        {
-            auto mesh = meshes[node->mMeshes[i]];        
-            auto mat = materials[aiscene->mMeshes[node->mMeshes[i]]->mMaterialIndex];
-            GameObject* go = new GameObject(mesh->GetName(), scene);
-            go->SetParent(parent);
+        aiMatrix4x4 transform = node->mTransformation;
+        aiVector3D scaling;
+        aiQuaternion rotation;
+        aiVector3D translation;
+        transform.Decompose(scaling, rotation, translation);
 
-            MeshRenderer& meshRender = go->AddComponent<MeshRenderer>();
+        //TEMP
+        float scaleFactor = 1.0f;
+        glm::vec3 scale(scaling.x * scaleFactor, scaling.y * scaleFactor, scaling.z * scaleFactor);
+        glm::quat rotate(rotation.w, rotation.x, rotation.y, rotation.z);
+        glm::vec3 translate(translation.x, translation.y, translation.z);
+
+        std::string nodeName = node->mName.C_Str();
+        GameObject* nodeGO = new GameObject(nodeName, scene);
+        nodeGO->SetParent(parent);
+        nodeGO->GetTransform().SetLoaclTransform(translate, scale, rotate);
+
+        if (node->mNumMeshes > 0)
+        {
+            auto mesh = meshes[node->mMeshes[0]];
+            auto mat = materials[aiscene->mMeshes[node->mMeshes[0]]->mMaterialIndex];
+            MeshRenderer& meshRender = nodeGO->AddComponent<MeshRenderer>();
             meshRender.SetMesh(mesh);
             meshRender.AddMaterial(mat);
+
+            for (unsigned int i = 1; i < node->mNumMeshes; i++)
+            {
+                GameObject* go = new GameObject(i > 0 ? nodeName + std::to_string(i) : nodeName, scene);
+                go->SetParent(nodeGO);
+
+                auto mesh = meshes[node->mMeshes[i]];
+                auto mat = materials[aiscene->mMeshes[node->mMeshes[i]]->mMaterialIndex];
+                MeshRenderer& meshRender = go->AddComponent<MeshRenderer>();
+                meshRender.SetMesh(mesh);
+                meshRender.AddMaterial(mat);
+            }
         }
 
         for (unsigned int i = 0; i < node->mNumChildren; i++)
         {
-            ProcessNode(parent, node->mChildren[i], aiscene, scene, meshes, materials);
+            ProcessNode(nodeGO, node->mChildren[i], aiscene, scene, meshes, materials);
         }
     }
 
@@ -138,21 +183,16 @@ namespace PR
         switch (type)
         {
         case aiTextureType_DIFFUSE:
-            return "u_Diffuse";
-            break;
-        case aiTextureType_SPECULAR:
-            return "m_Specular";
-            break;
+            return "BaseMap";
+        case aiTextureType_METALNESS:
+            return "MaskMap";
         case aiTextureType_NORMALS:
-            return "u_Normal";
-            break;
-        case aiTextureType_SHININESS:
-            return "u_Roughness";
-            break;
+            return "NormalMap";
+        case aiTextureType_HEIGHT:
+            return "HeightMap";
         default:
             PR_ASSERT(false, "Unknown aiTextureType");
             return "";
-            break;
         }
     }
 
@@ -162,10 +202,9 @@ namespace PR
         {
             std::vector<aiTextureType> textureTypes = {
                 aiTextureType_DIFFUSE,
+                aiTextureType_METALNESS,
                 aiTextureType_NORMALS,
-                aiTextureType_SPECULAR,
-                aiTextureType_SHININESS,
-                //aiTextureType_AMBIENT_OCCLUSION
+                aiTextureType_HEIGHT
             };
 
             auto directory = path.substr(0, path.find_last_of('/') + 1);

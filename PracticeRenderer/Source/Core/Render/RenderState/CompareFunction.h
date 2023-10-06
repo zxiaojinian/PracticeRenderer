@@ -1,14 +1,17 @@
 #pragma once
 
-enum class CompareFunction
+namespace PR
 {
-    Disabled,
-    Never,
-    Less,
-    Equal,
-    LessEqual,
-    Greater,
-    NotEqual,
-    GreaterEqual,
-    Always
-};
+    enum class CompareFunction
+    {
+        Disabled,
+        Never,
+        Less,
+        Equal,
+        LessEqual,
+        Greater,
+        NotEqual,
+        GreaterEqual,
+        Always
+    };
+}

@@ -39,7 +39,7 @@ namespace PR
 		D32_SFloat_S8_UInt
 	};
 
-	enum TexturePixelType
+	enum class TexturePixelType
 	{
 		UNSIGNED_BYTE,
 		BYTE,

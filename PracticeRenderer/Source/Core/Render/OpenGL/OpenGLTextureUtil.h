@@ -150,25 +150,25 @@ namespace PR
 
 		switch (dataType)
 		{
-			case UNSIGNED_BYTE:
+		case TexturePixelType::UNSIGNED_BYTE:
 				resultDataType = GL_UNSIGNED_BYTE;
 				break;
-			case BYTE:
+			case TexturePixelType::BYTE:
 				resultDataType = GL_BYTE;
 				break;
-			case UNSIGNED_SHORT:
+			case TexturePixelType::UNSIGNED_SHORT:
 				resultDataType = GL_UNSIGNED_SHORT;
 				break;
-			case SHORT:
+			case TexturePixelType::SHORT:
 				resultDataType = GL_SHORT;
 				break;
-			case UNSIGNED_INT:
+			case TexturePixelType::UNSIGNED_INT:
 				resultDataType = GL_UNSIGNED_INT;
 				break;
-			case INT:
+			case TexturePixelType::INT:
 				resultDataType = GL_INT;
 				break;
-			case FLOAT:
+			case TexturePixelType::FLOAT:
 				resultDataType = GL_FLOAT;
 				break;
 			default:

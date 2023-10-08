@@ -50,7 +50,6 @@ namespace PR
 
 	void Shader::UploadProperty(const std::unordered_map<std::string, PropertyValue>& materialValue)
 	{
-		Bind();
 		int textureSlot = 0;
 		int bufferBindingPoint = 0;
 		for (auto& p : m_PropertyData)

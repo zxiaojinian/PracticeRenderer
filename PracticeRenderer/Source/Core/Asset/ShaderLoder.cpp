@@ -47,4 +47,32 @@ namespace PR
 	{
 		return m_Shaders.find(name) != m_Shaders.end();
 	}
+
+	void ShaderLoder::AddComputeShader(const std::string& name, const std::shared_ptr<ComputeShader>& shader)
+	{
+	}
+
+	void ShaderLoder::AddComputeShader(const std::shared_ptr<ComputeShader>& shader)
+	{
+	}
+
+	std::shared_ptr<ComputeShader> ShaderLoder::LoadComputeShader(const std::string& filepath)
+	{
+		return std::shared_ptr<ComputeShader>();
+	}
+
+	std::shared_ptr<ComputeShader> ShaderLoder::LoadComputeShader(const std::string& name, const std::string& filepath)
+	{
+		return std::shared_ptr<ComputeShader>();
+	}
+
+	std::shared_ptr<ComputeShader> ShaderLoder::GetComputeShader(const std::string& name)
+	{
+		return std::shared_ptr<ComputeShader>();
+	}
+
+	bool ShaderLoder::ComputeShaderExists(const std::string& name) const
+	{
+		return false;
+	}
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ShaderDefine.h"
 #include "Core/Render/Texture.h"
 #include "Core/Render/RenderState/RenderStateBlock.h"
 #include "Core/Render/Buffer.h"
@@ -13,32 +14,6 @@
 
 namespace PR
 {
-	enum class PropertyType
-	{
-		Unknown,
-		Int,
-		Float,
-		Float2,
-		Float3,
-		Float4,
-		Mat4,
-		Texture,
-		UBO,
-		SSBO
-	};
-
-	struct PropertyData
-	{
-		PropertyType Type;
-		std::string Name;
-	};
-
-	struct PropertyValue
-	{
-		PropertyType Type;
-		std::any Value;
-	};
-
 	class Shader
 	{
 	public:

@@ -23,7 +23,7 @@ void main()
 {
     gl_Position = Matrix_VP * Matrix_M * vec4(positionOS, 1.0);
     vec3 posOS = vec3(positionOS.x, positionOS.y, positionOS.z);
-    vs_out.positionOS = posOS;
+    vs_out.positionOS = vec3(posOS.x, posOS.y, -posOS.z);
 }
 
 

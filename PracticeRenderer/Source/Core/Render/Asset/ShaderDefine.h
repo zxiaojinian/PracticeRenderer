@@ -15,6 +15,7 @@ namespace PR
 		Float4,
 		Mat4,
 		Texture,
+		Cubemap,
 		UBO,
 		SSBO
 	};
@@ -23,6 +24,7 @@ namespace PR
 	{
 		PropertyType Type;
 		std::string Name;
+		bool IsImage = false;
 	};
 
 	struct PropertyValue

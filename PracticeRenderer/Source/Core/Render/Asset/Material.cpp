@@ -18,7 +18,6 @@ namespace PR
 
 	void Material::Bind() const
 	{
-		m_Shader->Bind();
 		m_Shader->SetRenderState();
 		m_Shader->UploadProperty(m_PropertyValue);
 	}
@@ -56,6 +55,11 @@ namespace PR
 	void Material::SetTexture(const std::string& name, Texture* value)
 	{
 		SetProterty(name, PropertyType::Texture, std::make_any<Texture*>(value));
+	}
+
+	void Material::SetCubemap(const std::string& name, Cubemap* value)
+	{
+		SetProterty(name, PropertyType::Cubemap, std::make_any<Cubemap*>(value));
 	}
 
 	void Material::SetProterty(const std::string& name, PropertyType type, std::any& value)

@@ -194,4 +194,15 @@ namespace PR
 
 		return 0;
 	}
+
+	inline GLenum GetOpenGLTextureAccess(TextureAccess acess)
+	{
+		switch (acess)
+		{
+			case TextureAccess::Read: return GL_READ_ONLY;
+			case TextureAccess::Write: return GL_WRITE_ONLY;
+			case TextureAccess::Read_Write: return GL_READ_WRITE;
+		}
+		return 0;
+	}
 }

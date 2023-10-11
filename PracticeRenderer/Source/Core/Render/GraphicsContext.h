@@ -33,7 +33,7 @@ namespace PR
 		void DrawMesh(Mesh& mesh, const glm::mat4& matrix, Material& material);
 		void DrawRenderer(const MeshRenderer& renderer);
 		void DrawRenderers(const CullingResults& cullingResults, const DrawingSettings& drawingSettings, const FilteringSettings& filteringSettings);
-		void DispatchCompute(const ComputeShader& computeShader, uint32_t num_x, uint32_t num_y, uint32_t num_z);
+		void DispatchCompute(ComputeShader& computeShader, uint32_t num_x, uint32_t num_y, uint32_t num_z);
 
 	public:
 		std::unique_ptr<Framebuffer> m_Framebuffer;

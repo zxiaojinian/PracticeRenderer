@@ -6,7 +6,9 @@
 #include "Core/Render/OpenGL/OpenGLShader.h"
 #include "Core/Render/Texture.h"
 #include "Core/Render/Texture2D.h"
+#include "Core/Render/Cubemap.h"
 #include "Core/Render/RenderCommand.h"
+
 
 namespace PR
 {
@@ -50,7 +52,9 @@ namespace PR
 
 	void Shader::UploadProperty(const std::unordered_map<std::string, PropertyValue>& materialValue)
 	{
+		Bind();
 		int textureSlot = 0;
+		int imageSlot = 0;
 		int bufferBindingPoint = 0;
 		for (auto& p : m_PropertyData)
 		{
@@ -114,6 +118,26 @@ namespace PR
 							texture->Bind(textureSlot);
 							UploadInt(p.Name, textureSlot);
 							textureSlot++;
+						}
+						break;
+					}
+					case PropertyType::Cubemap:
+					{
+						auto cubemap = std::any_cast<Cubemap*>(value);
+						if (cubemap)
+						{
+							if (p.IsImage)
+							{
+								cubemap->BindImage(imageSlot++, 0, TextureAccess::Write);
+								UploadInt(p.Name, imageSlot);
+								imageSlot++;
+							}
+							else
+							{
+								cubemap->Bind(textureSlot);
+								UploadInt(p.Name, textureSlot);
+								textureSlot++;
+							}
 						}
 						break;
 					}
@@ -181,6 +205,12 @@ namespace PR
 	{
 		if(value)
 			s_PropertyValue[name] = { PropertyType::Texture, value };
+	}
+
+	void Shader::SetCubemap(const std::string& name, Cubemap* value)
+	{
+		if (value)
+			s_PropertyValue[name] = { PropertyType::Cubemap, value };
 	}
 
 	void Shader::SetBuffer(const std::string& name, Buffer* value)

@@ -2,11 +2,10 @@
 #version 460 core
 
 layout (local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
-	
-layout(binding = 0, rgba16) uniform readonly imageCube environmentMap;
-layout(binding = 1, rgba16) uniform writeonly imageCube irradianceMap;
 
-uniform int environmentMapSize;
+uniform samplerCube environmentMap;
+layout(rgba16) uniform writeonly imageCube irradianceMap;
+
 uniform int irradianceMapSize;
 
 #define PI 3.14159265358979323846
@@ -34,11 +33,11 @@ vec3 UVToDir(uint faceIndex, vec2 uv)
 
 void main() 
 {
-    ivec2 pixelCoord = gl_WorkGroupSize.xy  * gl_WorkGroupID.xy +  gl_LocalInvocationID.xy;
+    vec2 pixelCoord = gl_WorkGroupSize.xy  * gl_WorkGroupID.xy +  gl_LocalInvocationID.xy;
     vec2 uv = pixelCoord / irradianceMapSize;
-    vec3 dir = UVToDir(gl_WorkGroupID.z, uv);
+    vec3 sampleDir = UVToDir(gl_WorkGroupID.z, uv);
 
-    vec3 normal = normalize(dir);
+    vec3 normal = normalize(sampleDir);
     vec3 up = vec3(0.0, 1.0, 0.0);
     vec3 tangent = vec3(1.0, 0.0, 0.0);
 
@@ -63,9 +62,9 @@ void main()
         N2 = 0;
         for (float theta = 0.0; theta < 0.5 * PI; theta += sampleDelta)
         {
-            vec3 tangentSpaceNormal = vec3(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
-            vec3 worldNormal = tangentSpaceNormal.x * tangent + tangentSpaceNormal.y * binormal + tangentSpaceNormal.z * normal;
-            irradiance += imageLoad(environmentMap, worldNormal).rgb * cos(theta) * sin(theta);
+            vec3 tangentSpaceDir = vec3(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
+            vec3 sampleDir = tangentSpaceDir.x * tangent + tangentSpaceDir.y * binormal + tangentSpaceDir.z * normal;
+            irradiance += texture(environmentMap, sampleDir).rgb * cos(theta) * sin(theta);
             N2++;
         }
         N1++;
@@ -73,5 +72,6 @@ void main()
 
     float weight = PI / (N1 * N2);
     irradiance *= weight;
-    imageStore(irradianceMap, normal, irradiance);
+    ivec3 irradianceMapUV = ivec3(pixelCoord, gl_WorkGroupID.z);
+    imageStore(irradianceMap, irradianceMapUV, vec4(irradiance, 0.0));
 }

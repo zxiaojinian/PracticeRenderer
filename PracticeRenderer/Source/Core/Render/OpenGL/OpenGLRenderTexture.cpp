@@ -70,6 +70,11 @@ namespace PR
 		glBindTextureUnit(slot, m_RendererID);
 	}
 
+	void OpenGLRenderTexture::BindImage(uint32_t slot, uint32_t level, TextureAccess access) const
+	{
+		glBindImageTexture(slot, m_RendererID, level, GL_FALSE, 0, GetOpenGLTextureAccess(access), GetOpenGLInternalFormat(m_RenderTextureSpecification.Format));
+	}
+
 	void OpenGLRenderTexture::Init()
 	{
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);

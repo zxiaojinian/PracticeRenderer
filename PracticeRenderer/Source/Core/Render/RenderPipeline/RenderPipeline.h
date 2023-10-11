@@ -21,8 +21,9 @@ namespace PR
 	{
 	public:
 		RenderPipeline();
-		void SetRenderPath(RenderPath renderPath);
 
+		void SetRenderPath(RenderPath renderPath);
+		void Init(GraphicsContext& graphicsContext);
 		void Render(GraphicsContext& graphicsContext);
 
 	private:
@@ -43,7 +44,8 @@ namespace PR
 		RenderPath m_RenderPath = RenderPath::Forward;
 
 		std::shared_ptr <ComputeShader> m_IrradianceCompute;
-		std::shared_ptr<Cubemap> skyCubeMap = nullptr;
+		std::shared_ptr<Cubemap> m_SkyCubeMap = nullptr;
+		std::shared_ptr<Cubemap> m_IrradianceCubeMap = nullptr;
 	};
 }
 

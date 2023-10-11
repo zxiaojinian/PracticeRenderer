@@ -23,6 +23,7 @@ namespace PR
 		virtual uint32_t GetRendererID() const override { return m_RendererID; }
 
 		virtual void Bind(uint32_t slot = 0) const override;
+		virtual void BindImage(uint32_t slot = 0, uint32_t level = 0, TextureAccess access = TextureAccess::Read) const override;
 		virtual bool operator==(const Texture& other) const override
 		{
 			return m_RendererID == ((OpenGLRenderTexture&)other).m_RendererID;

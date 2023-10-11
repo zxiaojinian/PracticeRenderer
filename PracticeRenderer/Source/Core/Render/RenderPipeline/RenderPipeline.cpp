@@ -18,9 +18,13 @@ namespace PR
 		CreateDefaultRenderer();
 	}
 
-	void RenderPipeline::Render(GraphicsContext& graphicsContext)
+	void RenderPipeline::Init(GraphicsContext& graphicsContext)
 	{
 		EnvironmentLighting(graphicsContext);
+	}
+
+	void RenderPipeline::Render(GraphicsContext& graphicsContext)
+	{
 		SetupPerFrameShaderConstants(graphicsContext);
 
 		Scene* scene = SceneManager::Get().GetCurrentScene();
@@ -142,11 +146,29 @@ namespace PR
 		if (m_IrradianceCompute == nullptr)
 			m_IrradianceCompute = ComputeShader::Create("Assets/Shader/PBR/GI/IrradianceCompute.compute");
 
-		if (skyCubeMap == nullptr)
+		if (m_SkyCubeMap == nullptr)
 		{
-			skyCubeMap = Resources::Get().GetCubemap("SkyBox");
+			m_SkyCubeMap = Resources::Get().GetCubemap("SkyBox");
 		}
 
-		graphicsContext.DispatchCompute(*m_IrradianceCompute, 1, 1, 1);
+		uint32_t irradianceSize = 128;
+		if (m_IrradianceCubeMap == nullptr)
+		{
+			CubemapSpecification specification{};
+			specification.Width = irradianceSize;
+			specification.FilterMode = TextureFilterMode::Bilinear;
+			specification.GenerateMips = false;
+			specification.GenerateMips = false;
+			specification.WrapMode = TextureWrapMode::Clamp;
+			specification.Format = TextureFormat::R16G16B16A16_SFloat;
+			m_IrradianceCubeMap = Cubemap::Create("IrradianceCubeMap", specification);
+			Shader::SetCubemap("irradianceMap", m_IrradianceCubeMap.get());
+			Resources::Get().AddCubemap(m_IrradianceCubeMap);
+		}
+		auto dispatchCount = irradianceSize / 8;
+		m_IrradianceCompute->SetCubemap("environmentMap", m_SkyCubeMap.get());
+		m_IrradianceCompute->SetCubemap("irradianceMap", m_IrradianceCubeMap.get());
+		m_IrradianceCompute->SetInt("irradianceMapSize", irradianceSize - 1);
+		graphicsContext.DispatchCompute(*m_IrradianceCompute, dispatchCount, dispatchCount, 6);
 	}
 }

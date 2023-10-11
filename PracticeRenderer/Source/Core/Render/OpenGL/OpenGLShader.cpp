@@ -256,6 +256,7 @@ namespace PR
 			m_UniformLocation[uniformName.data()] = location;
 
 			PropertyType propertyType;
+			bool isImage = false;
 			switch (type)
 			{
 			case GL_INT:
@@ -279,12 +280,19 @@ namespace PR
 			case GL_SAMPLER_2D:
 				propertyType = PropertyType::Texture;
 				break;
+			case GL_SAMPLER_CUBE:
+				propertyType = PropertyType::Cubemap;
+				break;
+			case GL_IMAGE_CUBE:
+				propertyType = PropertyType::Cubemap;
+				isImage = true;
+				break;
 			default:
 				propertyType = PropertyType::Unknown;
 				break;
 			}
 
-			m_PropertyData.push_back({ propertyType, nameStr });
+			m_PropertyData.push_back({ propertyType, nameStr, isImage });
 		}
 
 		//UBO

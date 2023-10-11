@@ -3,6 +3,7 @@
 #include "ShaderDefine.h"
 #include "Core/Render/Texture.h"
 #include "Core/Render/Buffer.h"
+#include "Core/Render/Cubemap.h"
 
 #include <glm/glm.hpp>
 
@@ -33,6 +34,7 @@ namespace PR
 		void SetFloat4(const std::string & name, const glm::vec4 & value);
 		void SetMat4(const std::string & name, const glm::mat4 & value);
 		void SetTexture(const std::string & name, Texture * value);
+		void SetCubemap(const std::string& name, Cubemap* value);
 		void SetBuffer(const std::string & name, Buffer * value);
 
 		static void SetGlobalInt(const std::string& name, int value);
@@ -42,6 +44,7 @@ namespace PR
 		static void SetGlobalFloat4(const std::string& name, const glm::vec4& value);
 		static void SetGlobalMat4(const std::string& name, const glm::mat4& value);
 		static void SetGlobalTexture(const std::string& name, Texture* value);
+		static void SetGlobalCubemap(const std::string& name, Cubemap* value);
 		static void SetGlobalBuffer(const std::string& name, Buffer* value);
 
 		static std::shared_ptr<ComputeShader> Create(const std::string & filepath);

@@ -2,8 +2,9 @@
 
 #include "ShaderDefine.h"
 #include "Core/Render/Texture.h"
-#include "Core/Render/RenderState/RenderStateBlock.h"
+#include "Core/Render/Cubemap.h"
 #include "Core/Render/Buffer.h"
+#include "Core/Render/RenderState/RenderStateBlock.h"
 
 #include <glm/glm.hpp>
 
@@ -36,6 +37,7 @@ namespace PR
 		static void SetFloat4(const std::string& name, const glm::vec4& value);
 		static void SetMat4(const std::string& name, const glm::mat4& value);
 		static void SetTexture(const std::string& name, Texture* value);
+		static void SetCubemap(const std::string& name, Cubemap* value);
 		static void SetBuffer(const std::string& name, Buffer* value);
 		//static void SetIntArray(const std::string& name, int* values, uint32_t count);
 

@@ -51,6 +51,7 @@ namespace PR
 
 		m_SceneManager = std::make_unique<SceneManager>();
 		m_RenderPipeline = std::make_unique<RenderPipeline>();
+		m_RenderPipeline->Init(*m_GraphicsContext);
 	}
 
 	void Application::OnUpdate()

@@ -4,6 +4,8 @@
 #include "Lights.inc"
 #include "PBRCommon.inc"
 
+uniform samplerCube irradianceMap;
+
 struct InputData
 {
     vec3 positionWS;
@@ -53,7 +55,9 @@ vec4 PBRLit(InputData inputData, SurfaceData surfaceData)
     vec3 specularColor = mix(vec3(0.04, 0.04, 0.04), surfaceData.albedo, surfaceData.metallic);
 
     vec3 directLighting = DirectLighting(diffuseColor, specularColor, 1.0 - surfaceData.smoothness, inputData.positionWS, inputData.normalWS, inputData.viewDirectionWS);
-    finalColor.rgb = directLighting;
+    vec3 inDirectLighting = texture(irradianceMap, inputData.normalWS).rgb * diffuseColor;
+
+    finalColor.rgb = directLighting + inDirectLighting;
     finalColor.a = surfaceData.alpha;
     return finalColor;
 }

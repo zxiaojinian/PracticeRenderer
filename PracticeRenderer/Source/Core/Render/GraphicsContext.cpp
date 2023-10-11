@@ -100,9 +100,9 @@ namespace PR
 		}
 	}
 
-	void GraphicsContext::DispatchCompute(const ComputeShader& computeShader, uint32_t num_x, uint32_t num_y, uint32_t num_z)
+	void GraphicsContext::DispatchCompute(ComputeShader& computeShader, uint32_t num_x, uint32_t num_y, uint32_t num_z)
 	{
-		computeShader.Bind();
+		computeShader.UploadProperty();
 		RenderCommand::DispatchCompute(num_x, num_y, num_z);
 	}
 

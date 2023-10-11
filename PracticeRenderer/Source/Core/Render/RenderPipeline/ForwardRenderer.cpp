@@ -42,12 +42,12 @@ namespace PR
 		auto& visibleLights = renderingData.cullResults.VisibleLights;
 		if (m_LightDataBuffer == nullptr || m_LightDataBuffer->GetCount() != visibleLights.size())
 		{
-			m_LightDataBuffer = Buffer::Create(visibleLights.size(), sizeof(LightData), BufferType::StorageBuffer, BufferUsage::Dynamic);
+			m_LightDataBuffer = Buffer::Create(static_cast<uint32_t>(visibleLights.size()), sizeof(LightData), BufferType::StorageBuffer, BufferUsage::Dynamic);
 			Shader::SetBuffer("LightDataBuffer", m_LightDataBuffer.get());
 		}
 
-		auto stride = sizeof(LightData);
-		int index = 0;
+		auto stride = static_cast<uint32_t>(sizeof(LightData));
+		uint32_t index = 0;
 		for (auto light : visibleLights)
 		{
 			m_LightDataBuffer->SetData(&light->GetLightData(), index * stride, 1, stride);

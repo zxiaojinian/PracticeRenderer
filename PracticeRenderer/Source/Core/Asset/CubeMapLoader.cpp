@@ -11,34 +11,19 @@ namespace PR
 	{
 	}
 
-	void CubeMapLoader::Add(const std::string& name, const std::shared_ptr<Cubemap>& cubemap)
+	void CubeMapLoader::Add(const std::shared_ptr<Cubemap>& cubemap)
 	{
+		auto& name = cubemap->GetName();
 		PR_ASSERT(!Exists(name), "Cubemap already exists!");
 		m_Cubemaps[name] = cubemap;
 	}
 
-	void CubeMapLoader::Add(const std::shared_ptr<Cubemap>& cubemap)
+	std::shared_ptr<Cubemap> CubeMapLoader::Load(const std::string& name, const std::vector<std::string>& filepath)
 	{
-		auto& name = cubemap->GetName();
-		Add(name, cubemap);
-	}
-
-	std::shared_ptr<Cubemap> CubeMapLoader::Load(const std::vector<std::string>& filepath)
-	{
-		auto cubemap = LoadCubemap(filepath);
+		auto cubemap = LoadCubemap(name, filepath);
 		if (cubemap != nullptr)
 		{
 			Add(cubemap);
-		}
-		return cubemap;
-	}
-
-	std::shared_ptr<Cubemap> CubeMapLoader::Load(const std::string& name, const std::vector<std::string>& filepath)
-	{
-		auto cubemap = LoadCubemap(filepath);
-		if (cubemap != nullptr)
-		{
-			Add(name, cubemap);
 		}
 		return cubemap;
 	}
@@ -54,7 +39,7 @@ namespace PR
 		return m_Cubemaps.find(name) != m_Cubemaps.end();
 	}
 
-	std::shared_ptr<Cubemap> CubeMapLoader::LoadCubemap(const std::vector<std::string>& filepath)
+	std::shared_ptr<Cubemap> CubeMapLoader::LoadCubemap(const std::string& name, const std::vector<std::string>& filepath)
 	{
 		if (filepath.size() < 0)
 		{
@@ -64,8 +49,8 @@ namespace PR
 		auto lastSlash = filepath[0].find_last_of("/\\");
 		lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
 		auto lastDot = filepath[0].rfind('.');
-		auto count = lastDot == std::string::npos ? filepath[0].size() - lastSlash : lastDot - lastSlash;
-		std::string name = filepath[0].substr(lastSlash, count);
+		//auto count = lastDot == std::string::npos ? filepath[0].size() - lastSlash : lastDot - lastSlash;
+		//std::string name = filepath[0].substr(lastSlash, count);
 
 		std::string extension = lastDot == std::string::npos ? "" : filepath[0].substr(lastDot + 1);
 

@@ -3,6 +3,7 @@
 
 #include "Core/Scene/SceneManager.h"
 #include "Core/Render/RenderPipeline/ForwardRenderer.h"
+#include "Core/Asset/Resources.h"
 
 namespace PR
 {
@@ -19,6 +20,7 @@ namespace PR
 
 	void RenderPipeline::Render(GraphicsContext& graphicsContext)
 	{
+		EnvironmentLighting(graphicsContext);
 		SetupPerFrameShaderConstants(graphicsContext);
 
 		Scene* scene = SceneManager::Get().GetCurrentScene();
@@ -133,5 +135,18 @@ namespace PR
 	{
 		renderingData.cameraData = cameraData;
 		renderingData.cullResults = cullResult;
+	}
+
+	void RenderPipeline::EnvironmentLighting(GraphicsContext& graphicsContext)
+	{
+		if (m_IrradianceCompute == nullptr)
+			m_IrradianceCompute = ComputeShader::Create("Assets/Shader/PBR/GI/IrradianceCompute.compute");
+
+		if (skyCubeMap == nullptr)
+		{
+			skyCubeMap = Resources::Get().GetCubemap("SkyBox");
+		}
+
+		graphicsContext.DispatchCompute(*m_IrradianceCompute, 1, 1, 1);
 	}
 }

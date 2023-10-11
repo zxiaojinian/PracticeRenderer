@@ -60,7 +60,7 @@ namespace PR
 
 	protected:
 		std::vector<PropertyData> m_PropertyData;
-		static std::unordered_map<std::string, PropertyValue> m_PropertyValue;
+		std::unordered_map<std::string, PropertyValue> m_PropertyValue;
 		static std::unordered_map<std::string, PropertyValue> s_PropertyValue;
 	};
 }

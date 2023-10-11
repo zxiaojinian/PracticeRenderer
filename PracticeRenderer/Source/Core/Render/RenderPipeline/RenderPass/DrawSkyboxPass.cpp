@@ -24,7 +24,7 @@ namespace PR
 			"Assets/Texture/SkyBox/skybox_posz.hdr",
 			"Assets/Texture/SkyBox/skybox_negz.hdr",
 		};
-		skyCubeMap = Resources::Get().LoadCubemap(facesPath);
+		skyCubeMap = Resources::Get().LoadCubemap("SkyBox", facesPath);
 		m_SkyBoxMaterial->SetTexture("SkyCubeMap", skyCubeMap.get());
 
 		auto meshes = Resources::Get().LoadMeshes("Assets/Model/SkyBoxSphere.obj");

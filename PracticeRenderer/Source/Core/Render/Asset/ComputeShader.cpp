@@ -9,6 +9,8 @@
 
 namespace PR
 {
+	std::unordered_map<std::string, PropertyValue> ComputeShader::s_PropertyValue;
+
 	bool ComputeShader::HaveProperty(const std::string& property)
 	{
 		for (auto& p : m_PropertyData)

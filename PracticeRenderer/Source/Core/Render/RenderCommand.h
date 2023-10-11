@@ -56,6 +56,11 @@ namespace PR
 			s_RendererAPI->DrawIndexed(count);
 		}
 
+		static void DispatchCompute(uint32_t num_x, uint32_t num_y, uint32_t num_z)
+		{
+			s_RendererAPI->DispatchCompute(num_x, num_y, num_z);
+		}
+
 	private:
 		static std::unique_ptr<RendererAPI> s_RendererAPI;
 	};

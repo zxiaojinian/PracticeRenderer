@@ -13,9 +13,9 @@ namespace PR
 	public:
 		virtual ~Framebuffer() = default;
 
-		virtual void AttachColorTexture(RenderTexture& colorRT) = 0;
+		virtual void AttachColorTexture(RenderTexture* colorRT) = 0;
 		virtual void AttachColorTexture(std::vector<RenderTexture>& colorRTs) = 0;
-		virtual void AttachDepthTexture(RenderTexture& depthRT) = 0;
+		virtual void AttachDepthTexture(RenderTexture* depthRT) = 0;
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 		static std::unique_ptr<Framebuffer> Create();

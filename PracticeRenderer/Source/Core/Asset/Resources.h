@@ -33,7 +33,11 @@ namespace PR
 
 		//cube map
 		void AddCubemap(const std::shared_ptr<Cubemap>& cubemap) { m_CubeMapLoader.Add(cubemap); }
-		std::shared_ptr<Cubemap> LoadCubemap(const std::string& name, const std::vector<std::string>& filepath) { return m_CubeMapLoader.Load(name, filepath); }
+
+		std::shared_ptr<Cubemap> LoadCubemap(const std::string& name, const std::vector<std::string>& filepath, 
+			TextureFilterMode filterMode = TextureFilterMode::Bilinear, TextureWrapMode wrapMode = TextureWrapMode::Clamp, bool generateMips = false) 
+		{ return m_CubeMapLoader.Load(name, filepath, filterMode, wrapMode, generateMips); }
+
 		std::shared_ptr<Cubemap> GetCubemap(const std::string& name) { return m_CubeMapLoader.Get(name); }
 		bool ExistsCubemap(const std::string& name) const { m_CubeMapLoader.Exists(name); }
 

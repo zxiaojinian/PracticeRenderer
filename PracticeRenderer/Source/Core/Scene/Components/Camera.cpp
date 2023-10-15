@@ -10,10 +10,11 @@
 namespace PR
 {
 	Camera::Camera(GameObject& gameobject)
-		: Component(gameobject), 
-		m_ProjectionMatrix(glm::perspective(glm::radians(m_Fov), (float)Application::Get().GetWindow().GetWidth() / Application::Get().GetWindow().GetHeight(), m_NearPlane, m_FarPlane))
+		: Component(gameobject)
 	{
-		m_Transform.SetPosition(glm::vec3(0.0f, 0.0f, 10.0f));
+		float aspect = (float)Application::Get().GetWindow().GetWidth() / Application::Get().GetWindow().GetHeight();
+		m_ProjectionMatrix = glm::perspective(glm::radians(m_Fov), aspect, m_NearPlane, m_FarPlane);
+		m_Transform.SetPosition(glm::vec3(0.0f, 2.0f, 10.0f));
 	}
 
 	glm::u32vec4 Camera::GetPixelRect() const

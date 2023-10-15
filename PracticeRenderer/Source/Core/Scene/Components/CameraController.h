@@ -17,7 +17,7 @@ namespace PR
 	private:
 		//Camera* m_Camera;
 
-		float m_MoveSpeed = 20.0f;
+		float m_MoveSpeed = 1.0f;
 		float m_RotateSpeed = 0.2f;
 
 		bool m_StartDrag = true;

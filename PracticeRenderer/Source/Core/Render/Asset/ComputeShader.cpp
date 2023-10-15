@@ -31,13 +31,16 @@ namespace PR
 		for (auto& p : m_PropertyData)
 		{
 			std::any value;
+			uint32_t mipmap = 0;
 			if (m_PropertyValue.find(p.Name) != m_PropertyValue.end() && m_PropertyValue.at(p.Name).Type == p.Type)
 			{
 				value = m_PropertyValue.at(p.Name).Value;
+				mipmap = m_PropertyValue.at(p.Name).MipLevel;
 			}
 			else if (s_PropertyValue.find(p.Name) != s_PropertyValue.end() && s_PropertyValue[p.Name].Type == p.Type)
 			{
 				value = s_PropertyValue[p.Name].Value;
+				mipmap = s_PropertyValue[p.Name].MipLevel;
 			}
 			else
 			{
@@ -100,7 +103,7 @@ namespace PR
 						{
 							if (p.IsImage)
 							{
-								cubemap->BindImage(imageSlot, 0, TextureAccess::Write);
+								cubemap->BindImage(imageSlot, mipmap, TextureAccess::Write);
 								UploadInt(p.Name, imageSlot);
 								imageSlot++;
 							}								
@@ -171,10 +174,10 @@ namespace PR
 			m_PropertyValue[name] = { PropertyType::Texture, value };
 	}
 
-	void ComputeShader::SetCubemap(const std::string& name, Cubemap* value)
+	void ComputeShader::SetCubemap(const std::string& name, Cubemap* value, uint32_t mipLevel)
 	{
 		if (value)
-			m_PropertyValue[name] = { PropertyType::Cubemap, value };
+			m_PropertyValue[name] = { PropertyType::Cubemap, value, mipLevel };
 	}
 
 	void ComputeShader::SetBuffer(const std::string& name, Buffer* value)
@@ -235,10 +238,10 @@ namespace PR
 			s_PropertyValue[name] = { PropertyType::Texture, value };
 	}
 
-	void ComputeShader::SetGlobalCubemap(const std::string& name, Cubemap* value)
+	void ComputeShader::SetGlobalCubemap(const std::string& name, Cubemap* value, uint32_t mipLevel)
 	{
 		if (value)
-			s_PropertyValue[name] = { PropertyType::Cubemap, value };
+			s_PropertyValue[name] = { PropertyType::Cubemap, value ,mipLevel };
 	}
 
 	void ComputeShader::SetGlobalBuffer(const std::string& name, Buffer* value)

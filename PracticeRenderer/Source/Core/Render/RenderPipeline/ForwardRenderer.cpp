@@ -13,7 +13,7 @@ namespace PR
 		RenderTextureSpecification depthSpecification = { 1920, 1080, TextureFormat::D32_SFloat_S8_UInt, TextureWrapMode::Clamp, TextureFilterMode::Nearest, false };
 		m_DepthRenderTexture = RenderTexture::Create("DepthRenderTexture", depthSpecification);
 
-		std::shared_ptr<Shader> shader = Resources::Get().LoadShader("Assets/Shader/Blit.glsl");
+		std::shared_ptr<Shader> shader = Resources::Get().LoadShader("Assets/Shader/Blit.shader");
 		//Temp
 		shader->GetRenderStateBlock().depthState.compareFunction = CompareFunction::Disabled;
 		shader->GetRenderStateBlock().depthState.writeEnabled = false;
@@ -21,6 +21,7 @@ namespace PR
 		m_BlitMaterial = std::make_shared<Material>("BlitMaterial");
 		m_BlitMaterial->SetShader(shader);
 
+		m_DepthOnlyPass = std::make_shared<DepthOnlyPass>(RenderPassEvent::BeforeRenderingPrepasses);
 		m_DrawObjectsPass = std::make_shared<DrawObjectsPass>(RenderPassEvent::BeforeRenderingOpaques);
 		m_DrawSkyboxPass = std::make_shared<DrawSkyboxPass>(RenderPassEvent::BeforeRenderingSkybox);
 		m_FinalBlitPass = std::make_shared<FinalBlitPass>(RenderPassEvent::AfterRendering, m_BlitMaterial);
@@ -29,7 +30,7 @@ namespace PR
 	void ForwardRenderer::Setup(RenderingData& renderingData)
 	{
 		ConfigureCameraTarget(m_ColorRenderTexture, m_DepthRenderTexture);
-
+		EnqueuePass(m_DepthOnlyPass);
 		EnqueuePass(m_DrawObjectsPass);
 		EnqueuePass(m_DrawSkyboxPass);
 

@@ -143,32 +143,67 @@ namespace PR
 
 	void RenderPipeline::EnvironmentLighting(GraphicsContext& graphicsContext)
 	{
+		auto skyCubeMap = Resources::Get().GetCubemap("SkyBox");
+
+		//IBL Diffuse
 		if (m_IrradianceCompute == nullptr)
 			m_IrradianceCompute = ComputeShader::Create("Assets/Shader/PBR/GI/IrradianceCompute.compute");
 
-		if (m_SkyCubeMap == nullptr)
+		if (skyCubeMap && m_IrradianceCompute)
 		{
-			m_SkyCubeMap = Resources::Get().GetCubemap("SkyBox");
+			uint32_t irradianceSize = 128;
+			if (m_IrradianceCubeMap == nullptr)
+			{
+				CubemapSpecification specification{};
+				specification.Width = irradianceSize;
+				specification.FilterMode = TextureFilterMode::Bilinear;
+				specification.GenerateMips = false;
+				specification.WrapMode = TextureWrapMode::Clamp;
+				specification.Format = TextureFormat::R16G16B16A16_SFloat;
+				m_IrradianceCubeMap = Cubemap::Create("IrradianceCubeMap", specification);
+				Shader::SetCubemap("irradianceMap", m_IrradianceCubeMap.get());
+				Resources::Get().AddCubemap(m_IrradianceCubeMap);
+			}
+			auto dispatchCount = irradianceSize / 8;
+			m_IrradianceCompute->SetCubemap("environmentMap", skyCubeMap.get());
+			m_IrradianceCompute->SetCubemap("irradianceMap", m_IrradianceCubeMap.get());
+			m_IrradianceCompute->SetInt("irradianceMapSize", irradianceSize - 1);
+			graphicsContext.DispatchCompute(*m_IrradianceCompute, dispatchCount, dispatchCount, 6);
 		}
 
-		uint32_t irradianceSize = 128;
-		if (m_IrradianceCubeMap == nullptr)
+
+		//IBL Specular
+		if(m_SpecularPrefilter == nullptr)
+			m_SpecularPrefilter = ComputeShader::Create("Assets/Shader/PBR/GI/SpecularPrefilter.compute");
+
+		if (skyCubeMap && m_SpecularPrefilter)
 		{
-			CubemapSpecification specification{};
-			specification.Width = irradianceSize;
-			specification.FilterMode = TextureFilterMode::Bilinear;
-			specification.GenerateMips = false;
-			specification.GenerateMips = false;
-			specification.WrapMode = TextureWrapMode::Clamp;
-			specification.Format = TextureFormat::R16G16B16A16_SFloat;
-			m_IrradianceCubeMap = Cubemap::Create("IrradianceCubeMap", specification);
-			Shader::SetCubemap("irradianceMap", m_IrradianceCubeMap.get());
-			Resources::Get().AddCubemap(m_IrradianceCubeMap);
+			uint32_t specularMapSize = 128;
+			if (m_SpecularMap == nullptr)
+			{
+				CubemapSpecification specification{};
+				specification.Width = specularMapSize;
+				specification.FilterMode = TextureFilterMode::Trilinear;
+				specification.GenerateMips = true;
+				specification.WrapMode = TextureWrapMode::Clamp;
+				specification.Format = TextureFormat::R16G16B16A16_SFloat;
+				m_SpecularMap = Cubemap::Create("SpecularMap", specification);
+				Shader::SetCubemap("specularMap", m_SpecularMap.get());
+				Resources::Get().AddCubemap(m_SpecularMap);
+			}
+			auto dispatchCount = specularMapSize / 8;
+			m_SpecularPrefilter->SetCubemap("environmentMap", skyCubeMap.get());
+			m_SpecularPrefilter->SetInt("environmentMapSize", skyCubeMap->GetWidth());
+			uint32_t maxMipLevels = 5;
+			for (uint32_t mip = 0; mip < maxMipLevels; ++mip)
+			{
+				uint32_t mipSize = static_cast<uint32_t>(specularMapSize * std::pow(0.5, mip));
+				float roughness = (float)mip / (float)(maxMipLevels - 1);
+				m_SpecularPrefilter->SetFloat("roughness", roughness);
+				m_SpecularPrefilter->SetCubemap("specularMap", m_SpecularMap.get(), mip);
+				m_SpecularPrefilter->SetInt("specularMapSize", mipSize > 1 ? mipSize - 1 : 1);
+				graphicsContext.DispatchCompute(*m_SpecularPrefilter, dispatchCount, dispatchCount, 6);
+			}
 		}
-		auto dispatchCount = irradianceSize / 8;
-		m_IrradianceCompute->SetCubemap("environmentMap", m_SkyCubeMap.get());
-		m_IrradianceCompute->SetCubemap("irradianceMap", m_IrradianceCubeMap.get());
-		m_IrradianceCompute->SetInt("irradianceMapSize", irradianceSize - 1);
-		graphicsContext.DispatchCompute(*m_IrradianceCompute, dispatchCount, dispatchCount, 6);
 	}
 }

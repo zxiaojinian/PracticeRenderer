@@ -1,9 +1,15 @@
 #pragma once
 
 #include "SortingCriteria.h"
+#include "Core/Render/Asset/Material.h"
 
-struct DrawingSettings
+namespace PR
 {
-	SortingCriteria sortingCriteria{ SortingCriteria::CommonOpaque };
-};
+	struct DrawingSettings
+	{
+		SortingCriteria sortingCriteria{ SortingCriteria::CommonOpaque };
+		Material* overrideMaterial = nullptr;
+	};
+}
+
 

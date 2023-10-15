@@ -22,6 +22,7 @@ namespace PR
 		virtual TextureFormat GetFormat() const override { return m_CubemapSpecification.Format; }
 		virtual uint32_t GetRendererID() const override { return m_RendererID; }
 
+		virtual void SetSmoothEdges(bool smooth) override { m_SmoothEdges = smooth; }
 		virtual void SetData(void* data, uint32_t x, uint32_t y, uint32_t width, uint32_t height, TexturePixelType dataType, CubemapFace face) override;
 		virtual void Bind(uint32_t slot = 0) const override;
 		virtual void BindImage(uint32_t slot = 0, uint32_t level = 0, TextureAccess access = TextureAccess::Read) const override;
@@ -37,6 +38,7 @@ namespace PR
 		std::string m_Name;
 		CubemapSpecification m_CubemapSpecification;
 		uint32_t m_RendererID;
+		bool m_SmoothEdges = false;
 	};
 }
 

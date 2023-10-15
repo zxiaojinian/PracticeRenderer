@@ -19,10 +19,10 @@ namespace PR
 
         Assimp::Importer import;
         const aiScene* aiscene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
-
+        
         if (!aiscene || aiscene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !aiscene->mRootNode)
         {
-            PR_LOG_ERROR("ERROR::ASSIMP::import.GetErrorString()");
+            PR_LOG_ERROR("ASSIMP ERROR:{0}", import.GetErrorString());
             return nullptr;
         }
 
@@ -68,9 +68,8 @@ namespace PR
         aiVector3D translation;
         transform.Decompose(scaling, rotation, translation);
 
-        //TEMP
-        float scaleFactor = 1.0f;
-        glm::vec3 scale(scaling.x * scaleFactor, scaling.y * scaleFactor, scaling.z * scaleFactor);
+        glm::vec3 scale(scaling.x, scaling.y, scaling.z);
+        //glm::vec3 scale(1.0f);
         glm::quat rotate(rotation.w, rotation.x, rotation.y, rotation.z);
         glm::vec3 translate(translation.x, translation.y, translation.z);
 
@@ -87,9 +86,9 @@ namespace PR
             meshRender.SetMesh(mesh);
             meshRender.AddMaterial(mat);
 
-            for (unsigned int i = 1; i < node->mNumMeshes; i++)
+            for (uint32_t i = 1; i < node->mNumMeshes; i++)
             {
-                GameObject* go = new GameObject(i > 0 ? nodeName + std::to_string(i) : nodeName, scene);
+                GameObject* go = new GameObject(nodeName + std::to_string(i), scene);
                 go->SetParent(nodeGO);
 
                 auto mesh = meshes[node->mMeshes[i]];
@@ -99,8 +98,38 @@ namespace PR
                 meshRender.AddMaterial(mat);
             }
         }
+        else if (auto aiLight = IsLight(aiscene, node->mName.C_Str()))
+        {
+            LightType lightType = LightType::Undefined;
+            switch (aiLight->mType)
+            {
+                case aiLightSource_DIRECTIONAL:
+                    lightType = LightType::Directional;
+                    break;
+                case aiLightSource_POINT:
+                    lightType = LightType::Point;
+                    break;
+                case aiLightSource_SPOT:
+                    lightType = LightType::Spot;
+                    break;
+            }
 
-        for (unsigned int i = 0; i < node->mNumChildren; i++)
+            if (lightType != LightType::Undefined)
+            {
+                auto light = nodeGO->AddComponent<Light>();
+                light.Type = lightType;
+                light.LightColor = { aiLight->mColorDiffuse.r, aiLight->mColorDiffuse.r, aiLight->mColorDiffuse.b, 1.0 };
+                light.LightRange = static_cast<float>((rand() / double(RAND_MAX)) * 1.5f + 0.5f);
+                light.InnerSpotAngle = glm::degrees(aiLight->mAngleInnerCone);
+                light.SpotAngle = glm::degrees(aiLight->mAngleOuterCone);
+            }
+        }
+        //else if (IsCamera(aiscene, node->mName.C_Str()))
+        //{
+
+        //}
+
+        for (uint32_t i = 0; i < node->mNumChildren; i++)
         {
             ProcessNode(nodeGO, node->mChildren[i], aiscene, scene, meshes, materials);
         }
@@ -110,7 +139,7 @@ namespace PR
     {
         if (aiscene)
         {
-            for (unsigned int i = 0; i < aiscene->mNumMeshes; i++)
+            for (uint32_t i = 0; i < aiscene->mNumMeshes; i++)
             {
                 auto mesh = aiscene->mMeshes[i];
                 if (mesh)
@@ -175,6 +204,7 @@ namespace PR
                     meshes.push_back(std::make_shared<Mesh>(mesh->mName.C_Str(), vertices, indices));
                 }
             }
+
         }
     }
 
@@ -208,7 +238,7 @@ namespace PR
             };
 
             auto directory = path.substr(0, path.find_last_of('/') + 1);
-            for (unsigned int i = 0; i < aiscene->mNumMaterials; i++) 
+            for (uint32_t i = 0; i < aiscene->mNumMaterials; i++)
             {
                 aiMaterial* material = aiscene->mMaterials[i];
                 std::shared_ptr<Material> mat = std::make_shared<Material>();
@@ -230,5 +260,33 @@ namespace PR
                 materials.push_back(mat);
             }
         }
+    }
+
+    aiLight* ModelLoder::IsLight(const aiScene* aiscene, const char* name)
+    {
+        if (aiscene && aiscene->HasLights())
+        {
+            for (uint32_t i = 0; i < aiscene->mNumLights; i++)
+            {
+                auto light = aiscene->mLights[i];
+                if (strcmp(name, light->mName.C_Str()) == 0)
+                    return light;
+            }
+        }
+        return nullptr;
+    }
+
+    aiCamera* ModelLoder::IsCamera(const aiScene* aiscene, const char* name)
+    {
+        if (aiscene && aiscene->HasCameras())
+        {
+            for (uint32_t i = 0; i < aiscene->mNumCameras; i++)
+            {
+                auto camera = aiscene->mCameras[i];
+                if (strcmp(name, camera->mName.C_Str()) == 0)
+                    return camera;
+            }
+        }
+        return nullptr;
     }
 }

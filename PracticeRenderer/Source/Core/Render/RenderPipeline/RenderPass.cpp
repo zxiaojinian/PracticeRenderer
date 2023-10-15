@@ -8,7 +8,7 @@ namespace PR
 		this->renderPassEvent = renderPassEvent;
 	}
 
-	void RenderPass::ConfigureTarget(std::shared_ptr<RenderTexture>& colorAttachment, std::shared_ptr<RenderTexture>& depthAttachment)
+	void RenderPass::ConfigureTarget(std::shared_ptr<RenderTexture> colorAttachment, std::shared_ptr<RenderTexture> depthAttachment)
 	{
 		OverrideCameraTarget = true;
 

@@ -23,7 +23,7 @@ namespace PR
 		virtual void OnCameraCleanup() {};
 		virtual void Execute(GraphicsContext& graphicsContext, const RenderingData& renderingData) = 0;
 
-		void ConfigureTarget(std::shared_ptr<RenderTexture>& colorAttachment, std::shared_ptr<RenderTexture>& depthAttachment);
+		void ConfigureTarget(std::shared_ptr<RenderTexture> colorAttachment, std::shared_ptr<RenderTexture> depthAttachment);
 
 	public:
 		RenderPassEvent renderPassEvent;

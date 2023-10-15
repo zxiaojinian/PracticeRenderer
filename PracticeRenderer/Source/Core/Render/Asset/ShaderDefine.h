@@ -31,5 +31,6 @@ namespace PR
 	{
 		PropertyType Type;
 		std::any Value;
+		uint32_t MipLevel = 0;
 	};
 }

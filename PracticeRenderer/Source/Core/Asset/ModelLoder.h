@@ -25,6 +25,8 @@ namespace PR
 		void LoadMeshes(std::vector<std::shared_ptr<Mesh>>& meshes, const aiScene* aiscene);
 		void CreateMaterials(const std::string& path, std::vector<std::shared_ptr<Material>>& materials, const aiScene* aiscene);
 
+		aiLight* IsLight(const aiScene* aiscene, const char* name);
+		aiCamera* IsCamera(const aiScene* aiscene, const char* name);
 	private:
 		std::unordered_map<std::string, GameObject*> m_ModelCache;
 	};

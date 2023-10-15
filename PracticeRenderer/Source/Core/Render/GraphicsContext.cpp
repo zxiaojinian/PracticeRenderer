@@ -17,34 +17,63 @@ namespace PR
 		m_Framebuffer = Framebuffer::Create();
 	}
 
-	void GraphicsContext::SetRenderTarget(RenderTexture& color, RenderTexture& depth)
+	void GraphicsContext::SetRenderTarget(RenderTexture* color, RenderTexture* depth)
 	{
-		PR_ASSERT((color.GetWidth() == depth.GetWidth()) && (color.GetHeight() == depth.GetHeight()), "color and depth is not same size");
+		PR_ASSERT(!color || !depth || (color && depth && (color->GetWidth() == depth->GetWidth()) && (color->GetHeight() == depth->GetHeight())), "color and depth is not same size");
 
 		m_Framebuffer->AttachColorTexture(color);
 		m_Framebuffer->AttachDepthTexture(depth);
 		m_Framebuffer->Bind();
-		RenderCommand::SetViewport(0, 0, color.GetWidth(), color.GetHeight());
+
+		uint32_t w = 0;
+		uint32_t h = 0;
+		if (color)
+		{
+			w = color->GetWidth();
+			h = color->GetHeight();
+		}
+		else if(depth)
+		{
+			w = depth->GetWidth();
+			h = depth->GetHeight();
+		}
+		RenderCommand::SetViewport(0, 0, w, h);
 	}
 
-	void GraphicsContext::SetRenderTarget(std::vector<RenderTexture>& colors, RenderTexture& depth)
+	void GraphicsContext::SetRenderTarget(std::vector<RenderTexture>& colors, RenderTexture* depth)
 	{
-		PR_ASSERT(colors.size(), " no color RT");
-		bool result = (colors[0].GetWidth() == depth.GetWidth()) && (colors[0].GetHeight() == depth.GetHeight());
-		for (size_t i = 0; i < colors.size() - 1 ; i++)
+		if (colors.size() > 0 && depth)
 		{
-			if (colors[i].GetWidth() != colors[i + 1].GetWidth() || colors[i].GetHeight() != colors[i + 1].GetHeight())
+			bool result = (colors[0].GetWidth() == depth->GetWidth()) && (colors[0].GetHeight() == depth->GetHeight());
+			for (size_t i = 0; i < colors.size() - 1; i++)
 			{
-				result = false;
-				break;
+				if (colors[i].GetWidth() != colors[i + 1].GetWidth() || colors[i].GetHeight() != colors[i + 1].GetHeight())
+				{
+					result = false;
+					break;
+				}
 			}
+			PR_ASSERT(result, "colors and depth is not same size");
 		}
-		PR_ASSERT(result, "colors and depth is not same size");
 
 		m_Framebuffer->AttachColorTexture(colors);
 		m_Framebuffer->AttachDepthTexture(depth);
 		m_Framebuffer->Bind();
-		RenderCommand::SetViewport(0, 0, colors[0].GetWidth(), colors[0].GetHeight());
+
+		uint32_t w = 0;
+		uint32_t h = 0;
+		if (colors.size() > 0)
+		{
+			w = colors[0].GetWidth();
+			h = colors[0].GetHeight();
+		}
+		else if (depth)
+		{
+			w = depth->GetWidth();
+			h = depth->GetHeight();
+		}
+		RenderCommand::SetViewport(0, 0, w, h);
+		RenderCommand::SetViewport(0, 0, w, h);
 	}
 
 	void GraphicsContext::SetBackBuffer()
@@ -77,26 +106,34 @@ namespace PR
 		RenderCommand::DrawIndexed(mesh.GetIndexCount());
 	}
 
-	void GraphicsContext::DrawRenderer(const MeshRenderer& renderer)
+	void GraphicsContext::DrawRenderer(const MeshRenderer& renderer, DrawingSettings& drawingSettings)
 	{
 		auto& mesh = renderer.GetMesh();
 		auto& matrix = renderer.GetTransform().GetLocalToWorldMatrix();
 		auto& inverseMatrix = renderer.GetTransform().GetWorldToLocalMatrix();
-		auto& mats = renderer.GetMaterials();
-		for (auto& mat : mats)
+		if (drawingSettings.overrideMaterial)
 		{
 			Shader::SetMat4("Matrix_I_M", inverseMatrix);
-			DrawMesh(*mesh, matrix, *mat);
+			DrawMesh(*mesh, matrix, *drawingSettings.overrideMaterial);
+		}
+		else
+		{
+			auto& mats = renderer.GetMaterials();
+			for (auto& mat : mats)
+			{
+				Shader::SetMat4("Matrix_I_M", inverseMatrix);
+				DrawMesh(*mesh, matrix, *mat);
+			}
 		}
 	}
 
-	void GraphicsContext::DrawRenderers(const CullingResults& cullingResults, const DrawingSettings& drawingSettings, const FilteringSettings& filteringSettings)
+	void GraphicsContext::DrawRenderers(const CullingResults& cullingResults, DrawingSettings& drawingSettings, const FilteringSettings& filteringSettings)
 	{
 		//TEMP
 		auto& renderers = SceneManager::Get().GetCurrentScene()->GetMeshRenderers();
 		for (auto renderer : renderers)
 		{
-			DrawRenderer(*renderer);
+			DrawRenderer(*renderer, drawingSettings);
 		}
 	}
 

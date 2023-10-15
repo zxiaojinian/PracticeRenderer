@@ -2,6 +2,7 @@
 
 #include "Core/Scene/Component.h"
 #include "Core/Render/RenderData/LightData.h"
+#include "Core/Render/RenderData/Color.h"
 
 #include <glm/glm.hpp>
 
@@ -9,6 +10,7 @@ namespace PR
 {
 	enum  class LightType
 	{
+		Undefined,
 		Spot,
 		Directional,
 		Point
@@ -35,7 +37,7 @@ namespace PR
 
 	public:
 		LightType Type = LightType::Directional;
-		glm::vec4 Color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		Color LightColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 		float Intensity = 1.0f;
 		float LightRange = 10.0f;
 		float SpotAngle = 30.0f;

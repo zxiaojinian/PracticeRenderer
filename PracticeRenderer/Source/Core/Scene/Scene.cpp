@@ -8,6 +8,8 @@
 #include "Core/Scene/Components/CameraController.h"
 #include "Core/Asset/Resources.h"
 
+#include "Core/Util/Random.h"
+
 namespace PR
 {
 	Scene::Scene()
@@ -17,19 +19,51 @@ namespace PR
 		mainCamera->AddComponent<CameraController>();
 
 		auto directionalLight = new GameObject("Directional Light", this);
-		directionalLight->AddComponent<Light>();
 
-		//auto pointLight = new GameObject("Pont Light", this);
-		//pointLight->AddComponent<Light>().Type = LightType::Point;
+		//Lights
+		float rangeX = 2.0f;
+		float rangeY = 7.0f;
+		float rangeZ = 11.0f;
+		uint32_t numPointLights = 256;
+		for (uint32_t i = 0; i < numPointLights; i++)
+		{
+			auto go = new GameObject("Pont Light" + std::to_string(i), this);
+			auto& light = go->AddComponent<Light>();
+			light.Type = LightType::Point;
+			light.LightColor = { Random::Range(0.0f, 1.0f), Random::Range(0.0f, 1.0f), Random::Range(0.0f, 1.0f), 1.0};
+			light.Intensity = Random::Range(1.0f, 2.0f);
+			light.LightRange = Random::Range(1.0f, 3.0f);
 
-		//auto spotLight = new GameObject("Spot Light", this);
-		//spotLight->AddComponent<Light>().Type = LightType::Spot;
+			glm::vec3 position = { Random::Range(-rangeX, rangeX), Random::Range(-rangeY, rangeY) , Random::Range(-rangeZ, rangeZ) };
+			go->GetTransform().SetPosition(position);
+		}
 
-		//std::string path = "Assets/Model/nanosuit/nanosuit.obj";
-		//std::string path = "Assets/Model/Sponza/Sponza_Modular.FBX";
+		uint32_t numSpotLights = 128;
+		for (uint32_t i = 0; i < numSpotLights; i++)
+		{
+			auto go = new GameObject("Pont Light" + std::to_string(i), this);
+			auto& light = go->AddComponent<Light>();
+			light.Type = LightType::Spot;
+			light.LightColor = { Random::Range(0.0f, 1.0f), Random::Range(0.0f, 1.0f), Random::Range(0.0f, 1.0f), 1.0 };
+			light.Intensity = Random::Range(5.0f, 10.0f);
+			light.LightRange = Random::Range(5.0f, 10.0f);
+			light.InnerSpotAngle = Random::Range(30.0f, 90.0f);
+			light.SpotAngle = light.InnerSpotAngle + Random::Range(20.0f, 30.0f);
+			glm::vec3 position = { Random::Range(-rangeX, rangeX), Random::Range(-rangeY, rangeY) , Random::Range(-rangeZ, rangeZ) };
+			go->GetTransform().SetPosition(position);
+			go->GetTransform().SetEulerAngles(glm::vec3(Random::Range(70.0f, 110.0f), 0.0f, Random::Range(-20.0f, 20.0f)));
+		}
+
 		std::string path = "Assets/Model/Sponza/Scene_Sponza.fbx";
-		//std::string path = "Assets/Model/Sponza/sponza.fbx";
 		Resources::Get().LoadModel(path, this);
+
+		//auto* sphere = Resources::Get().LoadModel("Assets/Model/Sponza/sphere.fbx", this);
+		//if (sphere)
+		//{
+		//	sphere->GetTransform().Translate(glm::vec3(.0F, 1.0F, 0.0F), Space::World);
+		//	//sphere->GetTransform().SetScale(glm::vec3(0.01f));
+		//}
+		
 	}
 
 	Scene::~Scene()

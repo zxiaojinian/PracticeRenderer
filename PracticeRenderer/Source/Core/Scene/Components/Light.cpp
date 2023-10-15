@@ -33,7 +33,8 @@ namespace PR
 			glm::vec3 pos = m_Transform.GetPosition();
 			m_LightData.Position = { pos, 1.0f };
 		}
-		m_LightData.Color = Color;
+		Color linearColor = LightColor.GetLinear();
+		m_LightData.Color = { linearColor.R * Intensity, linearColor.G * Intensity, linearColor.B * Intensity, Intensity };
 		GetLightAttenuationAndSpotDirection();
 	}
 
@@ -60,7 +61,7 @@ namespace PR
 		if (Type == LightType::Spot)
 		{
 			glm::vec3 dir = m_Transform.GetForward();
-			m_LightData.SpotDirection = { dir, 0.0f };
+			m_LightData.SpotDirection = { -dir, 0.0f };
 
 			//Form URP
 			// Spot Attenuation with a linear falloff can be defined as

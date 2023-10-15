@@ -23,7 +23,7 @@ namespace PR
 
 		float m_Fov = 60.0f;
 		float m_NearPlane = 0.1f;
-		float m_FarPlane = 3000.0f;
+		float m_FarPlane = 1000.0f;
 		glm::mat4 m_ProjectionMatrix;
 		//glm::mat4 m_ViewProjectionMatrix;
 	};

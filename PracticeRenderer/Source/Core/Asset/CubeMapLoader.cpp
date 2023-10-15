@@ -18,9 +18,9 @@ namespace PR
 		m_Cubemaps[name] = cubemap;
 	}
 
-	std::shared_ptr<Cubemap> CubeMapLoader::Load(const std::string& name, const std::vector<std::string>& filepath)
+	std::shared_ptr<Cubemap> CubeMapLoader::Load(const std::string& name, const std::vector<std::string>& filepath, TextureFilterMode filterMode, TextureWrapMode wrapMode, bool generateMips)
 	{
-		auto cubemap = LoadCubemap(name, filepath);
+		auto cubemap = LoadCubemap(name, filepath, filterMode, wrapMode, generateMips);
 		if (cubemap != nullptr)
 		{
 			Add(cubemap);
@@ -39,7 +39,7 @@ namespace PR
 		return m_Cubemaps.find(name) != m_Cubemaps.end();
 	}
 
-	std::shared_ptr<Cubemap> CubeMapLoader::LoadCubemap(const std::string& name, const std::vector<std::string>& filepath)
+	std::shared_ptr<Cubemap> CubeMapLoader::LoadCubemap(const std::string& name, const std::vector<std::string>& filepath, TextureFilterMode filterMode, TextureWrapMode wrapMode, bool generateMips)
 	{
 		if (filepath.size() < 0)
 		{
@@ -72,9 +72,9 @@ namespace PR
 				if (cubeMap == nullptr)
 				{
 					CubemapSpecification specification{};
-					specification.FilterMode = TextureFilterMode::Bilinear;
-					specification.GenerateMips = false;
-					specification.WrapMode = TextureWrapMode::Clamp;
+					specification.FilterMode = filterMode;
+					specification.GenerateMips = generateMips;
+					specification.WrapMode = wrapMode;
 					specification.Width = width;
 
 					if (channels == 1)

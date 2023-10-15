@@ -72,6 +72,7 @@ void main()
 
     float weight = PI / (N1 * N2);
     irradiance *= weight;
+
     ivec3 irradianceMapUV = ivec3(pixelCoord, gl_WorkGroupID.z);
-    imageStore(irradianceMap, irradianceMapUV, vec4(irradiance, 0.0));
+    imageStore(irradianceMap, irradianceMapUV, vec4(irradiance, 1.0));
 }

@@ -44,8 +44,10 @@ namespace PR
 		RenderPath m_RenderPath = RenderPath::Forward;
 
 		std::shared_ptr <ComputeShader> m_IrradianceCompute;
-		std::shared_ptr<Cubemap> m_SkyCubeMap = nullptr;
 		std::shared_ptr<Cubemap> m_IrradianceCubeMap = nullptr;
+
+		std::shared_ptr <ComputeShader> m_SpecularPrefilter;
+		std::shared_ptr<Cubemap> m_SpecularMap = nullptr;
 	};
 }
 

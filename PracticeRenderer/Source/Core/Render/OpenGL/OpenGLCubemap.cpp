@@ -70,6 +70,10 @@ namespace PR
 
     void OpenGLCubemap::Bind(uint32_t slot) const
     {
+        if(m_SmoothEdges)
+            glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+        else
+            glDisable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
         glBindTextureUnit(slot, m_RendererID);
     }
 

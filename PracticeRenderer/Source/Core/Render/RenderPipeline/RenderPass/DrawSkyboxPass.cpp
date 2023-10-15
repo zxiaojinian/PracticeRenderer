@@ -7,7 +7,7 @@ namespace PR
 {
 	DrawSkyboxPass::DrawSkyboxPass(RenderPassEvent renderPassEvent) : RenderPass(renderPassEvent)
 	{
-		std::shared_ptr<Shader> skyBox = Resources::Get().LoadShader("Assets/Shader/SkyBox.glsl");
+		std::shared_ptr<Shader> skyBox = Resources::Get().LoadShader("Assets/Shader/SkyBox.shader");
 		//Temp
 		skyBox->GetRenderStateBlock().depthState.compareFunction = CompareFunction::LessEqual;
 		skyBox->GetRenderStateBlock().depthState.writeEnabled = false;
@@ -24,7 +24,8 @@ namespace PR
 			"Assets/Texture/SkyBox/skybox_posz.hdr",
 			"Assets/Texture/SkyBox/skybox_negz.hdr",
 		};
-		skyCubeMap = Resources::Get().LoadCubemap("SkyBox", facesPath);
+		skyCubeMap = Resources::Get().LoadCubemap("SkyBox", facesPath, TextureFilterMode::Trilinear, TextureWrapMode::Clamp, true);
+		skyCubeMap->SetSmoothEdges(true);
 		m_SkyBoxMaterial->SetCubemap("SkyCubeMap", skyCubeMap.get());
 
 		auto meshes = Resources::Get().LoadMeshes("Assets/Model/SkyBoxSphere.obj");
@@ -41,8 +42,6 @@ namespace PR
 			glm::vec3 cameraPosWS = renderingData.cameraData.camera->GetTransform().GetPosition();
 			glm::vec3 scale = glm::vec3(renderingData.cameraData.camera->m_FarPlane * 0.99f);
 			glm::mat4 skyBoxMatrix = glm::translate(glm::mat4(1.0f), cameraPosWS) * glm::scale(glm::mat4(1.0f), scale);
-			//auto IrradianceCubeMap = Resources::Get().GetCubemap("IrradianceCubeMap");
-			//m_SkyBoxMaterial->SetCubemap("SkyCubeMap", IrradianceCubeMap.get());
 			graphicsContext.DrawMesh(*m_SkyMesh, skyBoxMatrix, *m_SkyBoxMaterial);
 		}
 	}

@@ -34,7 +34,7 @@ namespace PR
 		void SetFloat4(const std::string & name, const glm::vec4 & value);
 		void SetMat4(const std::string & name, const glm::mat4 & value);
 		void SetTexture(const std::string & name, Texture * value);
-		void SetCubemap(const std::string& name, Cubemap* value);
+		void SetCubemap(const std::string& name, Cubemap* value, uint32_t mipLevel = 0);
 		void SetBuffer(const std::string & name, Buffer * value);
 
 		static void SetGlobalInt(const std::string& name, int value);
@@ -44,7 +44,7 @@ namespace PR
 		static void SetGlobalFloat4(const std::string& name, const glm::vec4& value);
 		static void SetGlobalMat4(const std::string& name, const glm::mat4& value);
 		static void SetGlobalTexture(const std::string& name, Texture* value);
-		static void SetGlobalCubemap(const std::string& name, Cubemap* value);
+		static void SetGlobalCubemap(const std::string& name, Cubemap* value, uint32_t mipLeve = 0);
 		static void SetGlobalBuffer(const std::string& name, Buffer* value);
 
 		static std::shared_ptr<ComputeShader> Create(const std::string & filepath);

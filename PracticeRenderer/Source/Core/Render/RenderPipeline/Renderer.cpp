@@ -108,7 +108,7 @@ namespace PR
 
 		if (passColorAttachment != m_ActiveColorAttachment || passDepthAttachment != m_ActiveDepthAttachment)
 		{
-			graphicsContext.SetRenderTarget(*passColorAttachment, *passDepthAttachment);
+			graphicsContext.SetRenderTarget(passColorAttachment.get(), passDepthAttachment.get());
 			graphicsContext.ClearRenderTarget(true, true, Color::clear);
 			m_ActiveColorAttachment = passColorAttachment;
 			m_ActiveDepthAttachment = passDepthAttachment;

@@ -55,7 +55,7 @@ vec3 GlossyEnvironmentReflection(vec3 reflectVector, vec3 posWS, float roughness
     return textureLod(specularMap, reflectVector, roughness * MAX_REFLECTION_LOD).rgb;
 }
 
-vec3 IndirectLighting(vec3 diffuseColor, vec3 specularColor, float roughness, vec3 posWS, vec3 N, vec3 V, float occlusion)
+vec3 GlobalIllumination(vec3 diffuseColor, vec3 specularColor, float roughness, vec3 posWS, vec3 N, vec3 V, float occlusion)
 {
     vec3 indirectLighting = vec3(0.0);
 
@@ -82,9 +82,9 @@ vec4 PBRLit(InputData inputData, SurfaceData surfaceData)
     float roughness = 1.0 - surfaceData.smoothness;
 
     vec3 directLighting = DirectLighting(diffuseColor, specularColor, roughness, inputData.positionWS, inputData.normalWS, inputData.viewDirectionWS);
-    vec3 inDirectLighting = IndirectLighting(diffuseColor, specularColor, roughness, inputData.positionWS, inputData.normalWS, inputData.viewDirectionWS, 1.0);
+    vec3 gi = GlobalIllumination(diffuseColor, specularColor, roughness, inputData.positionWS, inputData.normalWS, inputData.viewDirectionWS, 1.0);
 
-    finalColor.rgb = directLighting + inDirectLighting;
+    finalColor.rgb = directLighting + gi;
     finalColor.a = surfaceData.alpha;
     return finalColor;
 }

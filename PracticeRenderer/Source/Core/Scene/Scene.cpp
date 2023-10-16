@@ -19,6 +19,7 @@ namespace PR
 		mainCamera->AddComponent<CameraController>();
 
 		auto directionalLight = new GameObject("Directional Light", this);
+		directionalLight->AddComponent<Light>();
 
 		//Lights
 		float rangeX = 2.0f;

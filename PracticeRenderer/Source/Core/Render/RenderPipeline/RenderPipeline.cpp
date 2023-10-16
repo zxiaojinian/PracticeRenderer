@@ -145,6 +145,8 @@ namespace PR
 	{
 		auto skyCubeMap = Resources::Get().GetCubemap("SkyBox");
 
+		const uint32_t groupSize = 16;
+
 		//IBL Diffuse
 		if (m_IrradianceCompute == nullptr)
 			m_IrradianceCompute = ComputeShader::Create("Assets/Shader/PBR/GI/IrradianceCompute.compute");
@@ -164,7 +166,7 @@ namespace PR
 				Shader::SetCubemap("irradianceMap", m_IrradianceCubeMap.get());
 				Resources::Get().AddCubemap(m_IrradianceCubeMap);
 			}
-			auto dispatchCount = irradianceSize / 8;
+			auto dispatchCount = static_cast<uint32_t>(ceil(irradianceSize / groupSize));
 			m_IrradianceCompute->SetCubemap("environmentMap", skyCubeMap.get());
 			m_IrradianceCompute->SetCubemap("irradianceMap", m_IrradianceCubeMap.get());
 			m_IrradianceCompute->SetInt("irradianceMapSize", irradianceSize - 1);
@@ -191,7 +193,7 @@ namespace PR
 				Shader::SetCubemap("specularMap", m_SpecularMap.get());
 				Resources::Get().AddCubemap(m_SpecularMap);
 			}
-			auto dispatchCount = specularMapSize / 8;
+			auto dispatchCount = static_cast<uint32_t>(ceil(specularMapSize / groupSize));
 			m_SpecularPrefilter->SetCubemap("environmentMap", skyCubeMap.get());
 			m_SpecularPrefilter->SetInt("environmentMapSize", skyCubeMap->GetWidth());
 			uint32_t maxMipLevels = 5;

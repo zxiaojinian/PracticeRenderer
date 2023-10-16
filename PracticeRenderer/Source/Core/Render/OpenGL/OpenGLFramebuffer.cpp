@@ -24,7 +24,7 @@ namespace PR
 		}
 		else
 		{
-			glNamedFramebufferTexture(m_RendererID, GL_COLOR_ATTACHMENT0, -1, 0);
+			glNamedFramebufferTexture(m_RendererID, GL_COLOR_ATTACHMENT0, 0, 0);
 			m_RTNum = 0;
 		}
 	}
@@ -34,7 +34,7 @@ namespace PR
 		PR_ASSERT(colorRTs.size() <= 4, "RT数量大于4");
 		for (uint32_t i = 0; i < m_RTNum; ++i)
 		{
-			glNamedFramebufferTexture(m_RendererID, GL_COLOR_ATTACHMENT0 + i, -1, 0);
+			glNamedFramebufferTexture(m_RendererID, GL_COLOR_ATTACHMENT0 + i, 0, 0);
 		}
 
 		uint32_t index = 0;
@@ -51,7 +51,7 @@ namespace PR
 		if(depthRT)
 			glNamedFramebufferTexture(m_RendererID, GL_DEPTH_STENCIL_ATTACHMENT, depthRT->GetRendererID(), 0);
 		else
-			glNamedFramebufferTexture(m_RendererID, GL_DEPTH_STENCIL_ATTACHMENT, -1, 0);
+			glNamedFramebufferTexture(m_RendererID, GL_DEPTH_STENCIL_ATTACHMENT, 0, 0);
 	}
 
 	void OpenGLFramebuffer::Bind()

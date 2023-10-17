@@ -4,7 +4,7 @@
 layout (local_size_x = GroupSize, local_size_y = GroupSize, local_size_z = 1) in;
 
 uniform samplerCube environmentMap;
-layout(rgba16) uniform writeonly imageCube irradianceMap;
+layout(rgba16f) uniform writeonly imageCube irradianceMap;
 
 uniform int irradianceMapSize;
 

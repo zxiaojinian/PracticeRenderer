@@ -90,9 +90,18 @@ namespace PR
 						auto texture = std::any_cast<Texture*>(value);
 						if (texture)
 						{
-							texture->Bind(textureSlot);
-							UploadInt(p.Name, textureSlot);
-							textureSlot++;
+							if (p.IsImage)
+							{
+								texture->BindImage(imageSlot, mipmap, TextureAccess::Write);
+								UploadInt(p.Name, imageSlot);
+								imageSlot++;
+							}
+							else
+							{
+								texture->Bind(textureSlot);
+								UploadInt(p.Name, textureSlot);
+								textureSlot++;
+							}
 						}
 						break;
 					}

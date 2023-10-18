@@ -22,6 +22,7 @@ namespace PR
 		m_BlitMaterial->SetShader(shader);
 
 		m_DepthOnlyPass = std::make_shared<DepthOnlyPass>(RenderPassEvent::BeforeRenderingPrepasses);
+		m_TiledBaseLightingPass = std::make_shared<TiledBaseLightingPass>(RenderPassEvent::AfterRenderingPrePasses);
 		m_DrawObjectsPass = std::make_shared<DrawObjectsPass>(RenderPassEvent::BeforeRenderingOpaques);
 		m_DrawSkyboxPass = std::make_shared<DrawSkyboxPass>(RenderPassEvent::BeforeRenderingSkybox);
 		m_FinalBlitPass = std::make_shared<FinalBlitPass>(RenderPassEvent::AfterRendering, m_BlitMaterial);
@@ -31,6 +32,7 @@ namespace PR
 	{
 		ConfigureCameraTarget(m_ColorRenderTexture, m_DepthRenderTexture);
 		EnqueuePass(m_DepthOnlyPass);
+		EnqueuePass(m_TiledBaseLightingPass);
 		EnqueuePass(m_DrawObjectsPass);
 		EnqueuePass(m_DrawSkyboxPass);
 

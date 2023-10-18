@@ -2,6 +2,7 @@
 
 #include "Core/Render/RenderPipeline/Renderer.h"
 #include "Core/Render/RenderPipeline/RenderPass/DepthOnlyPass.h"
+#include "Core/Render/RenderPipeline/RenderPass/TiledBaseLightingPass.h"
 #include "Core/Render/RenderPipeline/RenderPass/DrawObjectsPass.h"
 #include "Core/Render/RenderPipeline/RenderPass/FinalBlitPass.h"
 #include "Core/Render/RenderPipeline/RenderPass/DrawSkyboxPass.h"
@@ -19,6 +20,7 @@ namespace PR
 		//virtual void FinishRendering() override;
 	private:
 		std::shared_ptr<DepthOnlyPass> m_DepthOnlyPass;
+		std::shared_ptr<TiledBaseLightingPass> m_TiledBaseLightingPass;
 		std::shared_ptr<DrawObjectsPass> m_DrawObjectsPass;
 		std::shared_ptr<FinalBlitPass> m_FinalBlitPass;
 		std::shared_ptr<DrawSkyboxPass> m_DrawSkyboxPass;

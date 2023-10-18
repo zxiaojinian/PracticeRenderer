@@ -10,7 +10,7 @@
 
 layout (local_size_x = TILE_SIZE_HALF, local_size_y = TILE_SIZE_HALF, local_size_z = 1) in;
 
-uniform sampler2D depthTexture;
+uniform sampler2D CmeraDepthTexture;
 layout (rgba32f) writeonly uniform image2D depthBounds;
 
 shared float ldsZMin[NUM_THREADS_DEPTHBOUND];
@@ -55,16 +55,16 @@ void ParallelReduction()
 void main() 
 {
     uvec2 texCoord = gl_GlobalInvocationID.xy * 2;
-    ivec2 size = textureSize(depthTexture, 0); 
+    ivec2 size = textureSize(CmeraDepthTexture, 0); 
     uint px = texCoord.x;
     uint pxp = clamp(texCoord.x + 1, 0, size.x - 1);
     uint py = texCoord.y;
     uint pyp = clamp(texCoord.y + 1, 0, size.y - 1);
 
-    float depth00 = depthTexture.texelFetch(ivec2(px, py), 0).r;
-    float depth01 = depthTexture.texelFetch(ivec2(px, pyp), 0).r;
-    float depth10 = depthTexture.texelFetch(ivec2(pxp, py), 0).r;
-    float depth11 = depthTexture.texelFetch(ivec2(pxp, pyp), 0).r;
+    float depth00 = CmeraDepthTexture.texelFetch(ivec2(px, py), 0).r;
+    float depth01 = CmeraDepthTexture.texelFetch(ivec2(px, pyp), 0).r;
+    float depth10 = CmeraDepthTexture.texelFetch(ivec2(pxp, py), 0).r;
+    float depth11 = CmeraDepthTexture.texelFetch(ivec2(pxp, pyp), 0).r;
 
     //要求half z，需转换到线性空间
     float viewPosZ00 = -NDCToView(vec4(0.0, 0.0, 2.0 * depth00 - 1.0, 1.0)).z;

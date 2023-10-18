@@ -2,6 +2,7 @@
 #include "DepthOnlyPass.h"
 
 #include "Core/Asset/Resources.h"
+#include "Core/Render/Asset/ComputeShader.h"
 
 namespace PR
 {
@@ -16,7 +17,8 @@ namespace PR
 		m_DepthMat->SetShader(depthOnly);
 
 		RenderTextureSpecification depthSpecification = { 1920, 1080, TextureFormat::D32_SFloat_S8_UInt, TextureWrapMode::Clamp, TextureFilterMode::Nearest, false };
-		m_CmeraDepthTexture = RenderTexture::Create("DepthRenderTexture", depthSpecification);
+		m_CmeraDepthTexture = RenderTexture::Create("CmeraDepthTexture", depthSpecification);
+		ComputeShader::SetGlobalTexture("CmeraDepthTexture", m_CmeraDepthTexture.get());
 	}
 
 	void DepthOnlyPass::Configure()

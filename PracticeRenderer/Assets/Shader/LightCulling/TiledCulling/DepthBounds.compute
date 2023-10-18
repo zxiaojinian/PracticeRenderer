@@ -54,17 +54,17 @@ void ParallelReduction()
 
 void main() 
 {
-    uvec2 texCoord = gl_GlobalInvocationID.xy * 2;
-    ivec2 size = textureSize(CmeraDepthTexture, 0); 
-    uint px = texCoord.x;
-    uint pxp = clamp(texCoord.x + 1, 0, size.x - 1);
-    uint py = texCoord.y;
-    uint pyp = clamp(texCoord.y + 1, 0, size.y - 1);
+    ivec2 texCoord = ivec2(gl_GlobalInvocationID.xy) * 2;
+    ivec2 size = textureSize(CmeraDepthTexture, 0);
+    int px = texCoord.x;
+    int pxp = clamp(texCoord.x + 1, 0, size.x - 1);
+    int py = texCoord.y;
+    int pyp = clamp(texCoord.y + 1, 0, size.y - 1);
 
-    float depth00 = CmeraDepthTexture.texelFetch(ivec2(px, py), 0).r;
-    float depth01 = CmeraDepthTexture.texelFetch(ivec2(px, pyp), 0).r;
-    float depth10 = CmeraDepthTexture.texelFetch(ivec2(pxp, py), 0).r;
-    float depth11 = CmeraDepthTexture.texelFetch(ivec2(pxp, pyp), 0).r;
+    float depth00 = texelFetch(CmeraDepthTexture, ivec2(px, py), 0).r;
+    float depth01 = texelFetch(CmeraDepthTexture, ivec2(px, pyp), 0).r;
+    float depth10 = texelFetch(CmeraDepthTexture, ivec2(pxp, py), 0).r;
+    float depth11 = texelFetch(CmeraDepthTexture, ivec2(pxp, pyp), 0).r;
 
     //要求half z，需转换到线性空间
     float viewPosZ00 = -NDCToView(vec4(0.0, 0.0, 2.0 * depth00 - 1.0, 1.0)).z;
@@ -132,6 +132,6 @@ void main()
     {
         float minZ2 = ldsZMin[0];
         float maxZ2 = ldsZMax[0];
-        imageStore(depthBounds, gl_WorkGroupID.xy, -vec4(minZ, maxZ2, minZ2, maxZ));
+        imageStore(depthBounds, ivec2(gl_WorkGroupID.xy), -vec4(minZ, maxZ2, minZ2, maxZ));
     }
 }

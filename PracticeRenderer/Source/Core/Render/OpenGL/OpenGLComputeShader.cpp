@@ -166,6 +166,10 @@ namespace PR
 				case GL_SAMPLER_2D:
 					propertyType = PropertyType::Texture;
 					break;
+				case GL_IMAGE_2D:
+					propertyType = PropertyType::Texture;
+					isImage = true;
+					break;
 				case GL_SAMPLER_CUBE:
 					propertyType = PropertyType::Cubemap;
 					break;

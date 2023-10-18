@@ -26,19 +26,20 @@ namespace PR
 		CameraData cameraData = renderingData.cameraData;
 		if (m_PixelWidth != cameraData.pixelRect.z || m_pixelHeight != cameraData.pixelRect.w)
 		{
+			const float INV_TILE_SIZE = 1.0f / TILE_SIZE;
 			m_PixelWidth = cameraData.pixelRect.z;
 			m_pixelHeight = cameraData.pixelRect.w;
 			m_ScreenParams = glm::vec4(m_PixelWidth, m_pixelHeight, 1.0f / m_PixelWidth, 1.0f / m_pixelHeight);
-			m_TileCountX = static_cast<uint32_t>(ceil(m_PixelWidth / TILE_SIZE));
-			m_TileCountY = static_cast<uint32_t>(ceil(m_pixelHeight / TILE_SIZE));
+			m_TileCountX = static_cast<uint32_t>(ceil(m_PixelWidth * INV_TILE_SIZE));
+			m_TileCountY = static_cast<uint32_t>(ceil(m_pixelHeight * INV_TILE_SIZE));
 			m_TileCount = m_TileCountX * m_TileCountY;
 		}
 
 		if (m_DepthBounds == nullptr || m_DepthBounds->GetWidth() != m_PixelWidth || m_DepthBounds->GetHeight() != m_pixelHeight)
 		{
 			Texture2DSpecification specification{};
-			specification.Width = m_PixelWidth;
-			specification.Height = m_pixelHeight;
+			specification.Width = m_TileCountX;
+			specification.Height = m_TileCountY;
 			specification.Format = TextureFormat::R32G32B32A32_SFloat;
 			specification.WrapMode = TextureWrapMode::Clamp;
 			specification.FilterMode = TextureFilterMode::Nearest;

@@ -166,7 +166,7 @@ namespace PR
 				Shader::SetCubemap("irradianceMap", m_IrradianceCubeMap.get());
 				Resources::Get().AddCubemap(m_IrradianceCubeMap);
 			}
-			auto dispatchCount = static_cast<uint32_t>(ceil(irradianceSize / groupSize));
+			auto dispatchCount = static_cast<uint32_t>(ceil(static_cast<float>(irradianceSize) / groupSize));
 			m_IrradianceCompute->SetCubemap("environmentMap", skyCubeMap.get());
 			m_IrradianceCompute->SetCubemap("irradianceMap", m_IrradianceCubeMap.get());
 			m_IrradianceCompute->SetInt("irradianceMapSize", irradianceSize - 1);
@@ -193,7 +193,7 @@ namespace PR
 				Shader::SetCubemap("specularMap", m_SpecularMap.get());
 				Resources::Get().AddCubemap(m_SpecularMap);
 			}
-			auto dispatchCount = static_cast<uint32_t>(ceil(specularMapSize / groupSize));
+			auto dispatchCount = static_cast<uint32_t>(ceil(static_cast<float>(specularMapSize) / groupSize));
 			m_SpecularPrefilter->SetCubemap("environmentMap", skyCubeMap.get());
 			m_SpecularPrefilter->SetInt("environmentMapSize", skyCubeMap->GetWidth());
 			uint32_t maxMipLevels = 5;

@@ -1,4 +1,5 @@
-#version 460 core
+#ifndef TiledLightCulling_AABB_MHZ_Common
+#define TiledLightCulling_AABB_MHZ_Common
 
 #include "TiledCullingCommon.inc"
 
@@ -7,6 +8,10 @@
 layout (local_size_x = TILE_SIZE, local_size_y = TILE_SIZE, local_size_z = 1) in;
 
 uniform sampler2D depthBounds;
+
+#if defined(LightCountDebug)
+    layout (rgba32f) writeonly uniform image2D TiledCullingDebugTexture;
+#endif
 
 layout(std430) buffer LightsCullingDataBuffer
 {
@@ -27,7 +32,7 @@ shared AABB ldsTileFrustumAABB1;
 shared AABB ldsTileFrustumAABB2;
 
 //gpu pro
-void main() 
+void LightCulling() 
 {
     if(gl_LocalInvocationIndex == 0)
     {
@@ -110,6 +115,42 @@ void main()
 
         // store the light count for list B
         lightIndexListDouble[startOffset+3] = lightCountB;
-    }    
+    }
+
+    #if defined(LightCountDebug)
+        if (gl_LocalInvocationID.x == 0 || gl_LocalInvocationID.y == 0)
+        {
+            imageStore(TiledCullingDebugTexture, ivec2(gl_GlobalInvocationID.xy), vec4(0.0, 0.0, 0.0, 1.0));
+        }
+        else if (gl_LocalInvocationID.x == 1 || gl_LocalInvocationID.y == 1)
+        {
+            imageStore(TiledCullingDebugTexture, ivec2(gl_GlobalInvocationID.xy), vec4(1.0, 1.0, 1.0, 1.0));
+        }
+        else
+        {
+            uint lightCount = max(ldsLightCountA, ldsLightCountB);
+            if(lightCount <= MAX_NUM_LIGHTS_PER_TILE)
+            {
+                const vec3 heatMap[] = {    vec3(0.0,0.0,0.0),
+                                            vec3(0.0,0.0,1.0),
+                                            vec3(0.0,1.0,1.0),
+                                            vec3(0.0,1.0,0.0),
+                                            vec3(1.0,1.0,0.0),
+                                            vec3(1.0,0.0,0.0) };
+                const float mapTexLen = 5.0;
+                float l = clamp(float(lightCount) / MAX_NUM_LIGHTS_PER_TILE, 0.0, 1.0) * mapTexLen;
+                vec3 a = heatMap[int(floor(l))];
+                vec3 b = heatMap[int(ceil(l))];
+                vec4 heatMapColor = vec4(mix(a, b, l - floor(l)), 1.0);
+                imageStore(TiledCullingDebugTexture, ivec2(gl_GlobalInvocationID.xy), heatMapColor);
+            }
+            else
+            {
+                imageStore(TiledCullingDebugTexture, ivec2(gl_GlobalInvocationID.xy), vec4(0.5, 0.0, 1.0, 1.0));
+            }
+        }
+    #endif
 }
+
+#endif
 

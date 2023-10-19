@@ -1,0 +1,9 @@
+#version 460 core
+
+#include "TiledLightCulling_AABB_MHZ_Common.inc"
+
+void main() 
+{
+    LightCulling();
+}
+

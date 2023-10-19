@@ -8,12 +8,15 @@ namespace PR
 	TiledBaseLightingPass::TiledBaseLightingPass(RenderPassEvent renderPassEvent) : RenderPass(renderPassEvent)
 	{
 		m_DepthBoundsCS = ComputeShader::Create("Assets/Shader/LightCulling/TiledCulling/DepthBounds.compute");
-		m_LightCullingCS = ComputeShader::Create("Assets/Shader/LightCulling/TiledCulling/TiledLightCulling.compute");
+		m_LightCullingCS = ComputeShader::Create("Assets/Shader/LightCulling/TiledCulling/TiledLightCulling_AABB_MHZ.compute");
 	}
 
 	void TiledBaseLightingPass::Execute(GraphicsContext& graphicsContext, const RenderingData& renderingData)
 	{
 		CameraData cameraData = renderingData.cameraData;
+		if (!cameraData.camera)
+			return;
+
 		if (m_PixelWidth != cameraData.pixelRect.z || m_pixelHeight != cameraData.pixelRect.w)
 		{
 			const float INV_TILE_SIZE = 1.0f / TILE_SIZE;
@@ -50,12 +53,9 @@ namespace PR
 
 			ComputeShader::SetGlobalMat4("InverseProjection", m_InvProjectionMatrix);
 		}
-
-		//m_DepthBoundsCS->SetFloat4("ScreenParams_CS", m_ScreenParams);
-		//m_DepthBoundsCS->SetMat4("InverseProjection", m_InvProjectionMatrix);
-		//m_DepthBoundsCS->SetTexture("depthBounds", m_DepthBounds.get());
 		graphicsContext.DispatchCompute(*m_DepthBoundsCS, m_TileCountX, m_TileCountY, 1);
 
+		
 		//light culling
 		auto& visibleLights = renderingData.cullResults.VisibleLights;
 		if (m_LightCullingDataBuffer == nullptr || m_LightCullingDataBuffer->GetCount() != visibleLights.size())
@@ -64,9 +64,10 @@ namespace PR
 		}
 
 		std::vector<glm::vec4> lightsCullingData;
+
 		for (auto light : visibleLights)
 		{
-			if(light && cameraData.camera)
+			if(light)
 				lightsCullingData.push_back(GetLightSphereData(*light, *cameraData.camera));
 		}
 		auto stride = static_cast<uint32_t>(sizeof(glm::vec4));
@@ -78,10 +79,37 @@ namespace PR
 			m_LightIndexListDoubleBuffer = Buffer::Create(lightIndexListCountDouble, sizeof(uint32_t), BufferType::StorageBuffer, BufferUsage::Dynamic);
 		}
 
-		//m_LightCullingCS->SetTexture("m_LightCullingCS", m_DepthBounds.get());
-		m_LightCullingCS->SetBuffer("LightsCullingDataBuffer", m_LightCullingDataBuffer.get());
-		m_LightCullingCS->SetBuffer("LightIndexListDoubleBuffer", m_LightIndexListDoubleBuffer.get());
-		graphicsContext.DispatchCompute(*m_LightCullingCS, m_TileCountX, m_TileCountY, 1);
+		if (m_Debug)
+		{
+			if (m_Debug_LightCullingCS == nullptr)
+				m_Debug_LightCullingCS = ComputeShader::Create("Assets/Shader/LightCulling/TiledCulling/TiledLightCulling_AABB_MHZ_Debug.compute");
+
+			if (m_DebugTexture == nullptr || m_DebugTexture->GetWidth() != m_PixelWidth || m_DebugTexture->GetHeight() != m_pixelHeight)
+			{
+				Texture2DSpecification specification{};
+				specification.Width = m_PixelWidth;
+				specification.Height = m_pixelHeight;
+				specification.Format = TextureFormat::R8G8B8A8_UNorm;
+				specification.WrapMode = TextureWrapMode::Clamp;
+				specification.FilterMode = TextureFilterMode::Bilinear;
+				specification.GenerateMips = false;
+
+				m_DebugTexture = Texture2D::Create("TiledCullingDebugTexture", specification);
+
+				m_Debug_LightCullingCS->SetTexture("TiledCullingDebugTexture", m_DebugTexture.get());
+				Shader::SetTexture("TiledCullingDebugTexture", m_DebugTexture.get());
+			}
+
+			m_Debug_LightCullingCS->SetBuffer("LightsCullingDataBuffer", m_LightCullingDataBuffer.get());
+			m_Debug_LightCullingCS->SetBuffer("LightIndexListDoubleBuffer", m_LightIndexListDoubleBuffer.get());
+			graphicsContext.DispatchCompute(*m_Debug_LightCullingCS, m_TileCountX, m_TileCountY, 1);
+		}
+		else
+		{
+			m_LightCullingCS->SetBuffer("LightsCullingDataBuffer", m_LightCullingDataBuffer.get());
+			m_LightCullingCS->SetBuffer("LightIndexListDoubleBuffer", m_LightIndexListDoubleBuffer.get());
+			graphicsContext.DispatchCompute(*m_LightCullingCS, m_TileCountX, m_TileCountY, 1);
+		}
 
 		Shader::SetBuffer("LightIndexListDoubleBuffer", m_LightIndexListDoubleBuffer.get());
 		Shader::SetInt("NumTilesX", m_TileCountX);
@@ -109,7 +137,7 @@ namespace PR
 			//https://ubm-twvideo01.s3.amazonaws.com/o1/vault/gdc2015/presentations/Thomas_Gareth_Advancements_in_Tile-Based.pdf 示意图
 			//https://wickedengine.net/2018/01/10/optimizing-tile-based-light-culling/
 			float spotLightConeHalfAngleCos = std::cos(spotlightAngle);
-			float sphereRadius = light.LightRange * 0.5f / (spotLightConeHalfAngleCos * spotLightConeHalfAngleCos); //锐角三角形最小覆盖圆为其外接圆
+			float sphereRadius = light.LightRange * 0.5f / (spotLightConeHalfAngleCos * spotLightConeHalfAngleCos);
 			glm::vec4 sphereCenterVS = posVS + dirVS * sphereRadius;
 			center = sphereCenterVS;
 			radius = sphereRadius;

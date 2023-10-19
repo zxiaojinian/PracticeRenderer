@@ -25,16 +25,27 @@ namespace PR
 		m_TiledBaseLightingPass = std::make_shared<TiledBaseLightingPass>(RenderPassEvent::AfterRenderingPrePasses);
 		m_DrawObjectsPass = std::make_shared<DrawObjectsPass>(RenderPassEvent::BeforeRenderingOpaques);
 		m_DrawSkyboxPass = std::make_shared<DrawSkyboxPass>(RenderPassEvent::BeforeRenderingSkybox);
+		m_TiledBaseLightingDebugPass = std::make_shared<TiledBaseLightingDebugPass>(RenderPassEvent::AfterRenderingPostProcessing);
 		m_FinalBlitPass = std::make_shared<FinalBlitPass>(RenderPassEvent::AfterRendering, m_BlitMaterial);
 	}
 
 	void ForwardRenderer::Setup(RenderingData& renderingData)
 	{
 		ConfigureCameraTarget(m_ColorRenderTexture, m_DepthRenderTexture);
+
+		//Temp
+		bool tiledBaseLightingDebug = true;
+
 		EnqueuePass(m_DepthOnlyPass);
+
+		m_TiledBaseLightingPass->Setup(tiledBaseLightingDebug);
 		EnqueuePass(m_TiledBaseLightingPass);
+
 		EnqueuePass(m_DrawObjectsPass);
 		EnqueuePass(m_DrawSkyboxPass);
+
+		if(tiledBaseLightingDebug)
+			EnqueuePass(m_TiledBaseLightingDebugPass);
 
 		m_FinalBlitPass->Setup(m_ColorRenderTexture);
 		EnqueuePass(m_FinalBlitPass);

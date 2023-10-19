@@ -1,0 +1,11 @@
+#version 460 core
+
+#define LightCountDebug
+#include "TiledLightCulling_AABB_MHZ_Common.inc"
+
+void main() 
+{
+    LightCulling();
+}
+
+

@@ -15,7 +15,7 @@ namespace PR
 	{
 	public:
 		TiledBaseLightingPass(RenderPassEvent renderPassEvent);
-
+		void Setup(bool debug) { m_Debug = debug; }
 		virtual void Execute(GraphicsContext& graphicsContext, const RenderingData& renderingData) override;
 
 	private:
@@ -24,6 +24,8 @@ namespace PR
 	private:
 		const uint32_t TILE_SIZE = 16;
 		const uint32_t MAX_NUM_LIGHTS_PER_TILE = 32;
+
+		bool m_Debug = true;
 
 		uint32_t m_PixelWidth = 1;
 		uint32_t m_pixelHeight = 1;
@@ -37,8 +39,10 @@ namespace PR
 		std::shared_ptr<Texture2D> m_DepthBounds = nullptr;
 		std::shared_ptr<ComputeShader> m_DepthBoundsCS = nullptr;
 		std::shared_ptr<ComputeShader> m_LightCullingCS = nullptr;
+		std::shared_ptr<ComputeShader> m_Debug_LightCullingCS = nullptr;
 		std::shared_ptr<Buffer> m_LightCullingDataBuffer = nullptr;
 		std::shared_ptr<Buffer> m_LightIndexListDoubleBuffer = nullptr;
+		std::shared_ptr<Texture2D> m_DebugTexture = nullptr;
 	};
 }
 

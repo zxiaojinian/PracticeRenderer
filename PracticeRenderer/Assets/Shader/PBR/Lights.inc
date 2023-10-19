@@ -56,7 +56,7 @@ float AngleAttenuation(vec3 spotDirection, vec3 lightDirection, vec2 spotAttenua
     return atten * atten;
 }
 
-Light GetLight(int lightIndex, vec3 positionWS)
+Light GetLight(uint lightIndex, vec3 positionWS)
 {
     vec4 lightPositionWS = lightDataBuffer[lightIndex].position;
     vec3 color = lightDataBuffer[lightIndex].color.rgb;

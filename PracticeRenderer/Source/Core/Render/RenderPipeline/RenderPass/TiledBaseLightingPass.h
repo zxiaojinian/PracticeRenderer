@@ -3,6 +3,9 @@
 #include "Core/Render/RenderPipeline/RenderPass.h"
 #include "Core/Render/Texture2D.h"
 #include "Core/Render/Asset/ComputeShader.h"
+#include "Core/Render/Buffer.h"
+#include "Core/Scene/Components/Light.h"
+#include "Core/Scene/Components/Camera.h"
 
 #include <glm/glm.hpp>
 
@@ -16,7 +19,11 @@ namespace PR
 		virtual void Execute(GraphicsContext& graphicsContext, const RenderingData& renderingData) override;
 
 	private:
+		glm::vec4 GetLightSphereData(Light& light, Camera& camera);
+
+	private:
 		const uint32_t TILE_SIZE = 16;
+		const uint32_t MAX_NUM_LIGHTS_PER_TILE = 32;
 
 		uint32_t m_PixelWidth = 1;
 		uint32_t m_pixelHeight = 1;
@@ -29,6 +36,9 @@ namespace PR
 
 		std::shared_ptr<Texture2D> m_DepthBounds = nullptr;
 		std::shared_ptr<ComputeShader> m_DepthBoundsCS = nullptr;
+		std::shared_ptr<ComputeShader> m_LightCullingCS = nullptr;
+		std::shared_ptr<Buffer> m_LightCullingDataBuffer = nullptr;
+		std::shared_ptr<Buffer> m_LightIndexListDoubleBuffer = nullptr;
 	};
 }
 

@@ -14,6 +14,7 @@ out VS_OUT
     vec4 normalWS;
     vec4 tangentWS;
     vec4 bitangentWS;
+    vec3 posVS;
 } vs_out;
 
 uniform mat4 Matrix_M;
@@ -39,6 +40,7 @@ void main()
     vs_out.normalWS = vec4(normalWS, posWS.x);
     vs_out.tangentWS = vec4(tangentWS, posWS.y);
     vs_out.bitangentWS = vec4(bitangentWS, posWS.z);
+    vs_out.posVS = vec3(Matrix_V * posWS);
 }
 
 
@@ -52,6 +54,7 @@ in VS_OUT
     vec4 normalWS;
     vec4 tangentWS;
     vec4 bitangentWS;
+    vec3 posVS;
 } fs_in;
 
 layout (std140) uniform CameraData
@@ -76,6 +79,7 @@ void InitializeInputData(vec3 normalTS, out InputData inputData)
 
     inputData.viewDirectionWS = normalize(worldSpaceCameraPos.xyz - inputData.positionWS);
     inputData.shadowCoord = vec4(0.0);
+    inputData.posVS = fs_in.posVS;
 }
 
 void main()

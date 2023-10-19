@@ -3,6 +3,7 @@
 
 #include "Lights.inc"
 #include "PBRCommon.inc"
+#include "Assets/Shader/LightCulling/TiledCulling/TiledLightingCommon.inc"
 
 uniform samplerCube irradianceMap;
 uniform samplerCube specularMap;
@@ -13,6 +14,7 @@ struct InputData
     vec3 normalWS;
     vec3 viewDirectionWS;
     vec4 shadowCoord;
+    vec3 posVS;
 };
 
 vec3 LightingPhysicallyBased(vec3 diffuseColor, vec3 specularColor, float roughness, vec3 V, vec3 N, vec3 L, vec3 lightColor)
@@ -34,17 +36,29 @@ vec3 LightingPhysicallyBased(vec3 diffuseColor, vec3 specularColor, float roughn
     return lighting;
 }
 
-vec3 DirectLighting(vec3 diffuseColor, vec3 specularColor, float roughness, vec3 posWS, vec3 N, vec3 V)
+vec3 DirectLighting(vec3 diffuseColor, vec3 specularColor, float roughness, vec3 posWS, vec3 N, vec3 V, vec3 posVS)
 {
     vec3 directLighting = vec3(0.0);
 
-    for (int i = 0; i < lightDataBuffer.length(); ++i) 
+    // for (uint i = 0; i < lightDataBuffer.length(); ++i) 
+    // {
+    //     Light light = GetLight(i, posWS);
+    //     vec3 L = light.direction;
+    //     vec3 lightColor = light.attenuationColor;
+    //     directLighting += LightingPhysicallyBased(diffuseColor, specularColor, roughness, V, N, L, lightColor);
+    // }
+
+    //tiled light
+    TileLightData data = GetTileLightData(posVS.z);
+    for (int i = 0; i < data.lightCount; ++i)
     {
-        Light light = GetLight(i, posWS);
+        uint lightIndex = GetTileLightIndex(data, i);
+        Light light = GetLight(lightIndex, posWS);
         vec3 L = light.direction;
         vec3 lightColor = light.attenuationColor;
-        directLighting += LightingPhysicallyBased(diffuseColor, specularColor, roughness, V, N, L, lightColor);
+        directLighting += LightingPhysicallyBased(diffuseColor, specularColor, roughness, V, N, L, lightColor);        
     }
+
     return directLighting;
 }
 
@@ -81,7 +95,7 @@ vec4 PBRLit(InputData inputData, SurfaceData surfaceData)
     vec3 specularColor = mix(vec3(0.04, 0.04, 0.04), surfaceData.albedo, surfaceData.metallic);
     float roughness = 1.0 - surfaceData.smoothness;
 
-    vec3 directLighting = DirectLighting(diffuseColor, specularColor, roughness, inputData.positionWS, inputData.normalWS, inputData.viewDirectionWS);
+    vec3 directLighting = DirectLighting(diffuseColor, specularColor, roughness, inputData.positionWS, inputData.normalWS, inputData.viewDirectionWS, inputData.posVS);
     vec3 gi = GlobalIllumination(diffuseColor, specularColor, roughness, inputData.positionWS, inputData.normalWS, inputData.viewDirectionWS, 1.0);
 
     finalColor.rgb = directLighting + gi;

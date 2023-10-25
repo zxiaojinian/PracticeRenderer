@@ -5,6 +5,7 @@
 #include "Core/Render/RenderState/CompareFunction.h"
 #include "Core/Render/RenderState/CullMode.h"
 #include "Core/Render/RenderState/ColorWriteMask.h"
+#include "Core/Render/RenderState/BlendState.h"
 
 #include <glm/glm.hpp>
 
@@ -25,8 +26,9 @@ namespace PR
 
 		virtual void SetDepthCompareFunction(const CompareFunction& compareFunction) = 0;
 		virtual void SetDepthWriteEnabled(bool enbale) = 0;
-		virtual void SetCullMode(CullMode cullMode) = 0;
-		virtual void SetColorMask(ColorWriteMask colorMask) = 0;
+		virtual void SetCullMode(const CullMode& cullMode) = 0;
+		virtual void SetBlendState(const BlendState& blendState) = 0;
+		virtual void SetColorMask(const ColorWriteMask& colorMask) = 0;
 		virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) = 0;
 		virtual void SetClearColor(const Color& color) = 0;
 		virtual void Clear(bool clearDepth, bool clearColor) = 0;

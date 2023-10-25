@@ -31,9 +31,46 @@ shared float ldsTileHalfZ;
 shared AABB ldsTileFrustumAABB1;
 shared AABB ldsTileFrustumAABB2;
 
+
+// shared uint uMinDepth;
+// shared uint uMaxDepth;
+// uniform sampler2D CmeraDepthTexture;
+
 //gpu pro
 void LightCulling() 
 {
+    // float fDepth = texelFetch(CmeraDepthTexture, ivec2(gl_GlobalInvocationID.xy), 0).r;    
+    // uint uDepth = floatBitsToUint( fDepth );
+
+    // if(gl_LocalInvocationIndex == 0)
+    // {    
+    //     uMinDepth = 0xffffffff;
+    //     uMaxDepth = 0;
+    // }
+    // barrier();
+    // memoryBarrierShared();  
+
+    // atomicMin( uMinDepth, uDepth );
+    // atomicMax( uMaxDepth, uDepth );
+ 
+    // barrier();
+    // memoryBarrierShared();  
+
+    // if(gl_LocalInvocationIndex == 0)
+    // {
+    //     float fMinDepth = uintBitsToFloat( uMinDepth );
+    //     float fMaxDepth = uintBitsToFloat( uMaxDepth );  
+    //     fMinDepth = NDCToView(vec4(0.0, 0.0, 2.0 * fMinDepth - 1.0, 1.0)).z;       
+    //     fMaxDepth = NDCToView(vec4(0.0, 0.0, 2.0 * fMaxDepth - 1.0, 1.0)).z; 
+    //     float fHalfZ = (fMinDepth + fMaxDepth) * 0.5;
+    //     ldsTileHalfZ = fHalfZ;
+
+    //     ComputeFrustumDualAABB(gl_WorkGroupID.xy, fMinDepth, fHalfZ, fHalfZ, fMaxDepth, ldsTileFrustumAABB1, ldsTileFrustumAABB2);
+
+    //     ldsLightCountA = 0;
+    //     ldsLightCountB = 0;
+    // }
+
     if(gl_LocalInvocationIndex == 0)
     {
         vec4 depthBounds = texelFetch(depthBounds, ivec2(gl_WorkGroupID.xy), 0);
@@ -83,7 +120,7 @@ void LightCulling()
     barrier();
     memoryBarrierShared();  
 
-    uint tileFlatIndex = gl_WorkGroupID.x + gl_WorkGroupID.y * gl_WorkGroupSize.x;
+    uint tileFlatIndex = gl_WorkGroupID.x + gl_WorkGroupID.y * gl_NumWorkGroups.x;
     uint startOffset = tileFlatIndex * (MAX_NUM_LIGHTS_PER_TILE  * 2 + 4);  
     uint lightStartOffset = startOffset + 4;
     uint lightCountA =  min(ldsLightCountA, MAX_NUM_LIGHTS_PER_TILE);

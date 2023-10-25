@@ -2,7 +2,7 @@
 #define TiledCullingCommon
 
 #define TILE_SIZE 16
-#define MAX_NUM_LIGHTS_PER_TILE 32
+#define MAX_NUM_LIGHTS_PER_TILE 64
 
 uniform mat4 InverseProjection;
 uniform vec4 ScreenParams_CS;//w,h,1/w,1/h
@@ -30,8 +30,8 @@ struct Sphere
 
 struct AABB
 {
-	vec3 c; // center
-	vec3 e; // half extents
+    vec3 c; // center
+    vec3 e; // half extents
 };
 
 

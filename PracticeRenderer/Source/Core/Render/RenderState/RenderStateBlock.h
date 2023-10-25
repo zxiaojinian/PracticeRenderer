@@ -2,6 +2,7 @@
 
 #include "DepthState.h"
 #include "CullMode.h"
+#include "BlendState.h"
 
 namespace PR
 {
@@ -9,5 +10,6 @@ namespace PR
 	{
 		DepthState depthState{};
 		CullMode cullMode{ CullMode::Back };
+		BlendState blendState{};
 	};
 }

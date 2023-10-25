@@ -58,9 +58,11 @@ namespace PR
 		
 		//light culling
 		auto& visibleLights = renderingData.cullResults.VisibleLights;
+		auto lightNum = static_cast<uint32_t>(visibleLights.size());
+		auto stride = static_cast<uint32_t>(sizeof(glm::vec4));
 		if (m_LightCullingDataBuffer == nullptr || m_LightCullingDataBuffer->GetCount() != visibleLights.size())
 		{
-			m_LightCullingDataBuffer = Buffer::Create(static_cast<uint32_t>(visibleLights.size()), sizeof(LightData), BufferType::StorageBuffer, BufferUsage::Dynamic);
+			m_LightCullingDataBuffer = Buffer::Create(lightNum, stride, BufferType::StorageBuffer, BufferUsage::Dynamic);
 		}
 
 		std::vector<glm::vec4> lightsCullingData;
@@ -70,8 +72,8 @@ namespace PR
 			if(light)
 				lightsCullingData.push_back(GetLightSphereData(*light, *cameraData.camera));
 		}
-		auto stride = static_cast<uint32_t>(sizeof(glm::vec4));
-		m_LightCullingDataBuffer->SetData(lightsCullingData.data(), 0, static_cast<uint32_t>(lightsCullingData.size()), stride);
+
+		m_LightCullingDataBuffer->SetData(lightsCullingData.data(), 0, lightNum, stride);
 
 		uint32_t lightIndexListCountDouble = (2 * MAX_NUM_LIGHTS_PER_TILE + 4) * m_TileCount;
 		if (m_LightIndexListDoubleBuffer == nullptr || m_LightIndexListDoubleBuffer->GetCount() != lightIndexListCountDouble)

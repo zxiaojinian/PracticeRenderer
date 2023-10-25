@@ -59,7 +59,81 @@ namespace PR
             glDepthMask(GL_FALSE);
     }
 
-    void OpenGLRendererAPI::SetCullMode(CullMode cullMode)
+
+    namespace Util
+    {
+        GLenum GetOpenGLBlendMode(BlendMode blendmode)
+        {
+            switch (blendmode)
+            {
+                case BlendMode::Zero:
+                    return GL_ZERO;
+                case BlendMode::One:
+                    return GL_ONE;
+                case BlendMode::SrcColor:
+                    return GL_SRC_COLOR;
+                case BlendMode::DstColor:
+                    return GL_DST_COLOR;
+                case BlendMode::SrcAlpha:
+                    return GL_SRC_ALPHA;
+                case BlendMode::DstAlpha:
+                    return GL_DST_ALPHA;
+                case BlendMode::OneMinusSrcColor:
+                    return GL_ONE_MINUS_SRC_COLOR;
+                case BlendMode::OneMinusDstColor:
+                    return GL_ONE_MINUS_DST_COLOR;
+                case BlendMode::OneMinusSrcAlpha:
+                    return GL_ONE_MINUS_SRC_ALPHA;
+                case BlendMode::OneMinusDstAlpha:
+                    return GL_ONE_MINUS_DST_ALPHA;
+                default:
+                    return GL_ONE;
+            }
+        }
+
+        GLenum GetOpenGLBlendOp(BlendOp blendOP)
+        {
+            switch (blendOP)
+            {
+                case BlendOp::Add:
+                    return GL_FUNC_ADD;
+                case BlendOp::Subtract:
+                    return GL_FUNC_SUBTRACT;
+                case BlendOp::ReverseSubtract:
+                    return GL_FUNC_REVERSE_SUBTRACT;
+                case BlendOp::Min:
+                    return GL_MIN;
+                case BlendOp::Max:
+                    return GL_MAX;
+                default:
+                    return GL_FUNC_ADD;
+            }
+        }
+    }
+
+    void OpenGLRendererAPI::SetBlendState(const BlendState& blendState)
+    {
+        SetColorMask(blendState.WriteMask);
+        if (blendState.EnableBlend)
+        {
+            glEnable(GL_BLEND);
+            glBlendFuncSeparate(Util::GetOpenGLBlendMode(blendState.SourceColorBlendMode), 
+                Util::GetOpenGLBlendMode(blendState.DestinationColorBlendMode), 
+                Util::GetOpenGLBlendMode(blendState.SourceAlphaBlendMode),
+                Util::GetOpenGLBlendMode(blendState.DestinationAlphaBlendMode));
+
+            glBlendEquationSeparate(
+                Util::GetOpenGLBlendOp(blendState.ColorBlendOperation),
+                Util::GetOpenGLBlendOp(blendState.AlphaBlendOperation)
+            );
+        }
+        else
+        {
+            glDisable(GL_BLEND);
+        }
+    }
+
+    void OpenGLRendererAPI::SetCullMode(const CullMode& cullMode)
     {
         switch (cullMode)
         {
@@ -77,7 +151,7 @@ namespace PR
         }
     }
 
-    void OpenGLRendererAPI::SetColorMask(ColorWriteMask colorMask)
+    void OpenGLRendererAPI::SetColorMask(const ColorWriteMask& colorMask)
     {
         GLboolean red = static_cast<uint8_t>(colorMask) & static_cast<uint8_t>(ColorWriteMask::Red);
         GLboolean green = static_cast<uint8_t>(colorMask) & static_cast<uint8_t>(ColorWriteMask::Green);

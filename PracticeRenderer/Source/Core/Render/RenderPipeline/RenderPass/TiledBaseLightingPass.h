@@ -23,7 +23,7 @@ namespace PR
 
 	private:
 		const uint32_t TILE_SIZE = 16;
-		const uint32_t MAX_NUM_LIGHTS_PER_TILE = 32;
+		const uint32_t MAX_NUM_LIGHTS_PER_TILE = 64;
 
 		bool m_Debug = true;
 

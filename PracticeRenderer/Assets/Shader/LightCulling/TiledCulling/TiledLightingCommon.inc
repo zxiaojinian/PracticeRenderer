@@ -2,7 +2,7 @@
 #define TiledLightingCommon
 
 #include "TiledCullingCommon.inc"
-int NumTilesX;
+uniform int NumTilesX;
 
 layout(std430) buffer LightIndexListDoubleBuffer
 {

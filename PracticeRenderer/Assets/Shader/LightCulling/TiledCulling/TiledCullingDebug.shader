@@ -22,8 +22,10 @@ in vec2 texCoord;
 layout(location = 0) out vec4 fragColor;
 
 uniform sampler2D TiledCullingDebugTexture;
+uniform float debugAlpha;
 
 void main()
 {
     fragColor = texture(TiledCullingDebugTexture, texCoord);
+    fragColor.a = debugAlpha;
 }

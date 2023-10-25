@@ -11,8 +11,9 @@ namespace PR
 	public:
 		virtual void SetDepthCompareFunction(const CompareFunction& compareFunction) override;
 		virtual void SetDepthWriteEnabled(bool enbale) override;
-		virtual void SetCullMode(CullMode cullMode) override;
-		virtual void SetColorMask(ColorWriteMask colorMask) override;
+		virtual void SetCullMode(const CullMode& cullMode) override;
+		virtual void SetBlendState(const BlendState& blendState) override;
+		virtual void SetColorMask(const ColorWriteMask& colorMask) override;
 		virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) override;
 		virtual void SetClearColor(const Color& color) override;
 		virtual void Clear(bool clearDepth, bool clearColor) override;

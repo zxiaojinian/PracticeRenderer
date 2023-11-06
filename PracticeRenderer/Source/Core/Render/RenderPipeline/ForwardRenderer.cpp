@@ -34,7 +34,7 @@ namespace PR
 		ConfigureCameraTarget(m_ColorRenderTexture, m_DepthRenderTexture);
 
 		//Temp
-		bool tiledBaseLightingDebug = true;
+		bool tiledBaseLightingDebug = false;
 
 		EnqueuePass(m_DepthOnlyPass);
 

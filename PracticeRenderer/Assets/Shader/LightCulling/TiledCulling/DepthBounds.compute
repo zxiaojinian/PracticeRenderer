@@ -15,6 +15,9 @@ layout (rgba32f) writeonly uniform image2D depthBounds;
 
 shared float ldsZMin[NUM_THREADS_DEPTHBOUND];
 shared float ldsZMax[NUM_THREADS_DEPTHBOUND];
+shared float ldsMinZ;
+shared float ldsMaxZ;
+shared float ldsHalfZ;
 
 void ParallelReduction()
 {
@@ -99,24 +102,30 @@ void main()
         ParallelReduction();
     }
 
-    float minZ = ldsZMin[0];
-    float maxZ = ldsZMax[0];
-    maxZ = (maxZ == 0.0 && minZ > 0) ? minZ : maxZ;//避免：该tile范围全为天空，aabb为z[1,0],导致大量不正确光影通过aabb测试，这种情况令max=min
-    barrier();
-    memoryBarrierShared();//下面有写入，需保证写入前所有线程已读取
+    if(gl_LocalInvocationIndex == 0)
+    {
+        float minZ = ldsZMin[0];
+        float maxZ = ldsZMax[0];
+        maxZ = (maxZ == 0.0 && minZ > 0) ? minZ : maxZ;//避免：该tile范围全为天空，aabb为z[1,0],导致大量不正确光影通过aabb测试，这种情况令max=min
 
-    float halfZ = 0.5*(minZ + maxZ);
+        ldsMinZ = minZ;
+        ldsMaxZ = maxZ;        
+        ldsHalfZ = 0.5*(minZ + maxZ);        
+    }
+
+    barrier();
+    memoryBarrierShared();
 
     {
-        float minZ00 = ( viewPosZ00 >= halfZ ) ? viewPosZ00 : FLT_MAX;
-        float minZ01 = ( viewPosZ01 >= halfZ ) ? viewPosZ01 : FLT_MAX;
-        float minZ10 = ( viewPosZ10 >= halfZ ) ? viewPosZ10 : FLT_MAX;
-        float minZ11 = ( viewPosZ11 >= halfZ ) ? viewPosZ11 : FLT_MAX;
+        float minZ00 = ( viewPosZ00 >= ldsHalfZ ) ? viewPosZ00 : FLT_MAX;
+        float minZ01 = ( viewPosZ01 >= ldsHalfZ ) ? viewPosZ01 : FLT_MAX;
+        float minZ10 = ( viewPosZ10 >= ldsHalfZ ) ? viewPosZ10 : FLT_MAX;
+        float minZ11 = ( viewPosZ11 >= ldsHalfZ ) ? viewPosZ11 : FLT_MAX;
 
-        float maxZ00 = ( viewPosZ00 <= halfZ ) ? viewPosZ00 : 0.0;
-        float maxZ01 = ( viewPosZ01 <= halfZ ) ? viewPosZ01 : 0.0;
-        float maxZ10 = ( viewPosZ10 <= halfZ ) ? viewPosZ10 : 0.0;
-        float maxZ11 = ( viewPosZ11 <= halfZ ) ? viewPosZ11 : 0.0;
+        float maxZ00 = ( viewPosZ00 <= ldsHalfZ ) ? viewPosZ00 : 0.0;
+        float maxZ01 = ( viewPosZ01 <= ldsHalfZ ) ? viewPosZ01 : 0.0;
+        float maxZ10 = ( viewPosZ10 <= ldsHalfZ ) ? viewPosZ10 : 0.0;
+        float maxZ11 = ( viewPosZ11 <= ldsHalfZ ) ? viewPosZ11 : 0.0;
 
         // Initialize shared memory
         ldsZMin[gl_LocalInvocationIndex] = min(minZ00,min(minZ01,min(minZ10,minZ11)));
@@ -132,6 +141,6 @@ void main()
     {
         float minZ2 = ldsZMin[0];
         float maxZ2 = ldsZMax[0];
-        imageStore(depthBounds, ivec2(gl_WorkGroupID.xy), -vec4(minZ, maxZ2, minZ2, maxZ));
+        imageStore(depthBounds, ivec2(gl_WorkGroupID.xy), -vec4(ldsMinZ, maxZ2, minZ2, ldsMaxZ));
     }
 }

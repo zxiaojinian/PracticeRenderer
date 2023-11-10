@@ -5,9 +5,6 @@ namespace PR
 {
 	Renderer::Renderer()
 	{
-		m_CameraMatrixUBO = Buffer::Create(1, sizeof(glm::mat4) * 3, BufferType::UniformBuffer, BufferUsage::Dynamic);
-		Shader::SetBuffer("CameraMatrix", m_CameraMatrixUBO.get());
-
 		m_CameraDataUBO = Buffer::Create(1, sizeof(glm::vec4), BufferType::UniformBuffer, BufferUsage::Dynamic);
 		Shader::SetBuffer("CameraData", m_CameraDataUBO.get());
 	}
@@ -25,7 +22,7 @@ namespace PR
 		if(renderBlocks.GetLength(RenderPassBlock::BeforeRendering))
 			ExecuteBlock(graphicsContext, RenderPassBlock::BeforeRendering, renderBlocks, renderingData);
 
-		SetCameraMatrices(renderingData.cameraData);
+		SetCameraMatrices(graphicsContext, renderingData.cameraData);
 		if (renderBlocks.GetLength(RenderPassBlock::MainRenderingOpaque))
 			ExecuteBlock(graphicsContext, RenderPassBlock::MainRenderingOpaque, renderBlocks, renderingData);
 
@@ -59,13 +56,11 @@ namespace PR
 		renderPass->Execute(graphicsContext, renderingData);
 	}
 
-	void Renderer::SetCameraMatrices(const CameraData& cameraData)
+	void Renderer::SetCameraMatrices(GraphicsContext& graphicsContext, const CameraData& cameraData)
 	{
 		auto& vMatrix = cameraData.camera->GetViewMatrix();
 		auto& pMatrix = cameraData.camera->GetProjectionMatrix();
-		auto& vpMatrix = cameraData.camera->GetViewProjectionMatrix();
-		glm::mat4 cameraMatrices[] = {vMatrix , pMatrix, vpMatrix};
-		m_CameraMatrixUBO->SetData(cameraMatrices, 0, 1, sizeof(glm::mat4) * 3);
+		graphicsContext.SetViewProjectionMatrices(vMatrix, pMatrix);
 	}
 
 	void Renderer::SetPerCameraShaderVariables(const CameraData& cameraData)

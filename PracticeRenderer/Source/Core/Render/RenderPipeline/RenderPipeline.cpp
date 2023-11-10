@@ -139,6 +139,22 @@ namespace PR
 	{
 		renderingData.cameraData = cameraData;
 		renderingData.cullResults = cullResult;
+
+		int32_t brightestDirectionalLightIndex = -1;
+		float brightestLightIntensity = 0.0f;
+		for (size_t i = 0; i < cullResult.VisibleLights.size(); i++)
+		{
+			auto light = cullResult.VisibleLights[i];
+			if (light && light->Type == LightType::Directional)
+			{
+				if (light->Intensity > brightestLightIntensity)
+				{
+					brightestLightIntensity = light->Intensity;
+					brightestDirectionalLightIndex = static_cast<int32_t>(i);
+				}
+			}
+		}
+		renderingData.mainLightIndex = brightestDirectionalLightIndex;
 	}
 
 	void RenderPipeline::EnvironmentLighting(GraphicsContext& graphicsContext)

@@ -54,18 +54,35 @@ namespace PR
 	void ForwardRenderer::SetupLights(GraphicsContext& graphicsContext, const RenderingData& renderingData)
 	{
 		auto& visibleLights = renderingData.cullResults.VisibleLights;
-		if (m_LightDataBuffer == nullptr || m_LightDataBuffer->GetCount() != visibleLights.size())
+
+		int32_t mainLightIndex = renderingData.mainLightIndex;
+		auto stride = static_cast<uint32_t>(sizeof(LightData));
+		std::vector<LightData> lightsData;
+		Light* mainLight = mainLightIndex >= 0 ? visibleLights[mainLightIndex] : nullptr;
+		if (mainLight)
 		{
-			m_LightDataBuffer = Buffer::Create(static_cast<uint32_t>(visibleLights.size()), sizeof(LightData), BufferType::StorageBuffer, BufferUsage::Dynamic);
+			lightsData.push_back(mainLight->GetLightData());
+		}
+		else
+		{
+			LightData data{};
+			lightsData.push_back(data);
+		}
+
+		for (size_t i = 0; i < visibleLights.size(); i++)
+		{
+			auto light = visibleLights[i];
+			if (light && static_cast<int32_t>(i) != mainLightIndex)
+				lightsData.push_back(light->GetLightData());
+		}
+
+		uint32_t lightNum = static_cast<uint32_t>(lightsData.size());
+		if (m_LightDataBuffer == nullptr || m_LightDataBuffer->GetCount() != lightNum)
+		{
+			m_LightDataBuffer = Buffer::Create(lightNum, sizeof(LightData), BufferType::StorageBuffer, BufferUsage::Dynamic);
 			Shader::SetBuffer("LightDataBuffer", m_LightDataBuffer.get());
 		}
 
-		auto stride = static_cast<uint32_t>(sizeof(LightData));
-		uint32_t index = 0;
-		for (auto light : visibleLights)
-		{
-			m_LightDataBuffer->SetData(&light->GetLightData(), index * stride, 1, stride);
-			index++;
-		}
+		m_LightDataBuffer->SetData(lightsData.data(), 0, lightNum, stride);
 	}
 }

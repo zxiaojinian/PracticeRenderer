@@ -55,22 +55,22 @@ namespace PR
 		}
 		graphicsContext.DispatchCompute(*m_DepthBoundsCS, m_TileCountX, m_TileCountY, 1);
 
-		
 		//light culling
+		int32_t mainLightIndex = renderingData.mainLightIndex;
 		auto& visibleLights = renderingData.cullResults.VisibleLights;
-		auto lightNum = static_cast<uint32_t>(visibleLights.size());
-		auto stride = static_cast<uint32_t>(sizeof(glm::vec4));
-		if (m_LightCullingDataBuffer == nullptr || m_LightCullingDataBuffer->GetCount() != visibleLights.size())
-		{
-			m_LightCullingDataBuffer = Buffer::Create(lightNum, stride, BufferType::StorageBuffer, BufferUsage::Dynamic);
-		}
 
 		std::vector<glm::vec4> lightsCullingData;
-
+		int32_t index = 0;
 		for (auto light : visibleLights)
 		{
-			if(light)
+			if(light && mainLightIndex != index++)
 				lightsCullingData.push_back(GetLightSphereData(*light, *cameraData.camera));
+		}
+		auto lightNum = static_cast<uint32_t>(lightsCullingData.size());
+		auto stride = static_cast<uint32_t>(sizeof(glm::vec4));
+		if (m_LightCullingDataBuffer == nullptr || m_LightCullingDataBuffer->GetCount() != lightNum)
+		{
+			m_LightCullingDataBuffer = Buffer::Create(lightNum, stride, BufferType::StorageBuffer, BufferUsage::Dynamic);
 		}
 
 		m_LightCullingDataBuffer->SetData(lightsCullingData.data(), 0, lightNum, stride);

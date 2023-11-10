@@ -13,6 +13,7 @@ namespace PR
 		depthOnly->GetRenderStateBlock().depthState.compareFunction = CompareFunction::LessEqual;
 		depthOnly->GetRenderStateBlock().depthState.writeEnabled = true;
 		depthOnly->GetRenderStateBlock().cullMode = CullMode::Back;
+		depthOnly->GetRenderStateBlock().blendState.WriteMask = ColorWriteMask::None;
 		m_DepthMat = std::make_shared<Material>("DepthMat");
 		m_DepthMat->SetShader(depthOnly);
 

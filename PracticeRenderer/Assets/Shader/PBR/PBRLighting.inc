@@ -48,6 +48,11 @@ vec3 DirectLighting(vec3 diffuseColor, vec3 specularColor, float roughness, vec3
     //     directLighting += LightingPhysicallyBased(diffuseColor, specularColor, roughness, V, N, L, lightColor);
     // }
 
+    Light light = GetMainLight();
+    vec3 L = light.direction;
+    vec3 lightColor = light.attenuationColor;
+    directLighting += LightingPhysicallyBased(diffuseColor, specularColor, roughness, V, N, L, lightColor);  
+
     //tiled light
     TileLightData data = GetTileLightData(posVS.z);
     for (int i = 0; i < data.lightCount; ++i)

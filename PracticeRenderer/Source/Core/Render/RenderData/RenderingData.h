@@ -9,5 +9,6 @@ namespace PR
 	{
 		CullingResults cullResults;
 		CameraData cameraData;
+		int32_t mainLightIndex = -1;
 	};
 }

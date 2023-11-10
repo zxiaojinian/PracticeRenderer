@@ -15,6 +15,16 @@ namespace PR
 	void GraphicsContext::Init()
 	{
 		m_Framebuffer = Framebuffer::Create();
+
+		m_CameraMatrixUBO = Buffer::Create(1, sizeof(glm::mat4) * 3, BufferType::UniformBuffer, BufferUsage::Dynamic);
+		Shader::SetBuffer("CameraMatrix", m_CameraMatrixUBO.get());
+	}
+
+	void GraphicsContext::SetViewProjectionMatrices(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix)
+	{
+		auto& vpMatrix = projectionMatrix * viewMatrix;
+		glm::mat4 cameraMatrices[] = { viewMatrix , projectionMatrix, vpMatrix };
+		m_CameraMatrixUBO->SetData(cameraMatrices, 0, 1, sizeof(glm::mat4) * 3);
 	}
 
 	void GraphicsContext::SetRenderTarget(RenderTexture* color, RenderTexture* depth)

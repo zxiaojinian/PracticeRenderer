@@ -9,6 +9,7 @@
 #include "Core/Render/Framebuffer.h"
 #include "Core/Render/Asset/ComputeShader.h"
 #include "Core/Event/EventData/BaseEvent.h"
+#include "Core/Render/Buffer.h"
 
 #include <glm/glm.hpp>
 
@@ -24,6 +25,7 @@ namespace PR
 
 		void Init();
 
+		void SetViewProjectionMatrices(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix);
 		void SetRenderTarget(RenderTexture* color, RenderTexture* depth);
 		void SetRenderTarget(std::vector<RenderTexture>& colors, RenderTexture* depth);
 		void SetBackBuffer();
@@ -38,5 +40,8 @@ namespace PR
 	public:
 		std::unique_ptr<Framebuffer> m_Framebuffer;
 		static std::unique_ptr<GraphicsContext> Create();
+
+	private:
+		std::shared_ptr<Buffer> m_CameraMatrixUBO = nullptr;
 	};
 }

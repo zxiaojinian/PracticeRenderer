@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Render/RenderPipeline/Renderer.h"
+#include "Core/Render/RenderPipeline/RenderPass/ShadowCasterPass.h"
 #include "Core/Render/RenderPipeline/RenderPass/DepthOnlyPass.h"
 #include "Core/Render/RenderPipeline/RenderPass/TiledBaseLightingPass.h"
 #include "Core/Render/RenderPipeline/RenderPass/DrawObjectsPass.h"
@@ -21,6 +22,7 @@ namespace PR
 		virtual void SetupLights(GraphicsContext& graphicsContext, const RenderingData& renderingData) override;
 		//virtual void FinishRendering() override;
 	private:
+		std::shared_ptr<ShadowCasterPass> m_ShadowCasterPass;
 		std::shared_ptr<DepthOnlyPass> m_DepthOnlyPass;
 		std::shared_ptr<TiledBaseLightingPass> m_TiledBaseLightingPass;
 		std::shared_ptr<DrawObjectsPass> m_DrawObjectsPass;

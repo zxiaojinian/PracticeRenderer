@@ -66,6 +66,7 @@ layout(location = 0) out vec4 fragColor;
 
 #include "PBRLitInput.inc"
 #include "PBRLighting.inc"
+#include "../Shadow/Shadow.inc"
 
 void InitializeInputData(vec3 normalTS, out InputData inputData)
 {
@@ -78,7 +79,7 @@ void InitializeInputData(vec3 normalTS, out InputData inputData)
     inputData.normalWS = normalize(TBN * normalTS);
 
     inputData.viewDirectionWS = normalize(worldSpaceCameraPos.xyz - inputData.positionWS);
-    inputData.shadowCoord = vec4(0.0);
+    inputData.shadowCoord = TransformWorldToShadowCoord(inputData.positionWS);
     inputData.posVS = fs_in.posVS;
 }
 

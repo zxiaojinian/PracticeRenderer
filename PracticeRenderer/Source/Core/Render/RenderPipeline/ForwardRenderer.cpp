@@ -21,6 +21,7 @@ namespace PR
 		m_BlitMaterial = std::make_shared<Material>("BlitMaterial");
 		m_BlitMaterial->SetShader(shader);
 
+		m_ShadowCasterPass = std::make_shared<ShadowCasterPass>(RenderPassEvent::BeforeRenderingShadows);
 		m_DepthOnlyPass = std::make_shared<DepthOnlyPass>(RenderPassEvent::BeforeRenderingPrepasses);
 		m_TiledBaseLightingPass = std::make_shared<TiledBaseLightingPass>(RenderPassEvent::AfterRenderingPrePasses);
 		m_DrawObjectsPass = std::make_shared<DrawObjectsPass>(RenderPassEvent::BeforeRenderingOpaques);
@@ -35,6 +36,9 @@ namespace PR
 
 		//Temp
 		bool tiledBaseLightingDebug = false;
+
+		if (m_ShadowCasterPass->Setup(renderingData))
+			EnqueuePass(m_ShadowCasterPass);
 
 		EnqueuePass(m_DepthOnlyPass);
 

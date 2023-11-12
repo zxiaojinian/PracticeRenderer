@@ -6,8 +6,8 @@ uniform sampler2D MainLightShadowmap;
 
 vec4 TransformWorldToShadowCoord(vec3 positionWS)
 {
-    vec4 shadowCoord = mul(Matrix_Shadow, vec4(positionWS, 1.0));
-    return vec4(shadowCoord.xyz, 0.0);    
+    vec4 shadowCoord = Matrix_MainLightShadow * vec4(positionWS, 1.0);
+    return vec4(shadowCoord.xyz, 0.0);
 }
 
 float MainLightRealtimeShadow(vec4 shadowCoord)
@@ -16,7 +16,7 @@ float MainLightRealtimeShadow(vec4 shadowCoord)
     projCoords = projCoords * 0.5 + 0.5;
     float closestDepth = texture(MainLightShadowmap, projCoords.xy).r; 
     float currentDepth = projCoords.z;
-    float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;    
+    float shadow = currentDepth < closestDepth  ? 1.0 : 0.0;    
     return shadow;
 }
 

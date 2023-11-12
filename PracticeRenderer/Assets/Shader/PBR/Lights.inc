@@ -1,6 +1,8 @@
 #ifndef Lights
 #define Lights
 
+#include "../Shadow/Shadow.inc"
+
 struct LightData
 {
     vec4 position;
@@ -56,15 +58,15 @@ float AngleAttenuation(vec3 spotDirection, vec3 lightDirection, vec2 spotAttenua
     return atten * atten;
 }
 
-Light GetMainLight()
+Light GetMainLight(vec4 shadowCoord)
 {
     Light light;
     light.direction = lightDataBuffer[0].position.xyz;
     light.distanceAttenuation = 1.0;
-    light.shadowAttenuation = 1.0;
+    light.shadowAttenuation = MainLightRealtimeShadow(shadowCoord);
     light.color = lightDataBuffer[0].color.rgb;
     light.attenuationColor = light.color * light.distanceAttenuation * light.shadowAttenuation;
-    return light;     
+    return light;
 }
 
 Light GetLight(uint lightIndex, vec3 positionWS)

@@ -6,7 +6,7 @@
 
 namespace PR
 {
-	class ShadowCasterPass : RenderPass
+	class ShadowCasterPass : public RenderPass
 	{
 	public:
 		ShadowCasterPass(RenderPassEvent renderPassEvent);

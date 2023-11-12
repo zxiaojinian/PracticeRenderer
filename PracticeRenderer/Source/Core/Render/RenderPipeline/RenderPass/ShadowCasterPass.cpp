@@ -49,6 +49,8 @@ namespace PR
 			return false;
 
 		m_ViewMatrix = light->GetTransform().GetWorldToLocalMatrix();
-		m_ProjectionMatrix = glm::orthoRH(-50.0f, 20.0f, -20.0f, 20.0f, 0.3f, 500.f);
+		m_ProjectionMatrix = glm::orthoRH(-50.0f, 20.0f, -20.0f, 20.0f, 0.3f, 1000.f);
+
+		return true;
 	}
 }

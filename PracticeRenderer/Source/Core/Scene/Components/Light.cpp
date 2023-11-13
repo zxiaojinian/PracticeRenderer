@@ -12,7 +12,7 @@ namespace PR
 		: Component(gameobject)
 	{
 		m_DisallowMultipleComponent = true;
-		m_Transform.SetPosition(glm::vec3(0.0f, 10.0f, 0.0f));
+		//m_Transform.SetPosition(glm::vec3(0.0f, 10.0f, 0.0f));
 		m_Transform.SetEulerAngles(30.0f, -130.f, 0.0f);
 	}
 

@@ -35,11 +35,11 @@ namespace PR
 			light.Intensity = Random::Range(1.0f, 2.0f);
 			light.LightRange = Random::Range(1.0f, 3.0f);
 
-			glm::vec3 position = { Random::Range(-rangeX, rangeX), Random::Range(-rangeY, rangeY) , Random::Range(-rangeZ, rangeZ) };
+			glm::vec3 position = { Random::Range(-rangeX, rangeX), Random::Range(0.5f, rangeY) , Random::Range(-rangeZ, rangeZ) };
 			go->GetTransform().SetPosition(position);
 		}
 
-		uint32_t numSpotLights = 128;
+		uint32_t numSpotLights = 64;
 		for (uint32_t i = 0; i < numSpotLights; i++)
 		{
 			auto go = new GameObject("Pont Light" + std::to_string(i), this);
@@ -50,7 +50,7 @@ namespace PR
 			light.LightRange = Random::Range(5.0f, 10.0f);
 			light.InnerSpotAngle = Random::Range(30.0f, 90.0f);
 			light.SpotAngle = light.InnerSpotAngle + Random::Range(20.0f, 30.0f);
-			glm::vec3 position = { Random::Range(-rangeX, rangeX), Random::Range(-rangeY, rangeY) , Random::Range(-rangeZ, rangeZ) };
+			glm::vec3 position = { Random::Range(-rangeX, rangeX), Random::Range(0.5f, rangeY) , Random::Range(-rangeZ, rangeZ) };
 			go->GetTransform().SetPosition(position);
 			go->GetTransform().SetEulerAngles(glm::vec3(Random::Range(70.0f, 110.0f), 0.0f, Random::Range(-20.0f, 20.0f)));
 		}

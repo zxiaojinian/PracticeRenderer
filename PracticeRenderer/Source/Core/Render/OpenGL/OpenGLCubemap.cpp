@@ -77,7 +77,7 @@ namespace PR
         glBindTextureUnit(slot, m_RendererID);
     }
 
-    void OpenGLCubemap::BindImage(uint32_t slot, uint32_t level, TextureAccess access) const
+    void OpenGLCubemap::BindImage(uint32_t slot, uint32_t level, TextureAccess access, uint32_t slice) const
     {
         glBindImageTexture(slot, m_RendererID, level, true, 0, GetOpenGLTextureAccess(access), GetOpenGLInternalFormat(m_CubemapSpecification.Format));
     }

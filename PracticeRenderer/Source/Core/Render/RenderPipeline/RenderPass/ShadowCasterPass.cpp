@@ -20,7 +20,7 @@ namespace PR
 
 	void ShadowCasterPass::Configure()
 	{
-		ConfigureTarget(nullptr, m_Shadowmap);
+		OverrideCameraTarget = true;
 	}
 
 	void ShadowCasterPass::Execute(GraphicsContext& graphicsContext, const RenderingData& renderingData)
@@ -28,6 +28,8 @@ namespace PR
 		uint32_t cascadesCount = renderingData.shadowData.MainLightCascadesCount;
 		for (uint32_t cascadeIndex = 0; cascadeIndex < cascadesCount; ++cascadeIndex)
 		{
+			graphicsContext.SetRenderTarget(nullptr, m_Shadowmap.get(), 0, CubemapFace::Unknown, cascadeIndex, 0, CubemapFace::Unknown, cascadeIndex);
+			graphicsContext.ClearRenderTarget(true, false, Color::clear);
 			graphicsContext.SetViewProjectionMatrices(m_CascadeViewMatrices[cascadeIndex], m_CascadeProjectionMatrices[cascadeIndex]);
 			DrawingSettings drawingSettings;
 			drawingSettings.overrideMaterial = m_ShadowCasterMat.get();
@@ -50,9 +52,11 @@ namespace PR
 
 		uint32_t shadowMapWidth = renderingData.shadowData.MainLightShadowmapWidth;
 		uint32_t shadowMapHeight = renderingData.shadowData.MainLightShadowmapHeight;
+		uint32_t cascadesCount = renderingData.shadowData.MainLightCascadesCount;
 		if (m_Shadowmap == nullptr || m_Shadowmap->GetWidth() != shadowMapWidth || m_Shadowmap->GetHeight() != shadowMapHeight)
 		{
-			RenderTextureSpecification specification = { shadowMapWidth, shadowMapHeight, TextureFormat::D32_SFloat_S8_UInt, TextureWrapMode::Clamp, TextureFilterMode::Nearest, false };
+			RenderTextureSpecification specification = { shadowMapWidth, shadowMapHeight, cascadesCount, TextureFormat::D32_SFloat_S8_UInt, 
+				TextureWrapMode::Clamp, TextureFilterMode::Nearest, false, TextureDimension::Tex2DArray };
 			m_Shadowmap = RenderTexture::Create("Shadowmap", specification);
 			Shader::SetTexture("MainLightShadowmap", m_Shadowmap.get());
 		}

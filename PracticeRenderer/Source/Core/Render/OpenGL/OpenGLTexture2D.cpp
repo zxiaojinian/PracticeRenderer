@@ -71,7 +71,7 @@ namespace PR
 		glBindTextureUnit(slot, m_RendererID);
 	}
 
-	void OpenGLTexture2D::BindImage(uint32_t slot, uint32_t level, TextureAccess access) const
+	void OpenGLTexture2D::BindImage(uint32_t slot, uint32_t level, TextureAccess access, uint32_t slice) const
 	{
 		glBindImageTexture(slot, m_RendererID, level, GL_FALSE, 0, GetOpenGLTextureAccess(access), GetOpenGLInternalFormat(m_Texture2DSpecification.Format));
 	}

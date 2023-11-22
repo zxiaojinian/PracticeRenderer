@@ -17,6 +17,9 @@ namespace PR
 	class Texture2D : public Texture
 	{
 	public:
+		virtual TextureDimension GetTextureDimension() const override { return TextureDimension::Tex2D; }
+
+
 		virtual void SetData(void* data, uint32_t x, uint32_t y, uint32_t width, uint32_t height, TexturePixelType dataType) = 0;
 
 		static std::shared_ptr<Texture2D> Create(const std::string& name, const Texture2DSpecification& specification);

@@ -40,7 +40,7 @@ namespace PR
 		if (m_SkyMesh && m_SkyBoxMaterial)
 		{
 			glm::vec3 cameraPosWS = renderingData.cameraData.camera->GetTransform().GetPosition();
-			glm::vec3 scale = glm::vec3(renderingData.cameraData.camera->m_FarPlane * 0.99f);
+			glm::vec3 scale = glm::vec3(renderingData.cameraData.camera->GetFarPlane() * 0.99f);
 			glm::mat4 skyBoxMatrix = glm::translate(glm::mat4(1.0f), cameraPosWS) * glm::scale(glm::mat4(1.0f), scale);
 			graphicsContext.DrawMesh(*m_SkyMesh, skyBoxMatrix, *m_SkyBoxMaterial);
 		}

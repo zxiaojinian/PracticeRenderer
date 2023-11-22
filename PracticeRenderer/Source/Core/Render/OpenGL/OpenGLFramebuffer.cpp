@@ -15,11 +15,19 @@ namespace PR
 		glDeleteFramebuffers(1, &m_RendererID);
 	}
 
-	void OpenGLFramebuffer::AttachColorTexture(RenderTexture* colorRT)
+	void OpenGLFramebuffer::AttachColorTexture(RenderTexture* colorRT, uint32_t level, uint32_t slice)
 	{
 		if (colorRT)
 		{
-			glNamedFramebufferTexture(m_RendererID, GL_COLOR_ATTACHMENT0, colorRT->GetRendererID(), 0);
+			if (colorRT->GetTextureDimension() == TextureDimension::Tex2DArray)
+			{
+				glNamedFramebufferTextureLayer(m_RendererID, GL_COLOR_ATTACHMENT0, colorRT->GetRendererID(), level, slice);
+			}
+			else
+			{
+				glNamedFramebufferTexture(m_RendererID, GL_COLOR_ATTACHMENT0, colorRT->GetRendererID(), level);
+			}
+
 			m_RTNum = 1;
 		}
 		else
@@ -46,10 +54,19 @@ namespace PR
 		m_RTNum = static_cast<uint32_t>(colorRTs.size());
 	}
 
-	void OpenGLFramebuffer::AttachDepthTexture(RenderTexture* depthRT)
+	void OpenGLFramebuffer::AttachDepthTexture(RenderTexture* depthRT, uint32_t level, uint32_t slice)
 	{
-		if(depthRT)
-			glNamedFramebufferTexture(m_RendererID, GL_DEPTH_STENCIL_ATTACHMENT, depthRT->GetRendererID(), 0);
+		if (depthRT)
+		{
+			if (depthRT->GetTextureDimension() == TextureDimension::Tex2DArray)
+			{
+				glNamedFramebufferTextureLayer(m_RendererID, GL_DEPTH_STENCIL_ATTACHMENT, depthRT->GetRendererID(), level, slice);
+			}
+			else
+			{
+				glNamedFramebufferTexture(m_RendererID, GL_DEPTH_STENCIL_ATTACHMENT, depthRT->GetRendererID(), level);
+			}
+		}
 		else
 			glNamedFramebufferTexture(m_RendererID, GL_DEPTH_STENCIL_ATTACHMENT, 0, 0);
 	}

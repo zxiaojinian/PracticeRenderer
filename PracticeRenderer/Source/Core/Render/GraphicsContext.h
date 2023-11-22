@@ -26,7 +26,8 @@ namespace PR
 		void Init();
 
 		void SetViewProjectionMatrices(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix);
-		void SetRenderTarget(RenderTexture* color, RenderTexture* depth);
+		void SetRenderTarget(RenderTexture* color, RenderTexture* depth, uint32_t colorLevel = 0, CubemapFace colorCubeFace = CubemapFace::Unknown, uint32_t colorSlice = 0,
+			uint32_t depthLevel = 0, CubemapFace depthCubeFace = CubemapFace::Unknown, uint32_t depthSlice = 0);
 		void SetRenderTarget(std::vector<RenderTexture>& colors, RenderTexture* depth);
 		void SetBackBuffer();
 		void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height);

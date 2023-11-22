@@ -24,9 +24,10 @@ namespace PR
 
 		virtual std::string GetName() override { return "Camera"; }
 
-	private:
+	public:
 		uint16_t RendererIndex = 0;
 
+	private:	
 		float m_Fov = 60.0f;
 		float m_NearPlane = 0.1f;
 		float m_FarPlane = 1000.0f;

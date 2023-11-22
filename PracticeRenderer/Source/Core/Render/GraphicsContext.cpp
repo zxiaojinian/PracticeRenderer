@@ -27,12 +27,12 @@ namespace PR
 		m_CameraMatrixUBO->SetData(cameraMatrices, 0, 1, sizeof(glm::mat4) * 3);
 	}
 
-	void GraphicsContext::SetRenderTarget(RenderTexture* color, RenderTexture* depth)
+	void GraphicsContext::SetRenderTarget(RenderTexture* color, RenderTexture* depth, uint32_t colorLevel, CubemapFace colorCubeFace, uint32_t colorSlice, uint32_t depthLevel, CubemapFace depthCubeFace, uint32_t depthSlice)
 	{
 		PR_ASSERT(!color || !depth || (color && depth && (color->GetWidth() == depth->GetWidth()) && (color->GetHeight() == depth->GetHeight())), "color and depth is not same size");
 
-		m_Framebuffer->AttachColorTexture(color);
-		m_Framebuffer->AttachDepthTexture(depth);
+		m_Framebuffer->AttachColorTexture(color, colorLevel, colorSlice);
+		m_Framebuffer->AttachDepthTexture(depth, depthLevel, depthSlice);
 		m_Framebuffer->Bind();
 
 		uint32_t w = 0;
@@ -42,7 +42,7 @@ namespace PR
 			w = color->GetWidth();
 			h = color->GetHeight();
 		}
-		else if(depth)
+		else if (depth)
 		{
 			w = depth->GetWidth();
 			h = depth->GetHeight();

@@ -205,4 +205,17 @@ namespace PR
 		}
 		return 0;
 	}
+
+	inline GLenum GetOpenGLTextureType(TextureDimension dimension)
+	{
+		switch (dimension)
+		{
+			case PR::TextureDimension::Tex2D: return GL_TEXTURE_2D;
+			case PR::TextureDimension::Tex3D: return GL_TEXTURE_3D;
+			case PR::TextureDimension::Cube: return GL_TEXTURE_CUBE_MAP;
+			case PR::TextureDimension::Tex2DArray: return GL_TEXTURE_2D_ARRAY;
+			case PR::TextureDimension::CubeArray: return GL_TEXTURE_CUBE_MAP_ARRAY;
+			default: return GL_TEXTURE_2D;
+		}
+	}
 }

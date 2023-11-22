@@ -8,9 +8,9 @@ namespace PR
 {
 	ForwardRenderer::ForwardRenderer()
 	{
-		RenderTextureSpecification colorSpecification = { 1920, 1080, TextureFormat::R11G11B10_UFloatPack32, TextureWrapMode::Clamp, TextureFilterMode::Bilinear, false};
+		RenderTextureSpecification colorSpecification = { 1920, 1080, 1, TextureFormat::R11G11B10_UFloatPack32, TextureWrapMode::Clamp, TextureFilterMode::Bilinear, false};
 		m_ColorRenderTexture = RenderTexture::Create("ColorRenderTexture", colorSpecification);
-		RenderTextureSpecification depthSpecification = { 1920, 1080, TextureFormat::D32_SFloat_S8_UInt, TextureWrapMode::Clamp, TextureFilterMode::Nearest, false };
+		RenderTextureSpecification depthSpecification = { 1920, 1080, 1, TextureFormat::D32_SFloat_S8_UInt, TextureWrapMode::Clamp, TextureFilterMode::Nearest, false };
 		m_DepthRenderTexture = RenderTexture::Create("DepthRenderTexture", depthSpecification);
 
 		std::shared_ptr<Shader> shader = Resources::Get().LoadShader("Assets/Shader/Blit.shader");

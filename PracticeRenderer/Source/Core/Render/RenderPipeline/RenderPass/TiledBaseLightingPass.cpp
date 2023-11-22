@@ -147,7 +147,7 @@ namespace PR
 		else if(light.Type == LightType::Directional)
 		{
 			center = glm::vec3(0.0f);
-			radius = camera.m_FarPlane * 2.0f;
+			radius = camera.GetFarPlane() * 2.0f;
 		}
 
 		return glm::vec4(center, radius);

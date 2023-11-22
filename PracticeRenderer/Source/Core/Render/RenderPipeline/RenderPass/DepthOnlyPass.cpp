@@ -17,7 +17,7 @@ namespace PR
 		m_DepthMat = std::make_shared<Material>("DepthMat");
 		m_DepthMat->SetShader(depthOnly);
 
-		RenderTextureSpecification depthSpecification = { 1920, 1080, TextureFormat::D32_SFloat_S8_UInt, TextureWrapMode::Clamp, TextureFilterMode::Nearest, false };
+		RenderTextureSpecification depthSpecification = { 1920, 1080, 1, TextureFormat::D32_SFloat_S8_UInt, TextureWrapMode::Clamp, TextureFilterMode::Nearest, false };
 		m_CmeraDepthTexture = RenderTexture::Create("CmeraDepthTexture", depthSpecification);
 		ComputeShader::SetGlobalTexture("CmeraDepthTexture", m_CmeraDepthTexture.get());
 	}

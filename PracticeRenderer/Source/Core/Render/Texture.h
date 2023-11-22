@@ -57,6 +57,15 @@ namespace PR
 		Read_Write
 	};
 
+	enum class TextureDimension
+	{
+		Tex2D,
+		Tex3D,
+		Cube,
+		Tex2DArray,
+		CubeArray
+	};
+
 	class Texture
 	{
 	public:
@@ -71,10 +80,11 @@ namespace PR
 		virtual uint32_t GetWidth() const = 0;
 		virtual uint32_t GetHeight() const = 0;
 		virtual TextureFormat GetFormat() const = 0;
+		virtual TextureDimension GetTextureDimension() const = 0;
 		virtual uint32_t GetRendererID() const = 0;
 
 		virtual void Bind(uint32_t slot = 0) const = 0;
-		virtual void BindImage(uint32_t slot = 0, uint32_t level = 0, TextureAccess access = TextureAccess::Read) const = 0;
+		virtual void BindImage(uint32_t slot = 0, uint32_t level = 0, TextureAccess access = TextureAccess::Read, uint32_t slice = 0) const = 0;
 		virtual bool operator==(const Texture& other) const = 0;
 	};
 }

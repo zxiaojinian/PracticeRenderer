@@ -70,20 +70,29 @@ namespace PR
 		glBindTextureUnit(slot, m_RendererID);
 	}
 
-	void OpenGLRenderTexture::BindImage(uint32_t slot, uint32_t level, TextureAccess access) const
+	void OpenGLRenderTexture::BindImage(uint32_t slot, uint32_t level, TextureAccess access, uint32_t slice) const
 	{
-		glBindImageTexture(slot, m_RendererID, level, GL_FALSE, 0, GetOpenGLTextureAccess(access), GetOpenGLInternalFormat(m_RenderTextureSpecification.Format));
+		GLboolean layered = (m_RenderTextureSpecification.Dimension == TextureDimension::Tex2DArray || m_RenderTextureSpecification.Dimension == TextureDimension::CubeArray) ?
+			true : false;
+		glBindImageTexture(slot, m_RendererID, level, layered, slice, GetOpenGLTextureAccess(access), GetOpenGLInternalFormat(m_RenderTextureSpecification.Format));
 	}
 
 	void OpenGLRenderTexture::Init()
 	{
-		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
+		glCreateTextures(GetOpenGLTextureType(m_RenderTextureSpecification.Dimension), 1, &m_RendererID);
 		//glBindTexture(GL_TEXTURE_2D, m_RendererID);
 		//glTexImage2D(GL_TEXTURE_2D, 0, GetOpenGLInternalFormat(m_RenderTextureSpecification.Format), m_RenderTextureSpecification.Width, m_RenderTextureSpecification.Height,
 		//	0, RTFormatToOpenGLDataFormat(m_RenderTextureSpecification.Format), GL_UNSIGNED_BYTE, nullptr);
 
 		GLsizei mipmapCount = m_RenderTextureSpecification.GenerateMips ? static_cast<GLsizei>(std::floor(std::log2((std::max)(m_RenderTextureSpecification.Width, m_RenderTextureSpecification.Height))) + 1) : 1;
-		glTextureStorage2D(m_RendererID, mipmapCount, GetOpenGLInternalFormat(m_RenderTextureSpecification.Format), m_RenderTextureSpecification.Width, m_RenderTextureSpecification.Height);
+		if (m_RenderTextureSpecification.Dimension == TextureDimension::Tex2D)
+		{
+			glTextureStorage2D(m_RendererID, mipmapCount, GetOpenGLInternalFormat(m_RenderTextureSpecification.Format), m_RenderTextureSpecification.Width, m_RenderTextureSpecification.Height);
+		}
+		else if(m_RenderTextureSpecification.Dimension == TextureDimension::Tex2DArray || m_RenderTextureSpecification.Dimension == TextureDimension::Tex3D)
+		{
+			glTextureStorage3D(m_RendererID, mipmapCount, GetOpenGLInternalFormat(m_RenderTextureSpecification.Format), m_RenderTextureSpecification.Width, m_RenderTextureSpecification.Height, m_RenderTextureSpecification.VolumeDepth);
+		}
 
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GetOpenGLWrapMode(m_RenderTextureSpecification.WrapMode));
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GetOpenGLWrapMode(m_RenderTextureSpecification.WrapMode));

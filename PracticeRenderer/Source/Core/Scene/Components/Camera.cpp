@@ -14,6 +14,7 @@ namespace PR
 	{
 		float aspect = (float)Application::Get().GetWindow().GetWidth() / Application::Get().GetWindow().GetHeight();
 		m_ProjectionMatrix = glm::perspective(glm::radians(m_Fov), aspect, m_NearPlane, m_FarPlane);
+		m_InvProjectionMatrix = glm::inverse(m_ProjectionMatrix);
 		m_Transform.SetPosition(glm::vec3(0.0f, 2.0f, 10.0f));
 	}
 
@@ -26,6 +27,12 @@ namespace PR
 	{
 		return m_Transform.GetWorldToLocalMatrix();
 	}
+
+	const glm::mat4 Camera::GetInvViewMatrix() const
+	{
+		return m_Transform.GetLocalToWorldMatrix();
+	}
+
 	const glm::mat4 Camera::GetViewProjectionMatrix() const
 	{
 		return m_ProjectionMatrix * GetViewMatrix();

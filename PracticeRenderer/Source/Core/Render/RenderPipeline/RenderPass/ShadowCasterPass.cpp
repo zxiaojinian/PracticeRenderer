@@ -16,6 +16,9 @@ namespace PR
 
 		m_ShadowCasterMat = std::make_shared<Material>("ShadowCasterMat");
 		m_ShadowCasterMat->SetShader(shadowCasterShader);
+
+		m_MainLightShadowDataUBO = Buffer::Create(1, sizeof(MainLightShadowData), BufferType::UniformBuffer, BufferUsage::Dynamic);
+		Shader::SetBuffer("MainLightShadowData", m_MainLightShadowDataUBO.get());
 	}
 
 	void ShadowCasterPass::Configure()
@@ -36,8 +39,7 @@ namespace PR
 			FilteringSettings filteringSettings;
 			graphicsContext.DrawRenderers(renderingData.cullResults, drawingSettings, filteringSettings);
 		}
-
-		/*Shader::SetMat4("Matrix_MainLightShadow", m_ProjectionMatrix * m_ViewMatrix);*/
+		SetupMainLightShadowReceiverConstants(renderingData);
 	}
 
 	bool ShadowCasterPass::Setup(const RenderingData& renderingData)
@@ -61,6 +63,7 @@ namespace PR
 			Shader::SetTexture("MainLightShadowmap", m_Shadowmap.get());
 		}
 
+		CalCascadesData(renderingData);
 		return true;
 	}
 
@@ -70,6 +73,7 @@ namespace PR
 		glm::vec3 frustumPointsInView[8];
 		glm::vec3 lightCameraPos;
 		glm::vec3 lightDir = renderingData.cullResults.VisibleLights[renderingData.mainLightIndex]->GetTransform().GetForward();
+		glm::vec3 lightUp = renderingData.cullResults.VisibleLights[renderingData.mainLightIndex]->GetTransform().GetUp();
 
 		uint32_t cascadesCount = renderingData.shadowData.MainLightCascadesCount;
 		auto cascadeCascadeSplit = renderingData.shadowData.MainLightShadowCascadesSplit;
@@ -93,12 +97,12 @@ namespace PR
 			CalFrustumBoundSphereInWorld(frustumPointsInView, m_CascadeBoundingSphere[cascadeIndex], renderingData.cameraData.camera->GetInvViewMatrix());
 
 			//view matrix
-			lightCameraPos = m_CascadeBoundingSphere[cascadeIndex].center - lightDir * (m_CascadeBoundingSphere[cascadeIndex].radius + 10.0f);//Temp
-			m_CascadeViewMatrices[cascadeIndex] = glm::lookAtRH(lightCameraPos, m_CascadeBoundingSphere[cascadeIndex].center, glm::vec3(0.0, 1.0f, 0.0f));
+			lightCameraPos = m_CascadeBoundingSphere[cascadeIndex].center - lightDir * (m_CascadeBoundingSphere[cascadeIndex].radius + 30.0f);
+			m_CascadeViewMatrices[cascadeIndex] = glm::lookAtRH(lightCameraPos, m_CascadeBoundingSphere[cascadeIndex].center, lightUp);
 
 			//projection matrix
 			float r = m_CascadeBoundingSphere[cascadeIndex].radius;
-			m_CascadeProjectionMatrices[cascadeIndex] = glm::ortho(-r, r, r, r, 0.0f, 2.0f * m_CascadeBoundingSphere[cascadeIndex].radius + 10.0f);
+			m_CascadeProjectionMatrices[cascadeIndex] = glm::ortho(-r, r, -r, r, 0.0f, 2.0f * m_CascadeBoundingSphere[cascadeIndex].radius + 30.0f);//Temp near, far
 		}
 	}
 
@@ -147,5 +151,17 @@ namespace PR
 
 		sphere.center = invViewMatrix * glm::vec4(0.0f, 0.0f, pointsInView[0].z - x, 1.0f);
 		sphere.radius = std::sqrt(a2 / 4.0f + x * x);
+	}
+
+	void ShadowCasterPass::SetupMainLightShadowReceiverConstants(const RenderingData& renderingData)
+	{
+		uint32_t cascadesCount = renderingData.shadowData.MainLightCascadesCount;
+		for (uint32_t cascadeIndex = 0; cascadeIndex < cascadesCount; ++cascadeIndex)
+		{
+			MainLightWorldToShadow[cascadeIndex] = m_CascadeProjectionMatrices[cascadeIndex] * m_CascadeViewMatrices[cascadeIndex];
+		}
+		MainLightWorldToShadow[cascadesCount] = glm::mat4(0.0f);
+		m_MainLightShadowDataUBO->SetData(MainLightWorldToShadow, 0, MAX_CASCADES + 1, sizeof(glm::mat4));
+		m_MainLightShadowDataUBO->SetData(m_CascadeBoundingSphere, (MAX_CASCADES + 1) * sizeof(glm::mat4), MAX_CASCADES, sizeof(glm::vec4));
 	}
 }

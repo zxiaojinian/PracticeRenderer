@@ -278,6 +278,7 @@ namespace PR
 				propertyType = PropertyType::Mat4;
 				break;
 			case GL_SAMPLER_2D:
+			case GL_SAMPLER_2D_ARRAY_SHADOW:
 				propertyType = PropertyType::Texture;
 				break;
 			case GL_SAMPLER_CUBE:

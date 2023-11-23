@@ -23,6 +23,7 @@ namespace PR
 		virtual uint32_t GetWidth() const override { return m_Texture2DSpecification.Width; }
 		virtual uint32_t GetHeight() const override { return m_Texture2DSpecification.Height; }
 		virtual TextureFormat GetFormat() const override { return m_Texture2DSpecification.Format; }
+		virtual void EnableCompare() override;
 		virtual uint32_t GetRendererID() const override { return m_RendererID; }
 
 		virtual void SetData(void* data, uint32_t x, uint32_t y, uint32_t width, uint32_t height, TexturePixelType dataType) override;

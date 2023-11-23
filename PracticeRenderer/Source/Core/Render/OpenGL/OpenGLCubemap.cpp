@@ -54,6 +54,17 @@ namespace PR
         }
     }
 
+    void OpenGLCubemap::EnableCompare()
+    {
+        if (m_CubemapSpecification.Format == TextureFormat::D16_UNorm || m_CubemapSpecification.Format == TextureFormat::D24_UNorm ||
+            m_CubemapSpecification.Format == TextureFormat::D24_UNorm_S8_UInt || m_CubemapSpecification.Format == TextureFormat::D32_SFloat
+            || m_CubemapSpecification.Format == TextureFormat::D32_SFloat_S8_UInt)
+        {
+            glTextureParameteri(m_RendererID, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+            glTextureParameteri(m_RendererID, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+        }
+    }
+
     void OpenGLCubemap::SetData(void* data, uint32_t x, uint32_t y, uint32_t width, uint32_t height, TexturePixelType dataType, CubemapFace face)
     {
         PR_ASSERT((width <= m_CubemapSpecification.Width && height <= m_CubemapSpecification.Width), "width/height error");

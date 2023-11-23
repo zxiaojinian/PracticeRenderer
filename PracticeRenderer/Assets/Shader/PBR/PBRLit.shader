@@ -66,7 +66,6 @@ layout(location = 0) out vec4 fragColor;
 
 #include "PBRLitInput.inc"
 #include "PBRLighting.inc"
-#include "../Shadow/Shadow.inc"
 
 void InitializeInputData(vec3 normalTS, out InputData inputData)
 {

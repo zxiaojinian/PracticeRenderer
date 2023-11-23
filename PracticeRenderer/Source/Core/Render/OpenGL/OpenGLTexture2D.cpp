@@ -54,6 +54,17 @@ namespace PR
 		}
 	}
 
+	void OpenGLTexture2D::EnableCompare()
+	{
+		if (m_Texture2DSpecification.Format == TextureFormat::D16_UNorm || m_Texture2DSpecification.Format == TextureFormat::D24_UNorm ||
+			m_Texture2DSpecification.Format == TextureFormat::D24_UNorm_S8_UInt || m_Texture2DSpecification.Format == TextureFormat::D32_SFloat
+			|| m_Texture2DSpecification.Format == TextureFormat::D32_SFloat_S8_UInt)
+		{
+			glTextureParameteri(m_RendererID, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+			glTextureParameteri(m_RendererID, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+		}
+	}
+
 	void OpenGLTexture2D::SetData(void* data, uint32_t x, uint32_t y, uint32_t width, uint32_t height, TexturePixelType dataType)
 	{
 		PR_ASSERT((width <= m_Texture2DSpecification.Width && height <= m_Texture2DSpecification.Height), "width/height error");

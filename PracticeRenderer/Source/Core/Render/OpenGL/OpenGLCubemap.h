@@ -20,6 +20,7 @@ namespace PR
 		virtual uint32_t GetWidth() const override { return m_CubemapSpecification.Width; }
 		virtual uint32_t GetHeight() const override { return m_CubemapSpecification.Width; }
 		virtual TextureFormat GetFormat() const override { return m_CubemapSpecification.Format; }
+		virtual void EnableCompare() override;
 		virtual uint32_t GetRendererID() const override { return m_RendererID; }
 
 		virtual void SetSmoothEdges(bool smooth) override { m_SmoothEdges = smooth; }

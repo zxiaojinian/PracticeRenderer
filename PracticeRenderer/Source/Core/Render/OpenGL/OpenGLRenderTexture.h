@@ -22,6 +22,7 @@ namespace PR
 		virtual TextureFormat GetFormat() const override { return m_RenderTextureSpecification.Format; }
 		virtual uint32_t GetVolumeDepth() const override { return m_RenderTextureSpecification.VolumeDepth; }
 		virtual TextureDimension GetTextureDimension() const { return m_RenderTextureSpecification.Dimension; }
+		virtual void EnableCompare() override;
 		virtual uint32_t GetRendererID() const override { return m_RendererID; }
 
 		virtual void Bind(uint32_t slot = 0) const override;

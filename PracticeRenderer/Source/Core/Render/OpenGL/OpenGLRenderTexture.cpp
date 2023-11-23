@@ -65,6 +65,17 @@ namespace PR
 		}
 	}
 
+	void OpenGLRenderTexture::EnableCompare()
+	{
+		if (m_RenderTextureSpecification.Format == TextureFormat::D16_UNorm || m_RenderTextureSpecification.Format == TextureFormat::D24_UNorm ||
+			m_RenderTextureSpecification.Format == TextureFormat::D24_UNorm_S8_UInt || m_RenderTextureSpecification.Format == TextureFormat::D32_SFloat
+			|| m_RenderTextureSpecification.Format == TextureFormat::D32_SFloat_S8_UInt)
+		{
+			glTextureParameteri(m_RendererID, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+			glTextureParameteri(m_RendererID, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+		}
+	}
+
 	void OpenGLRenderTexture::Bind(uint32_t slot) const
 	{
 		glBindTextureUnit(slot, m_RendererID);

@@ -38,7 +38,7 @@ namespace PR
 	public:
 		LightType Type = LightType::Directional;
 		Color LightColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-		float Intensity = 1.0f;
+		float Intensity = 2.0f;
 		float LightRange = 10.0f;
 		float SpotAngle = 30.0f;
 		float InnerSpotAngle = 21.0f;

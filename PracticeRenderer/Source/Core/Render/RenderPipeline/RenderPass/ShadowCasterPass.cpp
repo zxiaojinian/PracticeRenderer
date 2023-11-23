@@ -60,6 +60,7 @@ namespace PR
 			RenderTextureSpecification specification = { shadowMapWidth, shadowMapHeight, cascadesCount, TextureFormat::D32_SFloat_S8_UInt, 
 				TextureWrapMode::Clamp, TextureFilterMode::Nearest, false, TextureDimension::Tex2DArray };
 			m_Shadowmap = RenderTexture::Create("Shadowmap", specification);
+			m_Shadowmap->EnableCompare();
 			Shader::SetTexture("MainLightShadowmap", m_Shadowmap.get());
 		}
 
@@ -159,6 +160,7 @@ namespace PR
 		for (uint32_t cascadeIndex = 0; cascadeIndex < cascadesCount; ++cascadeIndex)
 		{
 			MainLightWorldToShadow[cascadeIndex] = m_CascadeProjectionMatrices[cascadeIndex] * m_CascadeViewMatrices[cascadeIndex];
+			m_CascadeBoundingSphere[cascadeIndex].radius = m_CascadeBoundingSphere[cascadeIndex].radius * m_CascadeBoundingSphere[cascadeIndex].radius;
 		}
 		MainLightWorldToShadow[cascadesCount] = glm::mat4(0.0f);
 		m_MainLightShadowDataUBO->SetData(MainLightWorldToShadow, 0, MAX_CASCADES + 1, sizeof(glm::mat4));

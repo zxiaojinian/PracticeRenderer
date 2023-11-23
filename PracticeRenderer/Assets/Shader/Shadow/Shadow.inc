@@ -13,18 +13,28 @@ uniform sampler2DArrayShadow  MainLightShadowmap;
 
 int ComputeCascadeIndex(vec3 positionWS)
 {
-    vec3 fromCenter0 = positionWS - CascadeShadowSplitSpheres[0].xyz;
-    vec3 fromCenter1 = positionWS - CascadeShadowSplitSpheres[1].xyz;
-    vec3 fromCenter2 = positionWS - CascadeShadowSplitSpheres[2].xyz;
-    vec3 fromCenter3 = positionWS - CascadeShadowSplitSpheres[3].xyz;
-    vec4 distances2 = vec4(dot(fromCenter0, fromCenter0), dot(fromCenter1, fromCenter1), dot(fromCenter2, fromCenter2), dot(fromCenter3, fromCenter3));
+    // vec3 fromCenter0 = positionWS - CascadeShadowSplitSpheres[0].xyz;
+    // vec3 fromCenter1 = positionWS - CascadeShadowSplitSpheres[1].xyz;
+    // vec3 fromCenter2 = positionWS - CascadeShadowSplitSpheres[2].xyz;
+    // vec3 fromCenter3 = positionWS - CascadeShadowSplitSpheres[3].xyz;
+    // vec4 distances2 = vec4(dot(fromCenter0, fromCenter0), dot(fromCenter1, fromCenter1), dot(fromCenter2, fromCenter2), dot(fromCenter3, fromCenter3));
 
-    vec4 cascadeShadowSplitSphereRadius = vec4(CascadeShadowSplitSpheres[0].w, CascadeShadowSplitSpheres[1].w, CascadeShadowSplitSpheres[2].w, CascadeShadowSplitSpheres[3].w);
-    // ivec4 weights = ivec4(distances2.x < cascadeShadowSplitSphereRadius.x, distances2.x < cascadeShadowSplitSphereRadius.x, distances2.x < cascadeShadowSplitSphereRadius.x, distances2.x < cascadeShadowSplitSphereRadius.x);
-    ivec4 weights = ivec4(0);
-    weights.yzw = clamp(weights.yzw - weights.xyz, ivec3(0), ivec3(1));
+    // vec4 cascadeShadowSplitSphereRadius = vec4(CascadeShadowSplitSpheres[0].w, CascadeShadowSplitSpheres[1].w, CascadeShadowSplitSpheres[2].w, CascadeShadowSplitSpheres[3].w);
+    // ivec4 weights = ivec4(distances2.x < cascadeShadowSplitSphereRadius.x, distances2.y < cascadeShadowSplitSphereRadius.y, distances2.z < cascadeShadowSplitSphereRadius.z, distances2.w < cascadeShadowSplitSphereRadius.w);
+    // //ivec4 weights = ivec4(0);
+    // weights.yzw = clamp(weights.yzw - weights.xyz, ivec3(0), ivec3(1));
 
-    return 4 - dot(weights, ivec4(4, 3, 2, 1)); //可能为4，故MainLightWorldToShadow长度为5
+    // return 4 - int(dot(weights, ivec4(4, 3, 2, 1))); //可能为4，故MainLightWorldToShadow长度为5
+
+    for(int i = 0; i < MAX_SHADOW_CASCADES; i++)
+    {
+        vec3 fromCenter = positionWS - CascadeShadowSplitSpheres[i].xyz;
+        if(dot(fromCenter, fromCenter) < CascadeShadowSplitSpheres[i].w)
+        {
+            return i;
+        }
+    }
+    return 0;
 }
 
 vec4 TransformWorldToShadowCoord(vec3 positionWS)
@@ -40,7 +50,8 @@ vec4 TransformWorldToShadowCoord(vec3 positionWS)
 float MainLightRealtimeShadow(vec4 shadowCoord)
 {
     float shadowAttenuation = texture(MainLightShadowmap, shadowCoord).r;
-    return shadowCoord.z <= 0.0 ? 1.0 : shadowAttenuation;//MainLightWorldToShadow最后一个矩阵变换后，坐标z=0
+    // return shadowCoord.z <= 0.0 ? 1.0 : shadowAttenuation;//MainLightWorldToShadow最后一个矩阵变换后，坐标z=0
+    return shadowAttenuation;
 }
 
 #endif

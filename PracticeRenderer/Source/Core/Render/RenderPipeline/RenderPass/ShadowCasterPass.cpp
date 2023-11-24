@@ -164,6 +164,9 @@ namespace PR
 		}
 		MainLightWorldToShadow[cascadesCount] = glm::mat4(0.0f);
 		m_MainLightShadowDataUBO->SetData(MainLightWorldToShadow, 0, MAX_CASCADES + 1, sizeof(glm::mat4));
-		m_MainLightShadowDataUBO->SetData(m_CascadeBoundingSphere, (MAX_CASCADES + 1) * sizeof(glm::mat4), MAX_CASCADES, sizeof(glm::vec4));
+		uint32_t offset = (MAX_CASCADES + 1) * sizeof(glm::mat4);
+		m_MainLightShadowDataUBO->SetData(m_CascadeBoundingSphere, offset, MAX_CASCADES, sizeof(glm::vec4));
+		offset += MAX_CASCADES * sizeof(glm::vec4);
+		m_MainLightShadowDataUBO->SetData(&showCascade, offset, 1, sizeof(float));
 	}
 }

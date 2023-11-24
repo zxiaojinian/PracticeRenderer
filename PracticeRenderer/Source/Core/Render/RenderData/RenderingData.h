@@ -11,7 +11,7 @@ namespace PR
 		uint32_t MainLightShadowmapWidth = 512;
 		uint32_t MainLightShadowmapHeight = 512;
 		uint32_t MainLightCascadesCount = 4;
-		float ShadowDistance = 100.0f;
+		float ShadowDistance = 50.0f;
 		float MainLightShadowCascadesSplit[4] = { 0.067f, 0.2f, 0.467f, 1.0f };
 	};
 

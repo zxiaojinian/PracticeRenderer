@@ -105,6 +105,8 @@ vec4 PBRLit(InputData inputData, SurfaceData surfaceData)
 
     finalColor.rgb = directLighting + gi;
     finalColor.a = surfaceData.alpha;
+
+    DebugCascade(inputData.shadowCoord.z, finalColor.rgb);
     return finalColor;
 }
 

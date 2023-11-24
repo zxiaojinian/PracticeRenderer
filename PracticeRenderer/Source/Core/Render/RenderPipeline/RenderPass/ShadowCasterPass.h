@@ -13,6 +13,7 @@ namespace PR
 	{
 		glm::mat4 MainLightWorldToShadow[MAX_CASCADES + 1];
 		glm::vec4 CascadeShadowSplitSpheres[MAX_CASCADES];
+		float ShowCascade = 0.7f;
 	};
 
 	class ShadowCasterPass : public RenderPass
@@ -39,6 +40,8 @@ namespace PR
 		glm::mat4 m_CascadeViewMatrices[MAX_CASCADES];
 		glm::mat4 m_CascadeProjectionMatrices[MAX_CASCADES];
 		glm::mat4 MainLightWorldToShadow[MAX_CASCADES + 1];
+
+		float showCascade = 0.0f;
 	};
 }
 

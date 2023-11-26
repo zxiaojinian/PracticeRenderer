@@ -31,6 +31,7 @@ namespace PR
 		uint32_t cascadesCount = renderingData.shadowData.MainLightCascadesCount;
 		for (uint32_t cascadeIndex = 0; cascadeIndex < cascadesCount; ++cascadeIndex)
 		{
+			SetupShadowCasterData(renderingData, m_CascadeBoundingSphere[cascadeIndex].radius * 2.0f);
 			graphicsContext.SetRenderTarget(nullptr, m_Shadowmap.get(), 0, CubemapFace::Unknown, cascadeIndex, 0, CubemapFace::Unknown, cascadeIndex);
 			graphicsContext.ClearRenderTarget(true, false, Color::clear);
 			graphicsContext.SetViewProjectionMatrices(m_CascadeViewMatrices[cascadeIndex], m_CascadeProjectionMatrices[cascadeIndex]);
@@ -39,7 +40,7 @@ namespace PR
 			FilteringSettings filteringSettings;
 			graphicsContext.DrawRenderers(renderingData.cullResults, drawingSettings, filteringSettings);
 		}
-		SetupMainLightShadowReceiverConstants(renderingData);
+		SetupMainLightShadowReceiverData(renderingData);
 	}
 
 	bool ShadowCasterPass::Setup(const RenderingData& renderingData)
@@ -52,12 +53,11 @@ namespace PR
 		if (!light)
 			return false;
 
-		uint32_t shadowMapWidth = renderingData.shadowData.MainLightShadowmapWidth;
-		uint32_t shadowMapHeight = renderingData.shadowData.MainLightShadowmapHeight;
+		uint32_t shadowResolution = renderingData.shadowData.MainLightShadowmashadowResolution;
 		uint32_t cascadesCount = renderingData.shadowData.MainLightCascadesCount;
-		if (m_Shadowmap == nullptr || m_Shadowmap->GetWidth() != shadowMapWidth || m_Shadowmap->GetHeight() != shadowMapHeight)
+		if (m_Shadowmap == nullptr || m_Shadowmap->GetWidth() != shadowResolution || m_Shadowmap->GetHeight() != shadowResolution)
 		{
-			RenderTextureSpecification specification = { shadowMapWidth, shadowMapHeight, cascadesCount, TextureFormat::D32_SFloat_S8_UInt, 
+			RenderTextureSpecification specification = { shadowResolution, shadowResolution, cascadesCount, TextureFormat::D32_SFloat_S8_UInt,
 				TextureWrapMode::Clamp, TextureFilterMode::Nearest, false, TextureDimension::Tex2DArray };
 			m_Shadowmap = RenderTexture::Create("Shadowmap", specification);
 			m_Shadowmap->EnableCompare();
@@ -154,7 +154,7 @@ namespace PR
 		sphere.radius = std::sqrt(a2 / 4.0f + x * x);
 	}
 
-	void ShadowCasterPass::SetupMainLightShadowReceiverConstants(const RenderingData& renderingData)
+	void ShadowCasterPass::SetupMainLightShadowReceiverData(const RenderingData& renderingData)
 	{
 		uint32_t cascadesCount = renderingData.shadowData.MainLightCascadesCount;
 		for (uint32_t cascadeIndex = 0; cascadeIndex < cascadesCount; ++cascadeIndex)
@@ -168,5 +168,21 @@ namespace PR
 		m_MainLightShadowDataUBO->SetData(m_CascadeBoundingSphere, offset, MAX_CASCADES, sizeof(glm::vec4));
 		offset += MAX_CASCADES * sizeof(glm::vec4);
 		m_MainLightShadowDataUBO->SetData(&showCascade, offset, 1, sizeof(float));
+	}
+
+	glm::vec4 ShadowCasterPass::GetShadowBias(const ShadowData& shadowData, float frustumSize)
+	{
+		float texelSize = frustumSize / shadowData.MainLightShadowmashadowResolution;
+		float lightDirectionBias = -shadowData.LightDirectionBias * texelSize;
+		float normalBias = -shadowData.NormalBias * texelSize;
+		return glm::vec4(lightDirectionBias, normalBias, 0.0f, 0.0f);
+	}
+
+	void ShadowCasterPass::SetupShadowCasterData(const RenderingData& renderingData, float frustumSize)
+	{
+		glm::vec4 bias = GetShadowBias(renderingData.shadowData, frustumSize);
+		glm::vec4 lightDir = -glm::vec4(renderingData.cullResults.VisibleLights[renderingData.mainLightIndex]->GetTransform().GetForward(), 0.0f);
+		Shader::SetFloat4("ShadowBias", bias);
+		Shader::SetFloat4("LightDirection", lightDir);
 	}
 }

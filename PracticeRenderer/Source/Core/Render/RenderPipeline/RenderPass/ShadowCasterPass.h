@@ -30,7 +30,9 @@ namespace PR
 		void CalCascadesData(const RenderingData& renderingData);
 		void CalFrustumPointsInView(glm::vec3* points, const glm::mat4& invProjection, float nearPlane, float farPlane);
 		void CalFrustumBoundSphereInWorld(glm::vec3* pointsInView, BoundingSphere& sphere, const glm::mat4& invViewMatrix);
-		void SetupMainLightShadowReceiverConstants(const RenderingData& renderingData);
+		void SetupMainLightShadowReceiverData(const RenderingData& renderingData);
+		glm::vec4 GetShadowBias(const ShadowData& shadowData, float frustumSize);
+		void SetupShadowCasterData(const RenderingData& renderingData, float frustumSize);
 	private:
 		std::shared_ptr<RenderTexture> m_Shadowmap;
 		std::shared_ptr<Material> m_ShadowCasterMat;

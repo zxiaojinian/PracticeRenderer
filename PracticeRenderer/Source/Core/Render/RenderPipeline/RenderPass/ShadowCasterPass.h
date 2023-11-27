@@ -6,6 +6,11 @@
 
 #include <glm/glm.hpp>
 
+//Projective Aliasing --csm
+//Shadow Acne--light direction depth bias + normal direction bias
+//Shadow swimming.--根本原因是场景像素帧与帧之间采样到阴影纹理深度值发生变化。
+	//1.旋转相机,阴影视锥体大小发生变化，导致阴影纹理纹素覆盖的世界空间范围发生变化，需要固定阴影视锥体大小。
+	//2.移动相机，如果2帧之间，阴影纹理纹素中心移动距离不是其覆盖的世界空间范围的整数倍就会发生闪烁，需要以阴影纹理的纹素覆盖的世界空间范围来吸附阴影视锥体中心位置
 namespace PR
 {
 	#define MAX_CASCADES 4

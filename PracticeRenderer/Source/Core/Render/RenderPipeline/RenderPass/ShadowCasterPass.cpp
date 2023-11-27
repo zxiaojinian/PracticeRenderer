@@ -58,7 +58,7 @@ namespace PR
 		if (m_Shadowmap == nullptr || m_Shadowmap->GetWidth() != shadowResolution || m_Shadowmap->GetHeight() != shadowResolution)
 		{
 			RenderTextureSpecification specification = { shadowResolution, shadowResolution, cascadesCount, TextureFormat::D32_SFloat_S8_UInt,
-				TextureWrapMode::Clamp, TextureFilterMode::Nearest, false, TextureDimension::Tex2DArray };
+				TextureWrapMode::Clamp, TextureFilterMode::Bilinear, false, TextureDimension::Tex2DArray };
 			m_Shadowmap = RenderTexture::Create("Shadowmap", specification);
 			m_Shadowmap->EnableCompare();
 			Shader::SetTexture("MainLightShadowmap", m_Shadowmap.get());
@@ -97,7 +97,13 @@ namespace PR
 			CalFrustumPointsInView(frustumPointsInView, renderingData.cameraData.camera->GetInvProjectionMatrix(), -frustumIntervalBegin, -frustumIntervalEnd);
 			CalFrustumBoundSphereInWorld(frustumPointsInView, m_CascadeBoundingSphere[cascadeIndex], renderingData.cameraData.camera->GetInvViewMatrix());
 
+			float texelSize = m_CascadeBoundingSphere[cascadeIndex].radius * 2.0f / renderingData.shadowData.MainLightShadowmashadowResolution;
+
 			//view matrix
+			m_CascadeBoundingSphere[cascadeIndex].center = renderingData.cullResults.VisibleLights[renderingData.mainLightIndex]->GetTransform().GetWorldToLocalMatrix() * glm::vec4(m_CascadeBoundingSphere[cascadeIndex].center, 1.0f);
+			m_CascadeBoundingSphere[cascadeIndex].center.x = glm::round(m_CascadeBoundingSphere[cascadeIndex].center.x / texelSize) * texelSize;
+			m_CascadeBoundingSphere[cascadeIndex].center.y = glm::round(m_CascadeBoundingSphere[cascadeIndex].center.y / texelSize) * texelSize;
+			m_CascadeBoundingSphere[cascadeIndex].center = renderingData.cullResults.VisibleLights[renderingData.mainLightIndex]->GetTransform().GetLocalToWorldMatrix() * glm::vec4(m_CascadeBoundingSphere[cascadeIndex].center, 1.0f);
 			lightCameraPos = m_CascadeBoundingSphere[cascadeIndex].center - lightDir * (m_CascadeBoundingSphere[cascadeIndex].radius + 30.0f);
 			m_CascadeViewMatrices[cascadeIndex] = glm::lookAtRH(lightCameraPos, m_CascadeBoundingSphere[cascadeIndex].center, lightUp);
 

@@ -31,7 +31,7 @@ namespace PR
 		uint32_t cascadesCount = renderingData.shadowData.MainLightCascadesCount;
 		for (uint32_t cascadeIndex = 0; cascadeIndex < cascadesCount; ++cascadeIndex)
 		{
-			SetupShadowCasterData(renderingData, m_CascadeBoundingSphere[cascadeIndex].radius * 2.0f);
+			SetupShadowCasterData(renderingData, m_MainLightShadowData.CascadeShadowSplitSpheres[cascadeIndex].radius * 2.0f);
 			graphicsContext.SetRenderTarget(nullptr, m_Shadowmap.get(), 0, CubemapFace::Unknown, cascadeIndex, 0, CubemapFace::Unknown, cascadeIndex);
 			graphicsContext.ClearRenderTarget(true, false, Color::clear);
 			graphicsContext.SetViewProjectionMatrices(m_CascadeViewMatrices[cascadeIndex], m_CascadeProjectionMatrices[cascadeIndex]);
@@ -94,23 +94,22 @@ namespace PR
 			frustumIntervalBegin += renderingData.cameraData.camera->GetNearPlane();
 			frustumIntervalEnd += renderingData.cameraData.camera->GetNearPlane();
 
-
 			CalFrustumPointsInView(frustumPointsInView, renderingData.cameraData.camera->GetInvProjectionMatrix(), -frustumIntervalBegin, -frustumIntervalEnd);
-			CalFrustumBoundSphereInWorld(frustumPointsInView, m_CascadeBoundingSphere[cascadeIndex], renderingData.cameraData.camera->GetInvViewMatrix());
+			CalFrustumBoundSphereInWorld(frustumPointsInView, m_MainLightShadowData.CascadeShadowSplitSpheres[cascadeIndex], renderingData.cameraData.camera->GetInvViewMatrix());
 
-			float texelSize = m_CascadeBoundingSphere[cascadeIndex].radius * 2.0f / renderingData.shadowData.MainLightShadowmashadowResolution;
-
-			//view matrix
-			m_CascadeBoundingSphere[cascadeIndex].center = renderingData.cullResults.VisibleLights[renderingData.mainLightIndex]->GetTransform().GetWorldToLocalMatrix() * glm::vec4(m_CascadeBoundingSphere[cascadeIndex].center, 1.0f);
-			m_CascadeBoundingSphere[cascadeIndex].center.x = glm::round(m_CascadeBoundingSphere[cascadeIndex].center.x / texelSize) * texelSize;
-			m_CascadeBoundingSphere[cascadeIndex].center.y = glm::round(m_CascadeBoundingSphere[cascadeIndex].center.y / texelSize) * texelSize;
-			m_CascadeBoundingSphere[cascadeIndex].center = renderingData.cullResults.VisibleLights[renderingData.mainLightIndex]->GetTransform().GetLocalToWorldMatrix() * glm::vec4(m_CascadeBoundingSphere[cascadeIndex].center, 1.0f);
-			lightCameraPos = m_CascadeBoundingSphere[cascadeIndex].center - lightDir * (m_CascadeBoundingSphere[cascadeIndex].radius + 30.0f);
-			m_CascadeViewMatrices[cascadeIndex] = glm::lookAtRH(lightCameraPos, m_CascadeBoundingSphere[cascadeIndex].center, lightUp);
+			BoundingSphere& cascadeShadowSplitSphere = m_MainLightShadowData.CascadeShadowSplitSpheres[cascadeIndex];
+			float texelSize = cascadeShadowSplitSphere.radius * 2.0f / renderingData.shadowData.MainLightShadowmashadowResolution;
+			//view matrix			
+			cascadeShadowSplitSphere.center = renderingData.cullResults.VisibleLights[renderingData.mainLightIndex]->GetTransform().GetWorldToLocalMatrix() * glm::vec4(cascadeShadowSplitSphere.center, 1.0f);
+			cascadeShadowSplitSphere.center.x = glm::round(cascadeShadowSplitSphere.center.x / texelSize) * texelSize;
+			cascadeShadowSplitSphere.center.y = glm::round(cascadeShadowSplitSphere.center.y / texelSize) * texelSize;
+			cascadeShadowSplitSphere.center = renderingData.cullResults.VisibleLights[renderingData.mainLightIndex]->GetTransform().GetLocalToWorldMatrix() * glm::vec4(cascadeShadowSplitSphere.center, 1.0f);
+			lightCameraPos = cascadeShadowSplitSphere.center - lightDir * (cascadeShadowSplitSphere.radius + 30.0f);
+			m_CascadeViewMatrices[cascadeIndex] = glm::lookAtRH(lightCameraPos, cascadeShadowSplitSphere.center, lightUp);
 
 			//projection matrix
-			float r = m_CascadeBoundingSphere[cascadeIndex].radius;
-			m_CascadeProjectionMatrices[cascadeIndex] = glm::ortho(-r, r, -r, r, 0.0f, 2.0f * m_CascadeBoundingSphere[cascadeIndex].radius + 30.0f);//Temp near, far
+			float r = cascadeShadowSplitSphere.radius;
+			m_CascadeProjectionMatrices[cascadeIndex] = glm::ortho(-r, r, -r, r, 0.0f, 2.0f * cascadeShadowSplitSphere.radius + 30.0f);//Temp near, far
 		}
 	}
 
@@ -166,21 +165,13 @@ namespace PR
 		uint32_t cascadesCount = renderingData.shadowData.MainLightCascadesCount;
 		for (uint32_t cascadeIndex = 0; cascadeIndex < cascadesCount; ++cascadeIndex)
 		{
-			MainLightWorldToShadow[cascadeIndex] = m_CascadeProjectionMatrices[cascadeIndex] * m_CascadeViewMatrices[cascadeIndex];
-			m_CascadeBoundingSphere[cascadeIndex].radius = m_CascadeBoundingSphere[cascadeIndex].radius * m_CascadeBoundingSphere[cascadeIndex].radius;
+			m_MainLightShadowData.MainLightWorldToShadow[cascadeIndex] = m_CascadeProjectionMatrices[cascadeIndex] * m_CascadeViewMatrices[cascadeIndex];
+			m_MainLightShadowData.CascadeShadowSplitSpheres[cascadeIndex].radius = m_MainLightShadowData.CascadeShadowSplitSpheres[cascadeIndex].radius * 
+				m_MainLightShadowData.CascadeShadowSplitSpheres[cascadeIndex].radius;
 		}
 
-		m_MainLightShadowDataUBO->SetData(MainLightWorldToShadow, 0, MAX_CASCADES + 1, sizeof(glm::mat4));
-		uint32_t offset = (MAX_CASCADES + 1) * sizeof(glm::mat4);
-
-		m_MainLightShadowDataUBO->SetData(m_CascadeBoundingSphere, offset, MAX_CASCADES, sizeof(glm::vec4));
-		offset += MAX_CASCADES * sizeof(glm::vec4);
-
-		glm::vec4 shadowMapSize = glm::vec4(static_cast<float>(renderingData.shadowData.MainLightShadowmashadowResolution), 1.0f / renderingData.shadowData.MainLightShadowmashadowResolution, 0.0f, 0.0f);
-		m_MainLightShadowDataUBO->SetData(&shadowMapSize, offset, 1, sizeof(glm::vec4));
-		offset += sizeof(glm::vec4);
-
-		m_MainLightShadowDataUBO->SetData(&showCascade, offset, 1, sizeof(float));
+		m_MainLightShadowData.MainLightShadowmapSize = glm::vec4(static_cast<float>(renderingData.shadowData.MainLightShadowmashadowResolution), 1.0f / renderingData.shadowData.MainLightShadowmashadowResolution, 0.0f, 0.0f);
+		m_MainLightShadowDataUBO->SetData(&m_MainLightShadowData, 0, 1, sizeof(MainLightShadowData));
 	}
 
 	glm::vec4 ShadowCasterPass::GetShadowBias(const ShadowData& shadowData, float frustumSize)
@@ -204,9 +195,10 @@ namespace PR
 		glm::mat4 zeroMatrix = glm::mat4(0.0f);
 		for (uint32_t cascadeIndex = 0; cascadeIndex < MAX_CASCADES; ++cascadeIndex)
 		{
-			MainLightWorldToShadow[cascadeIndex] = zeroMatrix;
-			m_CascadeBoundingSphere[cascadeIndex].radius = 0.0f;
-			m_CascadeBoundingSphere[cascadeIndex].center = glm::vec3(0.0f);
+			m_MainLightShadowData.MainLightWorldToShadow[cascadeIndex] = zeroMatrix;
+			m_MainLightShadowData.CascadeShadowSplitSpheres[cascadeIndex].radius = 0.0f;
+			m_MainLightShadowData.CascadeShadowSplitSpheres[cascadeIndex].center = glm::vec3(0.0f);
 		}
+		m_MainLightShadowData.MainLightWorldToShadow[MAX_CASCADES] = zeroMatrix;
 	}
 }

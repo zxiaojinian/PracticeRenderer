@@ -18,6 +18,7 @@ namespace PR
 	{
 		glm::mat4 MainLightWorldToShadow[MAX_CASCADES + 1];
 		glm::vec4 CascadeShadowSplitSpheres[MAX_CASCADES];
+		glm::vec4 MainLightShadowmapSize;
 		float ShowCascade = 0.7f;
 	};
 
@@ -38,6 +39,7 @@ namespace PR
 		void SetupMainLightShadowReceiverData(const RenderingData& renderingData);
 		glm::vec4 GetShadowBias(const ShadowData& shadowData, float frustumSize);
 		void SetupShadowCasterData(const RenderingData& renderingData, float frustumSize);
+		void InitShadowData();
 	private:
 		std::shared_ptr<RenderTexture> m_Shadowmap;
 		std::shared_ptr<Material> m_ShadowCasterMat;

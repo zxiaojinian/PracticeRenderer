@@ -8,7 +8,7 @@ namespace PR
 {
 	struct ShadowData
 	{
-		uint32_t MainLightShadowmashadowResolution = 2048;
+		uint32_t MainLightShadowmashadowResolution = 1024;
 		uint32_t MainLightCascadesCount = 4;
 		float ShadowDistance = 50.0f;
 		float MainLightShadowCascadesSplit[4] = { 0.067f, 0.2f, 0.467f, 1.0f };

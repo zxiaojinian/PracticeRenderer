@@ -64,6 +64,7 @@ namespace PR
 			Shader::SetTexture("MainLightShadowmap", m_Shadowmap.get());
 		}
 
+		InitShadowData();
 		CalCascadesData(renderingData);
 		return true;
 	}
@@ -168,11 +169,17 @@ namespace PR
 			MainLightWorldToShadow[cascadeIndex] = m_CascadeProjectionMatrices[cascadeIndex] * m_CascadeViewMatrices[cascadeIndex];
 			m_CascadeBoundingSphere[cascadeIndex].radius = m_CascadeBoundingSphere[cascadeIndex].radius * m_CascadeBoundingSphere[cascadeIndex].radius;
 		}
-		MainLightWorldToShadow[cascadesCount] = glm::mat4(0.0f);
+
 		m_MainLightShadowDataUBO->SetData(MainLightWorldToShadow, 0, MAX_CASCADES + 1, sizeof(glm::mat4));
 		uint32_t offset = (MAX_CASCADES + 1) * sizeof(glm::mat4);
+
 		m_MainLightShadowDataUBO->SetData(m_CascadeBoundingSphere, offset, MAX_CASCADES, sizeof(glm::vec4));
 		offset += MAX_CASCADES * sizeof(glm::vec4);
+
+		glm::vec4 shadowMapSize = glm::vec4(static_cast<float>(renderingData.shadowData.MainLightShadowmashadowResolution), 1.0f / renderingData.shadowData.MainLightShadowmashadowResolution, 0.0f, 0.0f);
+		m_MainLightShadowDataUBO->SetData(&shadowMapSize, offset, 1, sizeof(glm::vec4));
+		offset += sizeof(glm::vec4);
+
 		m_MainLightShadowDataUBO->SetData(&showCascade, offset, 1, sizeof(float));
 	}
 
@@ -190,5 +197,16 @@ namespace PR
 		glm::vec4 lightDir = -glm::vec4(renderingData.cullResults.VisibleLights[renderingData.mainLightIndex]->GetTransform().GetForward(), 0.0f);
 		Shader::SetFloat4("ShadowBias", bias);
 		Shader::SetFloat4("LightDirection", lightDir);
+	}
+
+	void ShadowCasterPass::InitShadowData()
+	{
+		glm::mat4 zeroMatrix = glm::mat4(0.0f);
+		for (uint32_t cascadeIndex = 0; cascadeIndex < MAX_CASCADES; ++cascadeIndex)
+		{
+			MainLightWorldToShadow[cascadeIndex] = zeroMatrix;
+			m_CascadeBoundingSphere[cascadeIndex].radius = 0.0f;
+			m_CascadeBoundingSphere[cascadeIndex].center = glm::vec3(0.0f);
+		}
 	}
 }

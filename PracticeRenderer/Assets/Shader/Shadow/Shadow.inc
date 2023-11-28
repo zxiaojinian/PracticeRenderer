@@ -7,6 +7,7 @@ layout (std140) uniform MainLightShadowData
 {
     mat4 MainLightWorldToShadow[MAX_SHADOW_CASCADES + 1];
     vec4 CascadeShadowSplitSpheres[MAX_SHADOW_CASCADES];
+    vec4 MainLightShadowmapSize;//(size, 1/size, 0, 0)
     float ShowCascade;
 };
 
@@ -49,9 +50,14 @@ vec4 TransformWorldToShadowCoord(vec3 positionWS)
 
 float MainLightRealtimeShadow(vec4 shadowCoord)
 {
-    float shadowAttenuation = texture(MainLightShadowmap, shadowCoord);
+    //4 samples hardware comparison = 3X3 sample pcf
+    vec4 offset = MainLightShadowmapSize.yyyy * vec4(0.5, -0.5, 0.5, -0.5);
+    float shadowAttenuation = 0.25 * texture(MainLightShadowmap, shadowCoord + vec4(offset.xz, 0.0, 0.0));//rt
+    shadowAttenuation += 0.25 * texture(MainLightShadowmap, shadowCoord + vec4(offset.xw, 0.0, 0.0));//rb
+    shadowAttenuation += 0.25 * texture(MainLightShadowmap, shadowCoord + vec4(offset.yz, 0.0, 0.0));//lt
+    shadowAttenuation += 0.25 * texture(MainLightShadowmap, shadowCoord + vec4(offset.yw, 0.0, 0.0));//lb
+    //float shadowAttenuation = texture(MainLightShadowmap, shadowCoord);
     return shadowCoord.z >= MAX_SHADOW_CASCADES ? 1.0 : shadowAttenuation;
-   // return shadowAttenuation;
 }
 
 void DebugCascade(float cascadeIndex, inout vec3 color)

@@ -27,7 +27,7 @@ namespace PR
 		m_DrawObjectsPass = std::make_shared<DrawObjectsPass>(RenderPassEvent::BeforeRenderingOpaques);
 		m_DrawSkyboxPass = std::make_shared<DrawSkyboxPass>(RenderPassEvent::BeforeRenderingSkybox);
 		m_TiledBaseLightingDebugPass = std::make_shared<TiledBaseLightingDebugPass>(RenderPassEvent::AfterRenderingPostProcessing);
-		m_FinalBlitPass = std::make_shared<FinalBlitPass>(RenderPassEvent::AfterRendering, m_BlitMaterial);
+		m_PostProcessPass = std::make_shared<PostProcessPass>(RenderPassEvent::BeforeRenderingPostProcessing, m_BlitMaterial);
 	}
 
 	void ForwardRenderer::Setup(RenderingData& renderingData)
@@ -51,8 +51,8 @@ namespace PR
 		if(tiledBaseLightingDebug)
 			EnqueuePass(m_TiledBaseLightingDebugPass);
 
-		m_FinalBlitPass->Setup(m_ColorRenderTexture);
-		EnqueuePass(m_FinalBlitPass);
+		m_PostProcessPass->Setup(m_ColorRenderTexture);
+		EnqueuePass(m_PostProcessPass);
 	}
 
 	void ForwardRenderer::SetupLights(GraphicsContext& graphicsContext, const RenderingData& renderingData)

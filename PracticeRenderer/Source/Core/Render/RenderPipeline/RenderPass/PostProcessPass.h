@@ -4,10 +4,10 @@
 
 namespace PR
 {
-	class FinalBlitPass : public RenderPass
+	class PostProcessPass : public RenderPass
 	{
 	public:
-		FinalBlitPass(RenderPassEvent renderPassEvent, std::shared_ptr<Material>& blitMaterial);
+		PostProcessPass(RenderPassEvent renderPassEvent, std::shared_ptr<Material>& blitMaterial);
 		virtual void Execute(GraphicsContext& graphicsContext, const RenderingData& renderingData) override;
 
 		void Setup(std::shared_ptr<RenderTexture>& source);

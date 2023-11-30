@@ -1,14 +1,14 @@
 #include "pch.h"
-#include "FinalBlitPass.h"
+#include "PostProcessPass.h"
 
 namespace PR
 {
-	FinalBlitPass::FinalBlitPass(RenderPassEvent renderPassEvent, std::shared_ptr<Material>& blitMaterial) : RenderPass(renderPassEvent)
+	PostProcessPass::PostProcessPass(RenderPassEvent renderPassEvent, std::shared_ptr<Material>& blitMaterial) : RenderPass(renderPassEvent)
 	{
 		m_BlitMaterial = blitMaterial;
 	}
 
-	void FinalBlitPass::Execute(GraphicsContext& graphicsContext, const RenderingData& renderingData)
+	void PostProcessPass::Execute(GraphicsContext& graphicsContext, const RenderingData& renderingData)
 	{
 		//draw fullscreen meshs
 		graphicsContext.SetBackBuffer();
@@ -17,7 +17,7 @@ namespace PR
 		graphicsContext.DrawMesh(Mesh::FullScreenMesh, glm::mat4(1.0f), *m_BlitMaterial);
 	}
 
-	void FinalBlitPass::Setup(std::shared_ptr<RenderTexture>& source)
+	void PostProcessPass::Setup(std::shared_ptr<RenderTexture>& source)
 	{
 		m_Source = source;
 	}

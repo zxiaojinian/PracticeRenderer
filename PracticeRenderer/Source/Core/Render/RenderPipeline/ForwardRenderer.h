@@ -7,7 +7,7 @@
 #include "Core/Render/RenderPipeline/RenderPass/DrawObjectsPass.h"
 #include "Core/Render/RenderPipeline/RenderPass/DrawSkyboxPass.h"
 #include "Core/Render/RenderPipeline/RenderPass/TiledBaseLightingDebugPass.h"
-#include "Core/Render/RenderPipeline/RenderPass/FinalBlitPass.h"
+#include "Core/Render/RenderPipeline/RenderPass/PostProcessPass.h"
 
 #include "Core/Render/Asset/Material.h"
 
@@ -28,7 +28,7 @@ namespace PR
 		std::shared_ptr<DrawObjectsPass> m_DrawObjectsPass;
 		std::shared_ptr<DrawSkyboxPass> m_DrawSkyboxPass;
 		std::shared_ptr<TiledBaseLightingDebugPass> m_TiledBaseLightingDebugPass;
-		std::shared_ptr<FinalBlitPass> m_FinalBlitPass;
+		std::shared_ptr<PostProcessPass> m_PostProcessPass;
 
 		std::shared_ptr<RenderTexture> m_ColorRenderTexture;
 		std::shared_ptr<RenderTexture> m_DepthRenderTexture;

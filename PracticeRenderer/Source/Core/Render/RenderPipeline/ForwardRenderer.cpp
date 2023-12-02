@@ -2,7 +2,6 @@
 #include "ForwardRenderer.h"
 
 #include "Core/Render/RenderData/LightData.h"
-#include "Core/Asset/Resources.h"
 
 namespace PR
 {
@@ -13,21 +12,13 @@ namespace PR
 		RenderTextureSpecification depthSpecification = { 1920, 1080, 1, TextureFormat::D32_SFloat_S8_UInt, TextureWrapMode::Clamp, TextureFilterMode::Nearest, false };
 		m_DepthRenderTexture = RenderTexture::Create("DepthRenderTexture", depthSpecification);
 
-		std::shared_ptr<Shader> shader = Resources::Get().LoadShader("Assets/Shader/Blit.shader");
-		//Temp
-		shader->GetRenderStateBlock().depthState.compareFunction = CompareFunction::Disabled;
-		shader->GetRenderStateBlock().depthState.writeEnabled = false;
-		shader->GetRenderStateBlock().cullMode = CullMode::Disabled;
-		m_BlitMaterial = std::make_shared<Material>("BlitMaterial");
-		m_BlitMaterial->SetShader(shader);
-
 		m_ShadowCasterPass = std::make_shared<ShadowCasterPass>(RenderPassEvent::BeforeRenderingShadows);
 		m_DepthOnlyPass = std::make_shared<DepthOnlyPass>(RenderPassEvent::BeforeRenderingPrepasses);
 		m_TiledBaseLightingPass = std::make_shared<TiledBaseLightingPass>(RenderPassEvent::AfterRenderingPrePasses);
 		m_DrawObjectsPass = std::make_shared<DrawObjectsPass>(RenderPassEvent::BeforeRenderingOpaques);
 		m_DrawSkyboxPass = std::make_shared<DrawSkyboxPass>(RenderPassEvent::BeforeRenderingSkybox);
 		m_TiledBaseLightingDebugPass = std::make_shared<TiledBaseLightingDebugPass>(RenderPassEvent::AfterRenderingPostProcessing);
-		m_PostProcessPass = std::make_shared<PostProcessPass>(RenderPassEvent::BeforeRenderingPostProcessing, m_BlitMaterial);
+		m_PostProcessPass = std::make_shared<PostProcessPass>(RenderPassEvent::BeforeRenderingPostProcessing);
 	}
 
 	void ForwardRenderer::Setup(RenderingData& renderingData)

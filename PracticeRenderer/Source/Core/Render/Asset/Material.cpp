@@ -18,7 +18,10 @@ namespace PR
 
 	void Material::Bind() const
 	{
-		m_Shader->SetRenderState();
+		if (!m_Shader->CheckBind())
+		{
+			m_Shader->SetRenderState();
+		}
 		m_Shader->UploadProperty(m_PropertyValue);
 	}
 

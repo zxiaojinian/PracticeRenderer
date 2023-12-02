@@ -13,6 +13,7 @@
 namespace PR
 {
 	std::unordered_map<std::string, PropertyValue> Shader::s_PropertyValue;
+	Shader* Shader::s_PreShader = nullptr;
 
 	std::shared_ptr<Shader> Shader::Create(const std::string& filepath)
 	{
@@ -52,7 +53,6 @@ namespace PR
 
 	void Shader::UploadProperty(const std::unordered_map<std::string, PropertyValue>& materialValue)
 	{
-		Bind();
 		int textureSlot = 0;
 		int imageSlot = 0;
 		int bufferBindingPoint = 0;
@@ -166,10 +166,21 @@ namespace PR
 	void Shader::SetRenderState()
 	{
 		RenderCommand::SetDepthCompareFunction(m_RenderStateBlock.depthState.compareFunction);
-		if(m_RenderStateBlock.depthState.compareFunction != CompareFunction::Disabled)
+		if (m_RenderStateBlock.depthState.compareFunction != CompareFunction::Disabled)
 			RenderCommand::SetDepthWriteEnabled(m_RenderStateBlock.depthState.writeEnabled);
 		RenderCommand::SetCullMode(m_RenderStateBlock.cullMode);
 		RenderCommand::SetBlendState(m_RenderStateBlock.blendState);
+	}
+
+	bool Shader::CheckBind()
+	{
+		if (this != s_PreShader)
+		{
+			Bind();
+			s_PreShader = this;
+			return false;
+		}
+		return true;
 	}
 
 	void Shader::SetInt(const std::string& name, int value)

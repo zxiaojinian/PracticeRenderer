@@ -28,6 +28,7 @@ namespace PR
 		bool HaveProperty(const std::string& property);
 		void UploadProperty(const std::unordered_map<std::string, PropertyValue>& materialValue);
 		void SetRenderState();
+		bool CheckBind();
 		RenderStateBlock& GetRenderStateBlock() { return m_RenderStateBlock; }
 
 		static void SetInt(const std::string& name, int value);
@@ -62,6 +63,8 @@ namespace PR
 		std::vector<PropertyData> m_PropertyData;
 		static std::unordered_map<std::string, PropertyValue> s_PropertyValue;
 
+	private:
+		static Shader* s_PreShader;
 	};
 }
 

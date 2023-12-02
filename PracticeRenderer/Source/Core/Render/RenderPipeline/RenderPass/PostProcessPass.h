@@ -7,13 +7,14 @@ namespace PR
 	class PostProcessPass : public RenderPass
 	{
 	public:
-		PostProcessPass(RenderPassEvent renderPassEvent, std::shared_ptr<Material>& blitMaterial);
+		PostProcessPass(RenderPassEvent renderPassEvent);
 		virtual void Execute(GraphicsContext& graphicsContext, const RenderingData& renderingData) override;
 
 		void Setup(std::shared_ptr<RenderTexture>& source);
 
 	private:
-		std::shared_ptr<Material> m_BlitMaterial;
+		void DoBloom(GraphicsContext& graphicsContext, const RenderingData& renderingData);
+	private:		
 		std::shared_ptr<RenderTexture> m_Source;
 
 		//bloom
@@ -21,6 +22,12 @@ namespace PR
 		uint32_t m_InitWidth = 0;
 		uint32_t m_InitHeight = 0;
 		std::vector<std::shared_ptr<RenderTexture>> m_BloomMipTexture;
+		std::shared_ptr<Material> m_BloomDownsSamplingMat;
+		std::shared_ptr<Material> m_BloomUpSamplingMat;
+		float bloomStrength = 0.04f;
+
+		//UberPost
+		std::shared_ptr<Material> m_UberMat;
 	};
 }
 

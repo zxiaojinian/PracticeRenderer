@@ -22,6 +22,7 @@ namespace PR
 		directionalLight->AddComponent<Light>();
 
 		//Lights
+		Random::SetSeed(1);
 		float rangeX = 2.0f;
 		float rangeY = 7.0f;
 		float rangeZ = 11.0f;
@@ -32,7 +33,7 @@ namespace PR
 			auto& light = go->AddComponent<Light>();
 			light.Type = LightType::Point;
 			light.LightColor = { Random::Range(0.0f, 1.0f), Random::Range(0.0f, 1.0f), Random::Range(0.0f, 1.0f), 1.0};
-			light.Intensity = Random::Range(1.0f, 2.0f);
+			light.Intensity = Random::Range(2.0f, 5.0f);
 			light.LightRange = Random::Range(1.0f, 3.0f);
 
 			glm::vec3 position = { Random::Range(-rangeX, rangeX), Random::Range(0.5f, rangeY) , Random::Range(-rangeZ, rangeZ) };

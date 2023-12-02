@@ -7,20 +7,30 @@ namespace PR
     class Random 
     {
     public:
-        static int Range(int min, int max) 
+        static void SetSeed(unsigned int seed)
         {
-            static std::random_device rd;
-            static std::mt19937 gen(rd());
-            std::uniform_int_distribution<int> distribution(min, max);
-            return distribution(gen);
+            std::mt19937 gen(seed);
+            generator() = gen;
         }
 
-        static float Range(float min, float max) 
+        static int Range(int min, int max)
+        {
+            std::uniform_int_distribution<int> distribution(min, max);
+            return distribution(generator());
+        }
+
+        static float Range(float min, float max)
+        {
+            std::uniform_real_distribution<float> distribution(min, max);
+            return distribution(generator());
+        }
+
+    private:
+        static std::mt19937& generator()
         {
             static std::random_device rd;
             static std::mt19937 gen(rd());
-            std::uniform_real_distribution<float> distribution(min, max);
-            return distribution(gen);
+            return gen;
         }
     };
 }

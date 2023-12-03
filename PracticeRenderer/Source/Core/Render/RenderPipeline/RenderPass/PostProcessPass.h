@@ -18,7 +18,7 @@ namespace PR
 		std::shared_ptr<RenderTexture> m_Source;
 
 		//bloom
-		const uint32_t k_MaxMipCount = 16;
+		const uint32_t k_MaxMipCount = 6;
 		uint32_t m_InitWidth = 0;
 		uint32_t m_InitHeight = 0;
 		std::vector<std::shared_ptr<RenderTexture>> m_BloomMipTexture;

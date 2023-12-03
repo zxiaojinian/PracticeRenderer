@@ -68,14 +68,14 @@ namespace PR
 			uint32_t maxSize = (std::max)(w, h);
 			uint32_t mipMapCount = static_cast<uint32_t>(std::floor(std::log2(maxSize)));
 			const uint32_t minMipCount = 0;
-			mipMapCount = std::clamp(mipMapCount, minMipCount, k_MaxMipCount);
+			mipMapCount = std::clamp(mipMapCount, (uint32_t)0, k_MaxMipCount);
 
 			m_BloomMipTexture.clear();
 			RenderTextureSpecification colorSpecification = { w, h, 1, TextureFormat::R11G11B10_UFloatPack32, TextureWrapMode::Clamp, TextureFilterMode::Bilinear, false };
 			for (uint32_t mipIndex = 0; mipIndex < mipMapCount; ++mipIndex)
 			{
-				w /= 2;
-				h /= 2;
+				w = (std::max)(w / 2, (uint32_t)1);
+				h = (std::max)(h / 2, (uint32_t)1);
 				colorSpecification.Width = w;
 				colorSpecification.Height = h;
 				auto mipTexture = RenderTexture::Create("mipTex" + std::to_string(mipIndex), colorSpecification);
@@ -88,14 +88,15 @@ namespace PR
 
 		//downsample
 		m_BloomDownsSamplingMat->SetTexture("srcTexture", m_Source.get());
-		m_BloomDownsSamplingMat->SetFloat2("srcResolution", glm::vec2(m_Source->GetWidth(), m_Source->GetHeight()));
+		m_BloomDownsSamplingMat->SetFloat2("srcTexelSize", glm::vec2(1.0f / m_Source->GetWidth(), 1.0f / m_Source->GetHeight()));
 		for (size_t i = 0; i < m_BloomMipTexture.size(); i++)
 		{
 			graphicsContext.SetRenderTarget(m_BloomMipTexture[i].get(), nullptr);
+			graphicsContext.ClearRenderTarget(false, true, Color::clear);
 			graphicsContext.DrawMesh(Mesh::FullScreenMesh, glm::mat4(1.0f), *m_BloomDownsSamplingMat);
 
 			m_BloomDownsSamplingMat->SetTexture("srcTexture", m_BloomMipTexture[i].get());
-			m_BloomDownsSamplingMat->SetFloat2("srcResolution", glm::vec2(m_BloomMipTexture[i]->GetWidth(), m_BloomMipTexture[i]->GetHeight()));
+			m_BloomDownsSamplingMat->SetFloat2("srcTexelSize", glm::vec2(1.0f / m_BloomMipTexture[i]->GetWidth(), 1.0f / m_BloomMipTexture[i]->GetHeight()));
 		}
 
 		//upsample

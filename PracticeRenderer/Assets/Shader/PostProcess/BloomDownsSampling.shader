@@ -32,14 +32,13 @@ void main()
 // Remember to use a floating-point texture format (for HDR)!
 // Remember to use edge clamping for this texture!
 uniform sampler2D srcTexture;
-uniform vec2 srcResolution;
+uniform vec2 srcTexelSize;
 
 in vec2 texCoord;
 layout (location = 0) out vec3 downsample;
 
 void main()
 {
-    vec2 srcTexelSize = 1.0 / srcResolution;
     float x = srcTexelSize.x;
     float y = srcTexelSize.y;
 

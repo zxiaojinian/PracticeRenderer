@@ -10,6 +10,8 @@ uniform int irradianceMapSize;
 
 #define PI 3.14159265358979323846
 
+//https://www.khronos.org/opengl/wiki/Cubemap_Texture
+//opengl立方体贴图的坐标系是左手的
 vec3 UVToDir(uint faceIndex, vec2 uv)
 {
     vec2 texCoord = 2.0 * uv - 1.0;
